@@ -6,6 +6,12 @@
              xmlns:local="clr-namespace:ShowManager.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="150" d:DesignWidth="400">
-	<ListBox x:Name="ListViewControl" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch" AllowDrop="True" ItemsSource="{Binding Items}"
-						SelectionMode="Extended" Background="White" />
+	<Grid>
+		<ListBox x:Name="ListViewControl" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch" AllowDrop="True" ItemsSource="{Binding Items}"
+						SelectionMode="Extended" Background="White">
+		</ListBox>
+		<Canvas x:Name="DragSelectionCanvas" Visibility="Collapsed" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Focusable="False" IsHitTestVisible="False">
+			<Border x:Name="DragSelectionBorder" BorderBrush="Blue" BorderThickness="1" Background="LightBlue" CornerRadius="1" Opacity="0.5" />
+		</Canvas>
+	</Grid>
 </UserControl>
