@@ -104,6 +104,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\SMElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -132,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Tools\drag.png" />
+    <None Include="Thinks.txt" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Gentres\vocal.png" />
@@ -143,6 +145,42 @@
     <Resource Include="Images\Tools\folder-active.png" />
     <Resource Include="Images\Tools\folder-add.png" />
     <Resource Include="Images\Tools\folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Gentres\theatre.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Gentres\art.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Gentres\pop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Gentres\patriot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Gentres\guitar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Gentres\cinema.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Gentres\sport.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Gentres\circus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Gentres\music.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Gentres\director.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Gentres\concert-master.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Gentres\palette.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

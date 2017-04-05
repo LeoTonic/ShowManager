@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ShowManager.Models;
 
 namespace ShowManager.Controls
 {
@@ -22,10 +23,17 @@ namespace ShowManager.Controls
 	/// </summary>
 	public partial class SMListView : UserControl
 	{
+		// Режимы отображения
+		public enum ViewMode
+		{
+			Performer = 0,
+			Track
+		}
 		public ObservableCollection<SMListViewItem> Items { get; set; }
 		private ListBoxItem draggedItem = null;
 		private DragDropWindow ddRef = null;
 		private QueryContinueDragEventHandler queryHandler;
+		private ViewMode viewMode;
 
 		private bool isDragging = false;
 		private Point dragPoint;
@@ -200,5 +208,16 @@ namespace ShowManager.Controls
 			}
 		}
 
+		// Работа с объектами данных
+
+		// Заполнение элементами
+		public void FillView(SMElement element)
+		{
+			Items.Clear();
+			foreach (SMElement elem in element.Items)
+			{
+				SMListViewItem newItem = new SMListViewItem();
+			}
+		}
 	}
 }
