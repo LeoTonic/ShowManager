@@ -29,6 +29,7 @@ namespace ShowManager
 
 			ddWindow.HideWindow();
 			ExampleView.SetDragDropWindow(ddWindow);
+			ExamplePanel.AssignView(ExampleView);
 
 			Closed += MainWindow_Closed;
 		}

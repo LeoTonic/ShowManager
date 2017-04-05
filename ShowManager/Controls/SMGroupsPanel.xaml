@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="ShowManager.Controls.SMGroupsPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ShowManager.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="150" d:DesignWidth="300">
+	<UserControl.Resources>
+		<Style TargetType="{x:Type ItemsControl}">
+			<Setter Property="Margin" Value="2,4,2,1"/>
+			<Setter Property="Focusable" Value="False"/>
+		</Style>
+	</UserControl.Resources>
+	<ItemsControl ItemsSource="{Binding Items}">
+		<ItemsControl.Template>
+			<ControlTemplate TargetType="ItemsControl">
+					<ItemsPresenter/>
+			</ControlTemplate>
+		</ItemsControl.Template>
+		<ItemsControl.ItemsPanel>
+			<ItemsPanelTemplate>
+				<WrapPanel />
+			</ItemsPanelTemplate>
+		</ItemsControl.ItemsPanel>
+		<ItemsControl.ItemContainerStyle>
+			<Style TargetType="{x:Type local:SMGroupsItem}">
+				<EventSetter Event="MouseLeftButtonDown" Handler="Group_MouseLeftDown"/>
+				<EventSetter Event="MouseDoubleClick" Handler="Group_MouseDblClick"/>
+			</Style>
+		</ItemsControl.ItemContainerStyle>
+	</ItemsControl>
+</UserControl>

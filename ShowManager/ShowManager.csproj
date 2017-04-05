@@ -59,6 +59,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\SMGroupsItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SMGroupsPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\SMListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -77,6 +85,12 @@
     </Compile>
     <Compile Include="Controls\DragDropWindow.xaml.cs">
       <DependentUpon>DragDropWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SMGroupsItem.xaml.cs">
+      <DependentUpon>SMGroupsItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SMGroupsPanel.xaml.cs">
+      <DependentUpon>SMGroupsPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\SMListView.xaml.cs">
       <DependentUpon>SMListView.xaml</DependentUpon>
@@ -124,6 +138,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Gentres\dance.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Tools\folder-active.png" />
+    <Resource Include="Images\Tools\folder-add.png" />
+    <Resource Include="Images\Tools\folder.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

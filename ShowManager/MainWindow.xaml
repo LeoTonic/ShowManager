@@ -3,11 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ShowManager"
 				xmlns:controls="clr-namespace:ShowManager.Controls"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
 	<Grid>
-		<controls:SMListView x:Name="ExampleView"/>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="*"></RowDefinition>
+		</Grid.RowDefinitions>
+		<controls:SMGroupsPanel x:Name="ExamplePanel" Grid.Row="0"/>
+		<controls:SMListView x:Name="ExampleView" Grid.Row="1"/>
 	</Grid>
 </Window>

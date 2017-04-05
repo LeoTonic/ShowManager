@@ -3,13 +3,29 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ShowManager.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="150" d:DesignWidth="400">
+	<UserControl.Resources>
+		<Style TargetType="{x:Type ListBox}" x:Key="ListBoxStyle">
+			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+			<Setter Property="VerticalAlignment" Value="Stretch"/>
+			<Setter Property="AllowDrop" Value="True"/>
+			<Setter Property="SelectionMode" Value="Extended"/>
+			<Setter Property="Background" Value="White"/>
+			<EventSetter Event="MouseLeftButtonDown" Handler="ListViewControl_MouseLeftDown"/>
+			<EventSetter Event="MouseLeftButtonUp" Handler="ListViewControl_MouseLeftUp"/>
+			<EventSetter Event="MouseMove" Handler="ListViewControl_MouseMove"/>
+			<EventSetter Event="Drop" Handler="ListViewControl_Drop"/>
+		</Style>
+		<Style TargetType="{x:Type ListBoxItem}" x:Key="ContainerStyle">
+			<Setter Property="AllowDrop" Value="True"/>
+			<EventSetter Event="PreviewMouseRightButtonDown" Handler="SMListView_ItemMouseRightDown"/>
+			<EventSetter Event="GiveFeedback" Handler="SMListView_GiveFeedback"/>
+			<EventSetter Event="Drop" Handler="SMListViewItem_Drop"/>
+		</Style>
+	</UserControl.Resources>
 	<Grid>
-		<ListBox x:Name="ListViewControl" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch" AllowDrop="True" ItemsSource="{Binding Items}"
-						SelectionMode="Extended" Background="White">
-		</ListBox>
+		<ListBox x:Name="ListViewControl" Style="{StaticResource ListBoxStyle}" ItemsSource="{Binding Items}" ItemContainerStyle="{StaticResource ContainerStyle}"/>
 		<Canvas x:Name="DragSelectionCanvas" Visibility="Collapsed" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Focusable="False" IsHitTestVisible="False">
 			<Border x:Name="DragSelectionBorder" BorderBrush="Blue" BorderThickness="1" Background="LightBlue" CornerRadius="1" Opacity="0.5" />
 		</Canvas>

@@ -6,8 +6,7 @@
              xmlns:local="clr-namespace:ShowManager.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="150" d:DesignWidth="300">
-    <Grid>
-		<Border BorderBrush="#FFB0B0B0" BorderThickness="1" HorizontalAlignment="Stretch" Height="Auto" VerticalAlignment="Top" Width="Auto" RenderTransformOrigin="0.5,0.5" CornerRadius="4">
+	<Border BorderBrush="#FFB0B0B0" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" CornerRadius="4">
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition></ColumnDefinition>
@@ -19,5 +18,4 @@
 				<TextBlock Text="{Binding Age}" TextWrapping="NoWrap" FontFamily="Arial" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="10" Grid.Column="2" Margin="5"/>
 			</Grid>
 		</Border>
-	</Grid>
 </UserControl>
