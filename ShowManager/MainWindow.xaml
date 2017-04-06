@@ -9,9 +9,25 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
 			<RowDefinition Height="*"></RowDefinition>
 		</Grid.RowDefinitions>
-		<controls:SMGroupsPanel x:Name="ExamplePanel" Grid.Row="0"/>
-		<controls:SMListView x:Name="ExampleView" Grid.Row="1"/>
+		<Menu Grid.Row="0">
+			<MenuItem Header="Фестиваль">
+				<MenuItem Header="Создать"/>
+				<MenuItem Header="Открыть"/>
+				<Separator/>
+				<MenuItem Header="Сохранить"/>
+				<MenuItem Header="Сохранить как..."/>
+				<Separator/>
+				<MenuItem Header="Выход" Click="Menu_Show_Exit"/>
+			</MenuItem>
+			<MenuItem Header="Справочник">
+				<MenuItem Header="Категории..."/>
+				<MenuItem Header="Составы жюри..."/>
+			</MenuItem>
+		</Menu>
+		<controls:SMGroupsPanel x:Name="ExamplePanel" Grid.Row="1"/>
+		<controls:SMListView x:Name="ExampleView" Grid.Row="2"/>
 	</Grid>
 </Window>

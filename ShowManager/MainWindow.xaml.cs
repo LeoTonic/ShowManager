@@ -38,5 +38,18 @@ namespace ShowManager
 		{
 			ddWindow.Close();
 		}
+
+		//
+		// Обработка команд меню
+		//
+
+		//
+		// Фестиваль
+		//
+
+		public void Menu_Show_Exit(object sender, RoutedEventArgs e)
+		{
+			this.Close();
+		}
 	}
 }

@@ -214,10 +214,10 @@ namespace ShowManager.Controls
 		public void FillView(SMElement element)
 		{
 			Items.Clear();
-			foreach (SMElement elem in element.Items)
-			{
-				SMListViewItem newItem = new SMListViewItem();
-			}
+			//foreach (SMElement elem in element.Items)
+			//{
+			//	SMListViewItem newItem = new SMListViewItem();
+			//}
 		}
 	}
 }

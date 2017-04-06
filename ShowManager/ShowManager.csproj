@@ -104,7 +104,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\SMArtist.cs" />
     <Compile Include="Models\SMElement.cs" />
+    <Compile Include="Models\SMGentre.cs" />
+    <Compile Include="Models\SMGentresBase.cs" />
+    <Compile Include="Models\SMTrack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
