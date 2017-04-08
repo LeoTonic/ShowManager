@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ShowManager.Models
 {
+	// Базовый элемент во всех массивах моделей данных
 	public class SMElement
 	{
 		private long id; // Идентификатор элемента (для поиска)

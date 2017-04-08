@@ -22,8 +22,8 @@
 				<Separator/>
 				<MenuItem Header="Выход" Click="Menu_Show_Exit"/>
 			</MenuItem>
-			<MenuItem Header="Справочник">
-				<MenuItem Header="Категории..."/>
+			<MenuItem Header="Каталог">
+				<MenuItem Header="Жанры..." Click="Menu_Catalogue_Gentres"/>
 				<MenuItem Header="Составы жюри..."/>
 			</MenuItem>
 		</Menu>

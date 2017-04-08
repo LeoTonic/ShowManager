@@ -46,8 +46,7 @@ namespace ShowManager.Controls
 			{
 				this.text = value;
 
-				if (PropertyChanged != null)
-					PropertyChanged(this, new PropertyChangedEventArgs("Text"));
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Text"));
 			}
 		}
 		private double age;
@@ -61,8 +60,7 @@ namespace ShowManager.Controls
 			{
 				this.age = value;
 
-				if (PropertyChanged != null)
-					PropertyChanged(this, new PropertyChangedEventArgs("Age"));
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Age"));
 			}
 		}
 
@@ -88,8 +86,7 @@ namespace ShowManager.Controls
 						break;
 				}
 				this.imgPath = "/ShowManager;component/Images/Gentres/" + path;
-				if (PropertyChanged != null)
-					PropertyChanged(this, new PropertyChangedEventArgs("ImagePath"));
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ImagePath"));
 			}
 		}
 

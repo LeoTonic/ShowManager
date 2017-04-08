@@ -47,9 +47,21 @@ namespace ShowManager
 		// Фестиваль
 		//
 
+		// Выход из приложения
 		public void Menu_Show_Exit(object sender, RoutedEventArgs e)
 		{
 			this.Close();
+		}
+
+		//
+		// Каталоги
+		//
+
+		// Жанры
+		public void Menu_Catalogue_Gentres(object sender, RoutedEventArgs e)
+		{
+			ImageSelector wnd = new ImageSelector();
+			wnd.Show();
 		}
 	}
 }

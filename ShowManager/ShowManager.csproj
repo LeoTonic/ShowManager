@@ -59,6 +59,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\ImageSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\SMGroupsItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -75,6 +79,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Gentres.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -85,6 +93,9 @@
     </Compile>
     <Compile Include="Controls\DragDropWindow.xaml.cs">
       <DependentUpon>DragDropWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ImageSelector.xaml.cs">
+      <DependentUpon>ImageSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\SMGroupsItem.xaml.cs">
       <DependentUpon>SMGroupsItem.xaml</DependentUpon>
@@ -98,6 +109,9 @@
     <Compile Include="Controls\SMListViewItem.xaml.cs">
       <DependentUpon>SMListViewItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Gentres.xaml.cs">
+      <DependentUpon>Gentres.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -108,6 +122,8 @@
     <Compile Include="Models\SMElement.cs" />
     <Compile Include="Models\SMGentre.cs" />
     <Compile Include="Models\SMGentresBase.cs" />
+    <Compile Include="Models\SMGroup.cs" />
+    <Compile Include="Models\SMProject.cs" />
     <Compile Include="Models\SMTrack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
