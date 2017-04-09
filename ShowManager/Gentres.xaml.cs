@@ -11,17 +11,39 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ShowManager.Controls;
 
 namespace ShowManager
 {
 	/// <summary>
 	/// Логика взаимодействия для Gentres.xaml
 	/// </summary>
-	public partial class Gentres : Window
+	public partial class Gentres : Window, ICommandCatcher
 	{
-		public Gentres()
+		public Gentres(DragDropWindow wndDD)
 		{
 			InitializeComponent();
+
+			// Инициализация элементов управления
+			lvwGentreGroups.SetDragDropWindow(wndDD);
+			lvwGentreGroups.SetViewMode(Controls.SMListView.ViewMode.Gentre);
+			gentresToolbar.SetValues("prop-add", "Добавить жанр", "prop-edit", "Изменить жанр", "prop-delete", "Удалить жанр", this);
+		}
+
+		// Обработка панели инструментов
+		public void ToolBarAdd(SMToolbar tb)
+		{
+			MessageBox.Show("Add");
+		}
+
+		public void ToolBarEdit(SMToolbar tb)
+		{
+
+		}
+
+		public void ToolBarRemove(SMToolbar tb)
+		{
+
 		}
 	}
 }

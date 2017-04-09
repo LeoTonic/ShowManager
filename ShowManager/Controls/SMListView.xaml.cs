@@ -26,9 +26,13 @@ namespace ShowManager.Controls
 		// Режимы отображения
 		public enum ViewMode
 		{
-			Performer = 0,
-			Track
+			ArtistName = 0, // Режим отображения артиста
+			ArtistTrack, // Трек у артиста
+			OrderTrack, // Трек в режиме разметки выступления
+			OrderArtist, // Артист в режиме разметки репетиции
+			Gentre // Режим жанра
 		}
+
 		public ObservableCollection<SMListViewItem> Items { get; set; }
 		private ListBoxItem draggedItem = null;
 		private DragDropWindow ddRef = null;
@@ -40,6 +44,7 @@ namespace ShowManager.Controls
 		private Vector dragVector;
 		private bool isMouseLeft = false;
 
+		private bool allowSelection = false;
 		private Point selectPoint;
 		private Rect selectRect = new Rect();
 
@@ -59,8 +64,32 @@ namespace ShowManager.Controls
 				new SMListViewItem { Text = "Task #05", Age = 96, Icon = GentreIcon.Dance },
 			});
 
+			SetViewMode(ViewMode.ArtistName);
+
 			queryHandler = new QueryContinueDragEventHandler(ItemQueryContinueDrag);
 			DataContext = this;
+		}
+
+		// Установка режима отображения
+		public void SetViewMode(ViewMode newMode)
+		{
+			switch (newMode)
+			{
+				case ViewMode.ArtistName:
+				case ViewMode.ArtistTrack:
+				case ViewMode.OrderArtist:
+				case ViewMode.OrderTrack:
+					// Включаем выделение и мультирежим
+					allowSelection = true;
+					ListViewControl.SelectionMode = SelectionMode.Extended;
+					break;
+				case ViewMode.Gentre:
+					// Выключаем выделение и мультирежим
+					allowSelection = false;
+					ListViewControl.SelectionMode = SelectionMode.Single;
+					break;
+			}
+			viewMode = newMode;
 		}
 
 		protected void ListViewControl_MouseMove(object sender, MouseEventArgs e)
@@ -77,7 +106,7 @@ namespace ShowManager.Controls
 				isDragging = true;
 			}
 
-			if (isMouseLeft)
+			if (isMouseLeft && allowSelection)
 			{
 				Point curPoint = e.GetPosition(ListViewControl);
 				UpdateDragSelectionRect(selectPoint, curPoint);
@@ -87,20 +116,28 @@ namespace ShowManager.Controls
 		protected void ListViewControl_MouseLeftDown(object sender, MouseButtonEventArgs e)
 		{
 			isMouseLeft = true;
-			selectPoint = e.GetPosition(ListViewControl);
-			DragSelectionCanvas.Visibility = Visibility.Visible;
-			UpdateDragSelectionRect(selectPoint, selectPoint);
 
-			ListViewControl.Focus();
-			ListViewControl.CaptureMouse();
+			if (allowSelection)
+			{
+				selectPoint = e.GetPosition(ListViewControl);
+				DragSelectionCanvas.Visibility = Visibility.Visible;
+				UpdateDragSelectionRect(selectPoint, selectPoint);
+
+				ListViewControl.Focus();
+				ListViewControl.CaptureMouse();
+			}
+
 			e.Handled = true;
 		}
 
 		protected void ListViewControl_MouseLeftUp(object sender, MouseButtonEventArgs e)
 		{
 			isMouseLeft = false;
-			DragSelectionCanvas.Visibility = Visibility.Collapsed;
-			ListViewControl.ReleaseMouseCapture();
+			if (allowSelection)
+			{
+				DragSelectionCanvas.Visibility = Visibility.Collapsed;
+				ListViewControl.ReleaseMouseCapture();
+			}
 			e.Handled = true;
 		}
 
@@ -169,6 +206,7 @@ namespace ShowManager.Controls
 			isDragging = false;
 		}
 
+		// Обновление прямоугольника выделения
 		private void UpdateDragSelectionRect(Point pt1, Point pt2)
 		{
 			selectRect.X = Math.Min(pt1.X, pt2.X);
@@ -214,10 +252,6 @@ namespace ShowManager.Controls
 		public void FillView(SMElement element)
 		{
 			Items.Clear();
-			//foreach (SMElement elem in element.Items)
-			//{
-			//	SMListViewItem newItem = new SMListViewItem();
-			//}
 		}
 	}
 }

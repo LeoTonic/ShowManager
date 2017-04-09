@@ -59,6 +59,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\ElementDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\ImageSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -79,6 +83,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\SMToolbar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Gentres.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -94,6 +102,10 @@
     <Compile Include="Controls\DragDropWindow.xaml.cs">
       <DependentUpon>DragDropWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ElementDialog.xaml.cs">
+      <DependentUpon>ElementDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ICommandCatcher.cs" />
     <Compile Include="Controls\ImageSelector.xaml.cs">
       <DependentUpon>ImageSelector.xaml</DependentUpon>
     </Compile>
@@ -108,6 +120,9 @@
     </Compile>
     <Compile Include="Controls\SMListViewItem.xaml.cs">
       <DependentUpon>SMListViewItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SMToolbar.xaml.cs">
+      <DependentUpon>SMToolbar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Gentres.xaml.cs">
       <DependentUpon>Gentres.xaml</DependentUpon>
@@ -201,6 +216,20 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Gentres\palette.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Tools\delete.png" />
+    <Resource Include="Images\Tools\item-add.png" />
+    <Resource Include="Images\Tools\item-delete.png" />
+    <Resource Include="Images\Tools\item-edit.png" />
+    <Resource Include="Images\Tools\prop-add.png" />
+    <Resource Include="Images\Tools\prop-edit.png" />
+    <Resource Include="Images\Tools\user-add.png" />
+    <Resource Include="Images\Tools\user-edit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Tools\prop-delete.png" />
+    <Resource Include="Images\Tools\user-delete.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

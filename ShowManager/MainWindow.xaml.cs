@@ -21,14 +21,18 @@ namespace ShowManager
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		DragDropWindow ddWindow = new DragDropWindow();
+		DragDropWindow wndDragDrop;
+		Gentres wndGentres;
 
 		public MainWindow()
 		{
 			InitializeComponent();
 
-			ddWindow.HideWindow();
-			ExampleView.SetDragDropWindow(ddWindow);
+			wndDragDrop = new DragDropWindow();
+			wndGentres = new Gentres(wndDragDrop);
+
+			wndDragDrop.HideWindow();
+			ExampleView.SetDragDropWindow(wndDragDrop);
 			ExamplePanel.AssignView(ExampleView);
 
 			Closed += MainWindow_Closed;
@@ -36,7 +40,8 @@ namespace ShowManager
 
 		private void MainWindow_Closed(object sender, EventArgs e)
 		{
-			ddWindow.Close();
+			wndDragDrop.Close();
+			wndGentres.Close();
 		}
 
 		//
@@ -60,8 +65,7 @@ namespace ShowManager
 		// Жанры
 		public void Menu_Catalogue_Gentres(object sender, RoutedEventArgs e)
 		{
-			ImageSelector wnd = new ImageSelector();
-			wnd.Show();
+			wndGentres.Show();
 		}
 	}
 }

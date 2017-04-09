@@ -3,9 +3,24 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ShowManager"
+        xmlns:controls="clr-namespace:ShowManager.Controls"
         mc:Ignorable="d"
-        Title="Жанры" Height="300" Width="300" ShowInTaskbar="False">
-	<TreeView Name="tvwGentres">
-	</TreeView>
+        Title="Жанры" Height="422.99" Width="816.369" ShowInTaskbar="False">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"></ColumnDefinition>
+			<ColumnDefinition Width="5"></ColumnDefinition>
+			<ColumnDefinition Width="*"></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+		<Grid Grid.Column="0">
+			<Grid.RowDefinitions>
+				<RowDefinition></RowDefinition>
+				<RowDefinition Height="Auto"></RowDefinition>
+			</Grid.RowDefinitions>
+			<controls:SMListView x:Name="lvwGentreGroups" Grid.Row="0"/>
+			<controls:SMToolbar x:Name="gentresToolbar" Grid.Row="1"/>
+		</Grid>
+		<GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"/>
+		<controls:SMListView Grid.Column="2"/>
+	</Grid>
 </Window>
