@@ -22,11 +22,12 @@ namespace ShowManager.Controls
 	{
 		public ObservableCollection<ImageItem> Items { get; set; }
 
-		private ImageItem selectedItem = null;
+		public ImageItem selectedItem = null;
 
-		public ImageSelector()
+		public ImageSelector(string curImage)
 		{
 			InitializeComponent();
+			this.LostFocus += ImageSelector_LostFocus;
 
 			Items = new ObservableCollection<ImageItem>(new List<ImageItem>
 			{
@@ -46,8 +47,42 @@ namespace ShowManager.Controls
 				new ImageItem{ ImagePath = "circus", ImageName = "Цирк" }
 			});
 			ImagesView.ItemsSource = Items;
-			selectedItem = Items[0];
+
+			selectedItem = GetItem(curImage);
 			selectedItem.StackColor = "LightBlue";
+		}
+
+		private void ImageSelector_LostFocus(object sender, RoutedEventArgs e)
+		{
+			this.Close();
+		}
+
+		private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			var item = sender as Image;
+			selectedItem = GetItem(item.Tag.ToString());
+			this.Close();
+		}
+
+		private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			var item = sender as TextBlock;
+			selectedItem = GetItem(item.Tag.ToString());
+			this.Close();
+		}
+
+		// Получение элемента
+		private ImageItem GetItem(string imgPath)
+		{
+			foreach (ImageItem item in Items)
+			{
+				if (item.ImagePath == imgPath)
+				{
+					return item;
+				}
+			}
+
+			return Items[0];
 		}
 
 		// Элемент управления StackPanel

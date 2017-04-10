@@ -33,7 +33,19 @@ namespace ShowManager
 		// Обработка панели инструментов
 		public void ToolBarAdd(SMToolbar tb)
 		{
-			MessageBox.Show("Add");
+			// Отображаем диалог элемента
+			ElementDialog elemDlg = new ElementDialog("", "Новый элемент");
+
+			Point pnt = lvwGentreGroups.PointToScreen(new Point(0, 0));
+			elemDlg.Left = pnt.X + 8;
+			elemDlg.Top = pnt.Y + 8;
+
+			elemDlg.ShowDialog();
+			if (elemDlg.IsSet)
+			{
+				System.Diagnostics.Debug.WriteLine(elemDlg.ImagePath);
+				System.Diagnostics.Debug.WriteLine(elemDlg.ElementName);
+			}
 		}
 
 		public void ToolBarEdit(SMToolbar tb)

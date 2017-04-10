@@ -22,6 +22,8 @@ namespace ShowManager.Controls
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 
+		public bool IsSet = false;
+
 		private string imgPath;
 		public string ImagePath
 		{
@@ -31,7 +33,14 @@ namespace ShowManager.Controls
 			}
 			set
 			{
-				imgPath = value;
+				if (string.IsNullOrWhiteSpace(value))
+				{
+					imgPath = "/ShowManager;component/Images/Gentres/vocal.png";
+				}
+				else
+				{
+					imgPath = value;
+				}
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ImagePath"));
 			}
 		}
@@ -44,15 +53,56 @@ namespace ShowManager.Controls
 			}
 			set
 			{
-				ElementName = elemName;
+				elemName = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ElementName"));
 
 			}
 		}
-		public ElementDialog()
+		public ElementDialog(string iPath, string eName)
 		{
 			InitializeComponent();
+
 			DataContext = this;
+			ImagePath = iPath;
+			ElementName = eName;
+		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			IsSet = true;
+			this.Close();
+		}
+
+		private void TextBox_KeyUp(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Enter)
+			{
+				if (string.IsNullOrWhiteSpace(ElementName))
+				{
+					return;
+				}
+				else
+				{
+					IsSet = true;
+					this.Close();
+				}
+			}
+		}
+
+		private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			var element = sender as UIElement;
+
+			// Отображение ImageSelectora
+			ImageSelector imgSelect = new ImageSelector(ImagePath);
+			Point pnt = element.PointToScreen(new Point(0,0));
+			imgSelect.Left = pnt.X + 40;
+			imgSelect.Top = pnt.Y + 8;
+
+			imgSelect.ShowDialog();
+			if (imgSelect.selectedItem != null)
+				ImagePath = imgSelect.selectedItem.ImagePath;
+
 		}
 	}
 }
