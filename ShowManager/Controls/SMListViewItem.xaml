@@ -7,15 +7,42 @@
              mc:Ignorable="d" 
              d:DesignHeight="150" d:DesignWidth="300">
 	<Border BorderBrush="#FFB0B0B0" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" CornerRadius="4">
-			<Grid>
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"></ColumnDefinition>
+				<ColumnDefinition Width="Auto"></ColumnDefinition>
+				<ColumnDefinition></ColumnDefinition>
+				<ColumnDefinition Width="Auto"></ColumnDefinition>
+				<ColumnDefinition Width="Auto"></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+			<!-- Main Time block -->
+			<TextBlock x:Name="MainTimeBlock" Text="{Binding MainTimeText}" TextWrapping="NoWrap" Width="64" FontFamily="Arial" TextAlignment="Center" VerticalAlignment="Center" FontSize="16" Margin="2" Grid.Column="0"/>
+			<!-- Image block -->
+			<Image Source="{Binding MainImagePath}" Width="32" Height="32" HorizontalAlignment="Left" Margin="2" Stretch="Fill" Grid.Column="1"/>
+			<!-- One line text block -->
+			<TextBlock x:Name="OneLineBlock" Text="{Binding OneLineText}" TextWrapping="NoWrap" FontFamily="Arial" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Grid.Column="2" Margin="2" Visibility="Collapsed"/>
+			<!-- Two lines text block -->
+			<StackPanel x:Name="TwoLineBlock" Orientation="Vertical" VerticalAlignment="Center" Grid.Column="2" Visibility="Visible">
+				<TextBlock Text="{Binding TwoLineTopText}" FontFamily="Arial" FontSize="10" FontWeight="Bold" TextWrapping="NoWrap" TextAlignment="Left" Margin="2"/>
+				<TextBlock Text="{Binding TwoLineBotText}" FontFamily="Arial" FontSize="10" TextWrapping="NoWrap" Margin="2"/>
+			</StackPanel>
+			<!-- Sub Time block -->
+			<TextBlock x:Name="SubTimeBlock" Text="{Binding SubTimeText}" TextWrapping="NoWrap" Width="64" FontFamily="Arial" TextAlignment="Center" VerticalAlignment="Center" FontSize="16" Margin="2" Grid.Column="3"/>
+			<!-- Icons block -->
+			<Grid Grid.Column="4" x:Name="IconsBlock" Margin="2">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition></ColumnDefinition>
 					<ColumnDefinition></ColumnDefinition>
-					<ColumnDefinition></ColumnDefinition>
 				</Grid.ColumnDefinitions>
-				<Image Source="{Binding ImagePath}" Width="32" Height="32" HorizontalAlignment="Left" Margin="2" Stretch="Fill"/>
-				<TextBlock Text="{Binding Text}" TextWrapping="NoWrap" FontFamily="Arial" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Grid.Column="1" Margin="5"/>
-				<TextBlock Text="{Binding Age}" TextWrapping="NoWrap" FontFamily="Arial" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="10" Grid.Column="2" Margin="5"/>
+				<Grid.RowDefinitions>
+					<RowDefinition></RowDefinition>
+					<RowDefinition></RowDefinition>
+				</Grid.RowDefinitions>
+				<Image Source="{Binding IconsPath0}" Width="16" Height="16" Stretch="Fill" Grid.Column="0" Grid.Row="0"/>
+				<Image Source="{Binding IconsPath1}" Width="16" Height="16" Stretch="Fill" Grid.Column="1" Grid.Row="0"/>
+				<Image Source="{Binding IconsPath2}" Width="16" Height="16" Stretch="Fill" Grid.Column="0" Grid.Row="1"/>
+				<Image Source="{Binding IconsPath3}" Width="16" Height="16" Stretch="Fill" Grid.Column="1" Grid.Row="1"/>
 			</Grid>
-		</Border>
+		</Grid>
+	</Border>
 </UserControl>

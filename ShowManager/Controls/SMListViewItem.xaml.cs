@@ -16,86 +16,207 @@ using System.ComponentModel;
 
 namespace ShowManager.Controls
 {
-	public enum GentreIcon
-	{
-		Vocal = 0,
-		Dance
-	}
-
 	/// <summary>
 	/// Логика взаимодействия для SMListViewItem.xaml
 	/// </summary>
 	public partial class SMListViewItem : UserControl, INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
+		private SMListView.ViewMode viewMode;
 
-		public SMListViewItem()
+		public SMListViewItem(SMListView.ViewMode vm)
 		{
 			InitializeComponent();
 			DataContext = this;
+			viewMode = vm;
+
+			switch (viewMode)
+			{
+				case SMListView.ViewMode.Gentre:
+					// hide unused blocks
+					MainTimeBlock.Visibility = Visibility.Collapsed;
+					SubTimeBlock.Visibility = Visibility.Collapsed;
+					TwoLineBlock.Visibility = Visibility.Collapsed;
+					IconsBlock.Visibility = Visibility.Collapsed;
+
+					// show used blocks
+					OneLineBlock.Visibility = Visibility.Visible;
+					break;
+
+				case SMListView.ViewMode.ArtistName:
+					// hide unused blocks
+					MainTimeBlock.Visibility = Visibility.Collapsed;
+					SubTimeBlock.Visibility = Visibility.Collapsed;
+					OneLineBlock.Visibility = Visibility.Collapsed;
+
+					// show used blocks
+					TwoLineBlock.Visibility = Visibility.Visible;
+					IconsBlock.Visibility = Visibility.Visible;
+					break;
+				case SMListView.ViewMode.ArtistTrack:
+					// hide unused blocks
+					MainTimeBlock.Visibility = Visibility.Collapsed;
+					OneLineBlock.Visibility = Visibility.Collapsed;
+
+					// show used blocks
+					TwoLineBlock.Visibility = Visibility.Visible;
+					SubTimeBlock.Visibility = Visibility.Visible;
+					IconsBlock.Visibility = Visibility.Visible;
+					break;
+
+				case SMListView.ViewMode.OrderTrack:
+				case SMListView.ViewMode.OrderArtist:
+					// hide unused blocks
+					OneLineBlock.Visibility = Visibility.Collapsed;
+
+					// show used blocks
+					MainTimeBlock.Visibility = Visibility.Visible;
+					SubTimeBlock.Visibility = Visibility.Visible;
+					TwoLineBlock.Visibility = Visibility.Visible;
+					IconsBlock.Visibility = Visibility.Visible;
+					break;
+			}
 		}
 
-		private string text;
-		public string Text
+		// Text blocks
+		private string mainTimeText;
+		public string MainTimeText
 		{
-			get
-			{
-				return this.text;
-			}
 			set
 			{
-				this.text = value;
-
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Text"));
+				this.mainTimeText = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MainTimeText"));
 			}
-		}
-		private double age;
-		public double Age
-		{
 			get
 			{
-				return this.age;
+				return this.mainTimeText;
 			}
+		}
+
+		private string oneLineText;
+		public string OneLineText
+		{
 			set
 			{
-				this.age = value;
-
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Age"));
+				this.oneLineText = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("OneLineText"));
+			}
+			get
+			{
+				return this.oneLineText;
 			}
 		}
 
-		private GentreIcon gentreIcon;
-
-		public GentreIcon Icon
+		private string twoLineTopText;
+		public string TwoLineTopText
 		{
-			get
-			{
-				return this.gentreIcon;
-			}
 			set
 			{
-				this.gentreIcon = value;
-				string path = "vocal.png";
-				switch (value)
-				{
-					case GentreIcon.Vocal:
-						path = "vocal.png";
-						break;
-					case GentreIcon.Dance:
-						path = "dance.png";
-						break;
-				}
-				this.imgPath = "/ShowManager;component/Images/Gentres/" + path;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ImagePath"));
+				this.twoLineTopText = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TwoLineTopText"));
+			}
+			get
+			{
+				return this.twoLineTopText;
 			}
 		}
 
-		private string imgPath;
-		public string ImagePath
+		private string twoLineBotText;
+		public string TwoLineBotText
 		{
+			set
+			{
+				this.twoLineBotText = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TwoLineBotText"));
+			}
 			get
 			{
-				return this.imgPath;
+				return this.twoLineBotText;
+			}
+		}
+
+		private string subTimeText;
+		public string SubTimeText
+		{
+			set
+			{
+				this.subTimeText = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SubTimeText"));
+			}
+			get
+			{
+				return this.subTimeText;
+			}
+		}
+
+		// Images
+		private string mainImgPath;
+		public string MainImagePath
+		{
+			set
+			{
+				this.mainImgPath = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MainImagePath"));
+			}
+			get
+			{
+				return this.mainImgPath;
+			}
+		}
+
+		private string iconsPath0;
+		private string iconsPath1;
+		private string iconsPath2;
+		private string iconsPath3;
+
+		public string IconsPath0
+		{
+			set
+			{
+				this.iconsPath0 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IconsPath0"));
+			}
+			get
+			{
+				return this.iconsPath0;
+			}
+		}
+		public string IconsPath1
+		{
+			set
+			{
+				this.iconsPath1 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IconsPath1"));
+			}
+			get
+			{
+				return this.iconsPath1;
+			}
+		}
+
+		public string IconsPath2
+		{
+			set
+			{
+				this.iconsPath2 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IconsPath2"));
+			}
+			get
+			{
+				return this.iconsPath2;
+			}
+		}
+
+		public string IconsPath3
+		{
+			set
+			{
+				this.iconsPath3 = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IconsPath3"));
+			}
+			get
+			{
+				return this.iconsPath3;
 			}
 		}
 	}

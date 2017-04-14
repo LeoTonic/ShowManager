@@ -54,7 +54,8 @@ namespace ShowManager.Controls
 
 		private void ImageSelector_LostFocus(object sender, RoutedEventArgs e)
 		{
-			this.Close();
+			if (this != null)
+				this.Close();
 		}
 
 		private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

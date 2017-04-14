@@ -34,6 +34,9 @@ namespace ShowManager.Controls
 		}
 
 		public ObservableCollection<SMListViewItem> Items { get; set; }
+
+		public System.Collections.IList ItemsSelected;
+
 		private ListBoxItem draggedItem = null;
 		private DragDropWindow ddRef = null;
 		private QueryContinueDragEventHandler queryHandler;
@@ -55,19 +58,12 @@ namespace ShowManager.Controls
 		public SMListView()
 		{
 			InitializeComponent();
-			Items = new ObservableCollection<SMListViewItem>(new List<SMListViewItem>
-			{
-				new SMListViewItem { Text = "Task #01", Age = 234, Icon = GentreIcon.Vocal },
-				new SMListViewItem { Text = "Task #02", Age = 160, Icon = GentreIcon.Dance },
-				new SMListViewItem { Text = "Task #03", Age = 123, Icon = GentreIcon.Vocal },
-				new SMListViewItem { Text = "Task #04", Age = 112, Icon = GentreIcon.Vocal },
-				new SMListViewItem { Text = "Task #05", Age = 96, Icon = GentreIcon.Dance },
-			});
-
-			SetViewMode(ViewMode.ArtistName);
+			Items = new ObservableCollection<SMListViewItem>();
 
 			queryHandler = new QueryContinueDragEventHandler(ItemQueryContinueDrag);
 			DataContext = this;
+
+			ItemsSelected = ListViewControl.SelectedItems;
 		}
 
 		// Установка режима отображения
@@ -90,6 +86,7 @@ namespace ShowManager.Controls
 					break;
 			}
 			viewMode = newMode;
+
 		}
 
 		protected void ListViewControl_MouseMove(object sender, MouseEventArgs e)
@@ -246,12 +243,32 @@ namespace ShowManager.Controls
 			}
 		}
 
-		// Работа с объектами данных
+		// Работа с элементами
 
-		// Заполнение элементами
-		public void FillView(SMElement element)
+		// Добавить новый элемент
+		public void Add(string mainImgPath, string mainTimeText="", string subTimeText="", string labelText1="", string labelText2="", string ico0="", string ico1="", string ico2="", string ico3="")
 		{
-			Items.Clear();
+			SMListViewItem newItem = new SMListViewItem(viewMode)
+			{
+				MainImagePath = mainImgPath,
+				MainTimeText = mainTimeText,
+				SubTimeText = subTimeText,
+				OneLineText = labelText1,
+				TwoLineTopText = labelText1,
+				TwoLineBotText = labelText2,
+				IconsPath0 = ico0,
+				IconsPath1 = ico1,
+				IconsPath2 = ico2,
+				IconsPath3 = ico3
+			};
+
+			Items.Add(newItem);
+		}
+
+		// Удалить элемент
+		public void Remove(SMListViewItem item)
+		{
+			Items.Remove(item);
 		}
 	}
 }

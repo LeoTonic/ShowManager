@@ -26,7 +26,7 @@
 			<MenuItem Header="Удалить" Click="Delete_Click"/>
 		</ContextMenu>
 	</UserControl.ContextMenu>
-	<Border BorderBrush="#FFB0B0B0" BorderThickness="1" VerticalAlignment="Top" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" CornerRadius="2" Margin="1">
+	<Border BorderBrush="#FFB0B0B0" BorderThickness="1" VerticalAlignment="Top" HorizontalAlignment="Left" CornerRadius="2" Margin="1">
 		<Grid>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto"></ColumnDefinition>
