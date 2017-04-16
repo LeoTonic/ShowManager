@@ -13,5 +13,8 @@ namespace ShowManager.Controls
 		void ToolBarAdd(SMToolbar tb); // Новый элемент
 		void ToolBarEdit(SMToolbar tb); // Редактируем элемент
 		void ToolBarRemove(SMToolbar tb); // Удаляем элемент
+
+		// Перенос элементов
+		void DropItems(int insertIndex, SMListViewItem draggedItem, Object draggedTo);
 	}
 }

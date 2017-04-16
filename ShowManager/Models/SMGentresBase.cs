@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ShowManager.Models
 {
 	// База групповых жанров
-	class SMGentresBase
+	public class SMGentresBase
 	{
 		private List<SMGentre> GentreGroups;
 

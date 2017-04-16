@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ShowManager.Controls;
+using ShowManager.Models;
 
 namespace ShowManager
 {
@@ -21,15 +22,25 @@ namespace ShowManager
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		// Окна приложения
 		DragDropWindow wndDragDrop;
 		Gentres wndGentres;
+
+		// Объекты приложения
+		SMGentresBase gentres;
 
 		public MainWindow()
 		{
 			InitializeComponent();
+			ImgLibInit();
 
+			// Инициализация объектов
+			gentres = new SMGentresBase();
+
+			// Инициализация окон
 			wndDragDrop = new DragDropWindow();
-			wndGentres = new Gentres(wndDragDrop);
+			wndGentres = new Gentres(wndDragDrop, gentres);
+
 
 			wndDragDrop.HideWindow();
 			ExampleView.SetDragDropWindow(wndDragDrop);
@@ -72,6 +83,9 @@ namespace ShowManager
 		private void ImgLibInit()
 		{
 			App curApp = (App)Application.Current;
+			curApp.ImgPath = new Dictionary<int, string>();
+			curApp.ImgDesc = new Dictionary<int, string>();
+
 			curApp.ImgPath.Add(101, "/ShowManager;component/Images/Gentres/art.png");
 			curApp.ImgPath.Add(102, "/ShowManager;component/Images/Gentres/cinema.png");
 			curApp.ImgPath.Add(103, "/ShowManager;component/Images/Gentres/circus.png");

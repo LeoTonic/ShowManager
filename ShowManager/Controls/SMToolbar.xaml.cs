@@ -168,5 +168,12 @@ namespace ShowManager.Controls
 				iCommandTo.ToolBarRemove(this);
 			}
 		}
+
+		private void DropItems(object sender, DragEventArgs e) {
+			if (iCommandTo != null)
+			{
+				iCommandTo.DropItems(-1, e.Data.GetData(typeof(SMListViewItem)) as SMListViewItem, this);
+			}
+		}
 	}
 }

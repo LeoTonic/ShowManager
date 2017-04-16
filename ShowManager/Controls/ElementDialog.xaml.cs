@@ -27,6 +27,10 @@ namespace ShowManager.Controls
 		private string imagePath;
 		public string ImagePath
 		{
+			get
+			{
+				return imagePath;
+			}
 			set
 			{
 				imagePath = value;
@@ -107,8 +111,9 @@ namespace ShowManager.Controls
 			imgSelect.Top = pnt.Y + 8;
 
 			imgSelect.ShowDialog();
-			if (imgSelect.selectedItem != null)
-				ImagePath = imgSelect.selectedItem.ImagePath;
+			if (imgSelect.selectedItem != null) {
+				ImageKey = imgSelect.selectedItem.ImageKey;
+			}
 		}
 	}
 }

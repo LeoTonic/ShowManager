@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ShowManager.Models
 {
 	// Жанровая группа
-	class SMGentre: SMElement
+	public class SMGentre: SMElement
 	{
 		// Имя и идентификатор базового элемента - ИД и название группы жанра
 

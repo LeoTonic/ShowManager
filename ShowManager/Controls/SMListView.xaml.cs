@@ -37,6 +37,9 @@ namespace ShowManager.Controls
 
 		public System.Collections.IList ItemsSelected;
 
+		// Ссылка на интерфейс обработчика операций
+		private ICommandCatcher iCommandTo = null;
+
 		private ListBoxItem draggedItem = null;
 		private DragDropWindow ddRef = null;
 		private QueryContinueDragEventHandler queryHandler;
@@ -67,8 +70,10 @@ namespace ShowManager.Controls
 		}
 
 		// Установка режима отображения
-		public void SetViewMode(ViewMode newMode)
+		public void SetViewMode(ViewMode newMode, ICommandCatcher cTo)
 		{
+			iCommandTo = cTo;
+
 			switch (newMode)
 			{
 				case ViewMode.ArtistName:
@@ -140,6 +145,24 @@ namespace ShowManager.Controls
 
 		protected void ListViewControl_Drop(object sender, DragEventArgs e)
 		{
+			if (iCommandTo != null)
+			{
+				iCommandTo.DropItems(-1, e.Data.GetData(typeof(SMListViewItem)) as SMListViewItem, this);
+			}
+
+			EndDrag();
+		}
+
+		protected void SMListViewItem_Drop(object sender, DragEventArgs e)
+		{
+			if (iCommandTo != null)
+			{
+				var smItem = sender as SMListViewItem;
+				int itemIndex = Items.IndexOf(smItem);
+				iCommandTo.DropItems(itemIndex, e.Data.GetData(typeof(SMListViewItem)) as SMListViewItem, this);
+			}
+
+			e.Handled = true;
 			EndDrag();
 		}
 
@@ -150,12 +173,8 @@ namespace ShowManager.Controls
 			{
 				draggedItem = sender as ListBoxItem;
 				dragPoint = e.GetPosition(null);
-				//var card = draggedItem.DataContext as SMListViewItem;
-
-				//card.fromBoxControl = this;
-				//card.fromBoxIndex = Items.IndexOf(card);
-				//draggedItem.IsSelected = true;
-				// create the visual feedback drag and drop item
+				var smItem = draggedItem.DataContext as SMListViewItem;
+				smItem.selectedItems = ItemsSelected;
 			}
 		}
 
@@ -182,11 +201,6 @@ namespace ShowManager.Controls
 				}
 				EndDrag();
 			}
-		}
-		protected void SMListViewItem_Drop(object sender, DragEventArgs e)
-		{
-			e.Handled = true;
-			EndDrag();
 		}
 
 		private void EndDrag()

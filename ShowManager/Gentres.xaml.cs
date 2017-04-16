@@ -23,13 +23,15 @@ namespace ShowManager
 	{
 		private SMGentresBase gentreBase;
 
-		public Gentres(DragDropWindow wndDD)
+		public Gentres(DragDropWindow wndDD, SMGentresBase gb)
 		{
 			InitializeComponent();
 
+			gentreBase = gb;
+
 			// Инициализация элементов управления
 			lvwGentreGroups.SetDragDropWindow(wndDD);
-			lvwGentreGroups.SetViewMode(Controls.SMListView.ViewMode.Gentre);
+			lvwGentreGroups.SetViewMode(Controls.SMListView.ViewMode.Gentre, this);
 			gentresToolbar.SetValues("prop-add", "Добавить жанр", "prop-edit", "Изменить жанр", "prop-delete", "Удалить жанр", this);
 		}
 
@@ -84,6 +86,15 @@ namespace ShowManager
 				long id = lvi.ItemID;
 				gentreBase.Remove(id);
 				lvwGentreGroups.Remove(id);
+			}
+		}
+
+		public void DropItems(int insertIndex, SMListViewItem draggedItem, Object draggedTo)
+		{
+			if (draggedTo.GetHashCode() == gentresToolbar.GetHashCode())
+			{
+				// Сброс в корзину
+				
 			}
 		}
 	}

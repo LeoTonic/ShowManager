@@ -24,6 +24,8 @@ namespace ShowManager.Controls
 		public event PropertyChangedEventHandler PropertyChanged;
 		private SMListView.ViewMode viewMode;
 
+		public System.Collections.IList selectedItems;
+
 		private long itemID;
 		public long ItemID  // Item identifier to connect with data collections
 		{
@@ -209,6 +211,10 @@ namespace ShowManager.Controls
 		private string mainImgPath;
 		public string MainImagePath
 		{
+			get
+			{
+				return mainImgPath;
+			}
 			set
 			{
 				this.mainImgPath = value;
@@ -223,6 +229,10 @@ namespace ShowManager.Controls
 
 		public string IconsPath0
 		{
+			get
+			{
+				return iconsPath0;
+			}
 			set
 			{
 				this.iconsPath0 = value;
@@ -231,6 +241,10 @@ namespace ShowManager.Controls
 		}
 		public string IconsPath1
 		{
+			get
+			{
+				return iconsPath1;
+			}
 			set
 			{
 				this.iconsPath1 = value;
@@ -240,6 +254,10 @@ namespace ShowManager.Controls
 
 		public string IconsPath2
 		{
+			get
+			{
+				return iconsPath2;
+			}
 			set
 			{
 				this.iconsPath2 = value;
@@ -249,6 +267,10 @@ namespace ShowManager.Controls
 
 		public string IconsPath3
 		{
+			get
+			{
+				return iconsPath3;
+			}
 			set
 			{
 				this.iconsPath3 = value;

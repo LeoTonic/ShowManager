@@ -34,6 +34,7 @@ namespace ShowManager.Controls
 			foreach(int key in curApp.ImgPath.Keys)
 			{
 				ImageItem newItem = new ImageItem { ImagePath = curApp.ImgPath[key], ImageName = curApp.ImgDesc[key], ImageKey = key };
+				Items.Add(newItem);
 			}
 
 			ImagesView.ItemsSource = Items;
@@ -73,7 +74,7 @@ namespace ShowManager.Controls
 				}
 			}
 
-			return Items[0];
+			return Items.First();
 		}
 
 		// Элемент управления StackPanel

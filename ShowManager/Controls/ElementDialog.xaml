@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShowManager.Controls"
         mc:Ignorable="d"
-        Title="Значок и название" Height="60" Width="300" ScrollViewer.VerticalScrollBarVisibility="Disabled" WindowStyle="ToolWindow" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
+        Title="Значок и название" Height="60" Width="300" ScrollViewer.VerticalScrollBarVisibility="Disabled" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
 	<StackPanel Orientation="Horizontal">
 		<Image Source="{Binding ImagePath}" Width="32" Height="32" Stretch="Fill" Margin="4" MouseLeftButtonDown="Image_MouseLeftButtonDown"/>
 		<TextBox Text="{Binding ElementName}" Width="190" Height="24" FontFamily="Arial" FontSize="14" Margin="4" KeyUp="TextBox_KeyUp"/>
