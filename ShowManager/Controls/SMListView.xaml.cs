@@ -246,29 +246,66 @@ namespace ShowManager.Controls
 		// Работа с элементами
 
 		// Добавить новый элемент
-		public void Add(string mainImgPath, string mainTimeText="", string subTimeText="", string labelText1="", string labelText2="", string ico0="", string ico1="", string ico2="", string ico3="")
+		public void Add(long itemID, int mainImgKey, string mainTimeText="", string subTimeText="", string labelText1="", string labelText2="", int ico0=101, int ico1=101, int ico2=101, int ico3=101)
 		{
-			SMListViewItem newItem = new SMListViewItem(viewMode)
+			SMListViewItem newItem = new SMListViewItem(viewMode, itemID)
 			{
-				MainImagePath = mainImgPath,
+				MainImageKey = mainImgKey,
 				MainTimeText = mainTimeText,
 				SubTimeText = subTimeText,
 				OneLineText = labelText1,
 				TwoLineTopText = labelText1,
 				TwoLineBotText = labelText2,
-				IconsPath0 = ico0,
-				IconsPath1 = ico1,
-				IconsPath2 = ico2,
-				IconsPath3 = ico3
+				Ico0Key = ico0,
+				Ico1Key = ico1,
+				Ico2Key = ico2,
+				Ico3Key = ico3
 			};
 
 			Items.Add(newItem);
 		}
 
-		// Удалить элемент
-		public void Remove(SMListViewItem item)
+		// Редактирование данных элемента
+		public void Edit(long itemID, int mainImgKey, string mainTimeText = "", string subTimeText = "", string labelText1 = "", string labelText2 = "", int ico0=101, int ico1 = 101, int ico2 = 101, int ico3=101)
 		{
-			Items.Remove(item);
+			int itemIndex = GetItemIndexByID(itemID);
+			if (itemIndex >= 0)
+			{
+				SMListViewItem item = Items[itemIndex];
+				item.MainImageKey = mainImgKey;
+				item.MainTimeText = mainTimeText;
+				item.SubTimeText = subTimeText;
+				item.OneLineText = labelText1;
+				item.TwoLineTopText = labelText1;
+				item.TwoLineBotText = labelText2;
+				item.Ico0Key = ico0;
+				item.Ico1Key = ico1;
+				item.Ico2Key = ico2;
+				item.Ico3Key = ico3;
+			}
+		}
+
+		// Удалить элемент
+		public void Remove(long itemID)
+		{
+			int itemIndex = GetItemIndexByID(itemID);
+			if (itemIndex >= 0)
+			{
+				Items.RemoveAt(itemIndex);
+			}
+		}
+
+		// Поиск элемента по ID
+		private int GetItemIndexByID(long id)
+		{
+			for (int n = 0; n < Items.Count; n++)
+			{
+				if (Items[n].ItemID == id)
+				{
+					return n;
+				}
+			}
+			return -1;
 		}
 	}
 }

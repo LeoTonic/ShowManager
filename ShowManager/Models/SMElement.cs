@@ -12,8 +12,8 @@ namespace ShowManager.Models
 		private long id; // Идентификатор элемента (для поиска)
 		private string name; // Имя элемента
 
-		private string imagePath; // Путь к картинке
-
+		private int imageKey; // Ключ к изображению (из словаря ImgPath в App)
+		
 		public long ID
 		{
 			get
@@ -50,24 +50,23 @@ namespace ShowManager.Models
 			}
 		}
 
-		public string ImagePath
+		public int ImageKey
 		{
 			get
 			{
-				return this.imagePath;
+				return this.imageKey;
 			}
 			set
 			{
-				this.imagePath = value;
+				this.imageKey = value;
 			}
-
 		}
+
 		// Конструктор
 		public SMElement()
 		{
 			GenerateID();
 			this.name = "";
-			this.imagePath = "";
 		}
 
 		// Генерация идентификатора

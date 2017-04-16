@@ -24,26 +24,16 @@ namespace ShowManager.Controls
 
 		public bool IsSet = false;
 
-		private string imgPath;
+		private string imagePath;
 		public string ImagePath
 		{
-			get
-			{
-				return imgPath;
-			}
 			set
 			{
-				if (string.IsNullOrWhiteSpace(value))
-				{
-					imgPath = "/ShowManager;component/Images/Gentres/vocal.png";
-				}
-				else
-				{
-					imgPath = value;
-				}
+				imagePath = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ImagePath"));
 			}
 		}
+
 		private string elemName;
 		public string ElementName
 		{
@@ -58,12 +48,29 @@ namespace ShowManager.Controls
 
 			}
 		}
-		public ElementDialog(string iPath, string eName)
+
+		private int imageKey;
+		public int ImageKey
+		{
+			get
+			{
+				return imageKey;
+			}
+			set
+			{
+				imageKey = value;
+				App curApp = (App)Application.Current;
+				ImagePath = curApp.ImgPath[imageKey];
+			}
+		}
+
+		public ElementDialog(int key, string eName)
 		{
 			InitializeComponent();
 
 			DataContext = this;
-			ImagePath = iPath;
+			ImageKey = key;
+
 			ElementName = eName;
 		}
 
@@ -94,7 +101,7 @@ namespace ShowManager.Controls
 			var element = sender as UIElement;
 
 			// Отображение ImageSelectora
-			ImageSelector imgSelect = new ImageSelector(ImagePath);
+			ImageSelector imgSelect = new ImageSelector(ImageKey);
 			Point pnt = element.PointToScreen(new Point(0,0));
 			imgSelect.Left = pnt.X + 40;
 			imgSelect.Top = pnt.Y + 8;
@@ -102,7 +109,6 @@ namespace ShowManager.Controls
 			imgSelect.ShowDialog();
 			if (imgSelect.selectedItem != null)
 				ImagePath = imgSelect.selectedItem.ImagePath;
-
 		}
 	}
 }

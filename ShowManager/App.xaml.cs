@@ -13,5 +13,7 @@ namespace ShowManager
 	/// </summary>
 	public partial class App : Application
 	{
+		public Dictionary<int, string> ImgPath;
+		public Dictionary<int, string> ImgDesc;
 	}
 }

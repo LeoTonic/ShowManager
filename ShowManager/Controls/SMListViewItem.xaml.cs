@@ -24,11 +24,25 @@ namespace ShowManager.Controls
 		public event PropertyChangedEventHandler PropertyChanged;
 		private SMListView.ViewMode viewMode;
 
-		public SMListViewItem(SMListView.ViewMode vm)
+		private long itemID;
+		public long ItemID  // Item identifier to connect with data collections
+		{
+			get
+			{
+				return this.itemID;
+			}
+			set
+			{
+				this.itemID = value;
+			}
+		}
+
+		public SMListViewItem(SMListView.ViewMode vm, long id)
 		{
 			InitializeComponent();
 			DataContext = this;
 			viewMode = vm;
+			ItemID = id;
 
 			switch (viewMode)
 			{
@@ -150,6 +164,48 @@ namespace ShowManager.Controls
 		}
 
 		// Images
+
+		public int MainImageKey
+		{
+			set
+			{
+				App curApp = (App)Application.Current;
+				MainImagePath = curApp.ImgPath[value];
+			}
+		}
+		public int Ico0Key
+		{
+			set
+			{
+				App curApp = (App)Application.Current;
+				iconsPath0 = curApp.ImgPath[value];
+			}
+		}
+		public int Ico1Key
+		{
+			set
+			{
+				App curApp = (App)Application.Current;
+				iconsPath1 = curApp.ImgPath[value];
+			}
+		}
+		public int Ico2Key
+		{
+			set
+			{
+				App curApp = (App)Application.Current;
+				iconsPath2 = curApp.ImgPath[value];
+			}
+		}
+		public int Ico3Key
+		{
+			set
+			{
+				App curApp = (App)Application.Current;
+				iconsPath3 = curApp.ImgPath[value];
+			}
+		}
+
 		private string mainImgPath;
 		public string MainImagePath
 		{
@@ -157,10 +213,6 @@ namespace ShowManager.Controls
 			{
 				this.mainImgPath = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MainImagePath"));
-			}
-			get
-			{
-				return this.mainImgPath;
 			}
 		}
 
@@ -176,10 +228,6 @@ namespace ShowManager.Controls
 				this.iconsPath0 = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IconsPath0"));
 			}
-			get
-			{
-				return this.iconsPath0;
-			}
 		}
 		public string IconsPath1
 		{
@@ -187,10 +235,6 @@ namespace ShowManager.Controls
 			{
 				this.iconsPath1 = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IconsPath1"));
-			}
-			get
-			{
-				return this.iconsPath1;
 			}
 		}
 
@@ -201,10 +245,6 @@ namespace ShowManager.Controls
 				this.iconsPath2 = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IconsPath2"));
 			}
-			get
-			{
-				return this.iconsPath2;
-			}
 		}
 
 		public string IconsPath3
@@ -213,10 +253,6 @@ namespace ShowManager.Controls
 			{
 				this.iconsPath3 = value;
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IconsPath3"));
-			}
-			get
-			{
-				return this.iconsPath3;
 			}
 		}
 	}

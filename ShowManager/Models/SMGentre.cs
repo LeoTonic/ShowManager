@@ -19,9 +19,10 @@ namespace ShowManager.Models
 		private List<string> EvaluateTypes; // Типы оценок
 
 		// Конструктор
-		public SMGentre(string name)
+		public SMGentre(string name, int imgKey)
 		{
 			this.Name = name;
+			this.ImageKey = imgKey;
 
 			Gentres = new List<SMElement>();
 			Directions = new List<SMElement>();

@@ -24,31 +24,21 @@ namespace ShowManager.Controls
 
 		public ImageItem selectedItem = null;
 
-		public ImageSelector(string curImage)
+		public ImageSelector(int imageKey)
 		{
 			InitializeComponent();
 			this.LostFocus += ImageSelector_LostFocus;
 
-			Items = new ObservableCollection<ImageItem>(new List<ImageItem>
+			Items = new ObservableCollection<ImageItem>();
+			App curApp = (App)Application.Current;
+			foreach(int key in curApp.ImgPath.Keys)
 			{
-				new ImageItem{ ImagePath = "vocal", ImageName = "Вокал" },
-				new ImageItem{ ImagePath = "dance", ImageName = "Хореография" },
-				new ImageItem{ ImagePath = "theatre", ImageName = "Театр" },
-				new ImageItem{ ImagePath = "music", ImageName = "Инструмент." },
-				new ImageItem{ ImagePath = "art", ImageName = "ИЗО" },
-				new ImageItem{ ImagePath = "concert-master", ImageName = "Концертмейстер" },
-				new ImageItem{ ImagePath = "patriot", ImageName = "Патриот. песня" },
-				new ImageItem{ ImagePath = "pop", ImageName = "Эстрада" },
-				new ImageItem{ ImagePath = "guitar", ImageName = "Авторская песня" },
-				new ImageItem{ ImagePath = "palette", ImageName = "ДПИ" },
-				new ImageItem{ ImagePath = "director", ImageName = "Конферансье" },
-				new ImageItem{ ImagePath = "cinema", ImageName = "Кино и анимация" },
-				new ImageItem{ ImagePath = "sport", ImageName = "Худ.гимнастика" },
-				new ImageItem{ ImagePath = "circus", ImageName = "Цирк" }
-			});
+				ImageItem newItem = new ImageItem { ImagePath = curApp.ImgPath[key], ImageName = curApp.ImgDesc[key], ImageKey = key };
+			}
+
 			ImagesView.ItemsSource = Items;
 
-			selectedItem = GetItem(curImage);
+			selectedItem = GetItem(curApp.ImgPath[imageKey]);
 			selectedItem.StackColor = "LightBlue";
 		}
 
@@ -111,7 +101,7 @@ namespace ShowManager.Controls
 				}
 				set
 				{
-					this.imgPath = "/ShowManager;component/Images/Gentres/" + value + ".png";
+					this.imgPath = value;
 				}
 			}
 
@@ -127,6 +117,20 @@ namespace ShowManager.Controls
 					this.stackColor = value;
 				}
 			}
+
+			private int imgKey;
+			public int ImageKey
+			{
+				get
+				{
+					return imgKey;
+				}
+				set
+				{
+					imgKey = value;
+				}
+			}
+
 			public ImageItem()
 			{
 				this.stackColor = "White";

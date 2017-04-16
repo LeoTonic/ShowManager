@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ShowManager.Controls;
+using ShowManager.Models;
 
 namespace ShowManager
 {
@@ -20,6 +21,8 @@ namespace ShowManager
 	/// </summary>
 	public partial class Gentres : Window, ICommandCatcher
 	{
+		private SMGentresBase gentreBase;
+
 		public Gentres(DragDropWindow wndDD)
 		{
 			InitializeComponent();
@@ -34,7 +37,7 @@ namespace ShowManager
 		public void ToolBarAdd(SMToolbar tb)
 		{
 			// Отображаем диалог элемента
-			ElementDialog elemDlg = new ElementDialog("", "Новый элемент");
+			ElementDialog elemDlg = new ElementDialog(101, "Новый элемент");
 
 			Point pnt = lvwGentreGroups.PointToScreen(new Point(0, 0));
 			elemDlg.Left = pnt.X + 8;
@@ -43,7 +46,8 @@ namespace ShowManager
 			elemDlg.ShowDialog();
 			if (elemDlg.IsSet)
 			{
-				lvwGentreGroups.Add(elemDlg.ImagePath, labelText1: elemDlg.ElementName);
+				long itemID = gentreBase.Add(elemDlg.ElementName, elemDlg.ImageKey);
+				lvwGentreGroups.Add(itemID, elemDlg.ImageKey, labelText1: elemDlg.ElementName);
 			}
 		}
 
@@ -53,7 +57,11 @@ namespace ShowManager
 			if (lvwGentreGroups.ItemsSelected.Count > 0)
 			{
 				var lvi = lvwGentreGroups.ItemsSelected[0] as SMListViewItem;
-				ElementDialog elemDlg = new ElementDialog(lvi.MainImagePath, lvi.OneLineText);
+				long id = lvi.ItemID;
+				SMGentre gentre = gentreBase.GetGentreItem(id);
+				if (gentre == null) return;
+
+				ElementDialog elemDlg = new ElementDialog(gentre.ImageKey, gentre.Name);
 				Point pnt = lvwGentreGroups.PointToScreen(new Point(0, 0));
 				elemDlg.Left = pnt.X + 8;
 				elemDlg.Top = pnt.Y + 8;
@@ -61,8 +69,8 @@ namespace ShowManager
 				elemDlg.ShowDialog();
 				if (elemDlg.IsSet)
 				{
-					lvi.MainImagePath = elemDlg.ImagePath;
-					lvi.OneLineText = elemDlg.ElementName;
+					gentreBase.Edit(id, elemDlg.ElementName, elemDlg.ImageKey);
+					lvwGentreGroups.Edit(id, elemDlg.ImageKey, labelText1: elemDlg.ElementName);
 				}
 			}
 		}
@@ -73,7 +81,9 @@ namespace ShowManager
 			if (lvwGentreGroups.ItemsSelected.Count > 0)
 			{
 				var lvi = lvwGentreGroups.ItemsSelected[0] as SMListViewItem;
-				lvwGentreGroups.Remove(lvi);
+				long id = lvi.ItemID;
+				gentreBase.Remove(id);
+				lvwGentreGroups.Remove(id);
 			}
 		}
 	}
