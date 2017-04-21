@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +25,9 @@ namespace ShowManager.Controls
 		public event PropertyChangedEventHandler PropertyChanged;
 		private SMListView.ViewMode viewMode;
 
+		// drag properties
 		public System.Collections.IList selectedItems;
+		public Object dragFromControl;
 
 		private long itemID;
 		public long ItemID  // Item identifier to connect with data collections
@@ -39,13 +42,39 @@ namespace ShowManager.Controls
 			}
 		}
 
+		public SMListViewItem(SMListViewItem from)
+		{
+			InitializeComponent();
+			DataContext = this;
+
+			this.viewMode = from.viewMode;
+			this.ItemID = from.ItemID;
+			SetViewMode();
+
+			this.MainTimeText = from.MainTimeText;
+			this.SubTimeText = from.SubTimeText;
+			this.OneLineText = from.OneLineText;
+			this.TwoLineTopText = from.TwoLineTopText;
+			this.TwoLineBotText = from.TwoLineBotText;
+			this.MainImagePath = from.MainImagePath;
+			this.IconsPath0 = from.IconsPath0;
+			this.IconsPath1 = from.IconsPath1;
+			this.IconsPath2 = from.IconsPath2;
+			this.IconsPath3 = from.IconsPath3;
+
+		}
+
 		public SMListViewItem(SMListView.ViewMode vm, long id)
 		{
 			InitializeComponent();
 			DataContext = this;
 			viewMode = vm;
 			ItemID = id;
+			SetViewMode();
+		}
 
+		private void SetViewMode()
+		{
 			switch (viewMode)
 			{
 				case SMListView.ViewMode.Gentre:

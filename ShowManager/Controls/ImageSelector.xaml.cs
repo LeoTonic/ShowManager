@@ -27,7 +27,6 @@ namespace ShowManager.Controls
 		public ImageSelector(int imageKey)
 		{
 			InitializeComponent();
-			this.LostFocus += ImageSelector_LostFocus;
 
 			Items = new ObservableCollection<ImageItem>();
 			App curApp = (App)Application.Current;
@@ -41,12 +40,6 @@ namespace ShowManager.Controls
 
 			selectedItem = GetItem(curApp.ImgPath[imageKey]);
 			selectedItem.StackColor = "LightBlue";
-		}
-
-		private void ImageSelector_LostFocus(object sender, RoutedEventArgs e)
-		{
-			if (this != null)
-				this.Close();
 		}
 
 		private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

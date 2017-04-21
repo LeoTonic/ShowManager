@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -91,10 +92,59 @@ namespace ShowManager
 
 		public void DropItems(int insertIndex, SMListViewItem draggedItem, Object draggedTo)
 		{
+			var lView = draggedItem.dragFromControl as SMListView;
+			var items = lView.Items as ObservableCollection<SMListViewItem>;
+
 			if (draggedTo.GetHashCode() == gentresToolbar.GetHashCode())
 			{
 				// Сброс в корзину
-				
+
+				// Удаление из контрола
+				List<SMListViewItem> wList = new List<SMListViewItem>();
+				foreach(SMListViewItem lvi in draggedItem.selectedItems)
+				{
+					wList.Add(lvi);
+				}
+				foreach(SMListViewItem lvi in wList)
+				{
+					items.Remove(lvi);
+				}
+				wList.Clear();
+			}
+
+			if (draggedTo.GetHashCode() == lView.GetHashCode())
+			{
+				// Перемещение внутри контрола
+				List<SMListViewItem> wList = new List<SMListViewItem>();
+				foreach (SMListViewItem lvi in draggedItem.selectedItems)
+				{
+					SMListViewItem newItem = new SMListViewItem(lvi);
+					wList.Add(newItem);
+				}
+
+				List<SMListViewItem> wList2 = new List<SMListViewItem>();
+				foreach (SMListViewItem lvi in draggedItem.selectedItems)
+				{
+					wList2.Add(lvi);
+				}
+				foreach (SMListViewItem lvi in wList2)
+				{
+					items.Remove(lvi);
+				}
+
+				foreach (SMListViewItem lvi in wList)
+				{
+					if (insertIndex >= 0)
+					{
+						items.Insert(insertIndex, lvi);
+					}
+					else
+					{
+						items.Add(lvi);
+					}
+				}
+				wList.Clear();
+				wList2.Clear();
 			}
 		}
 	}

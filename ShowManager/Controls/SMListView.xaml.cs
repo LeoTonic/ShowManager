@@ -157,7 +157,8 @@ namespace ShowManager.Controls
 		{
 			if (iCommandTo != null)
 			{
-				var smItem = sender as SMListViewItem;
+				var lbi = sender as ListBoxItem;
+				var smItem = lbi.DataContext as SMListViewItem;
 				int itemIndex = Items.IndexOf(smItem);
 				iCommandTo.DropItems(itemIndex, e.Data.GetData(typeof(SMListViewItem)) as SMListViewItem, this);
 			}
@@ -175,6 +176,7 @@ namespace ShowManager.Controls
 				dragPoint = e.GetPosition(null);
 				var smItem = draggedItem.DataContext as SMListViewItem;
 				smItem.selectedItems = ItemsSelected;
+				smItem.dragFromControl = this;
 			}
 		}
 

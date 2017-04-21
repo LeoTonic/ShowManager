@@ -109,7 +109,6 @@ namespace ShowManager.Controls
 			Point pnt = element.PointToScreen(new Point(0,0));
 			imgSelect.Left = pnt.X + 40;
 			imgSelect.Top = pnt.Y + 8;
-
 			imgSelect.ShowDialog();
 			if (imgSelect.selectedItem != null) {
 				ImageKey = imgSelect.selectedItem.ImageKey;
