@@ -12,15 +12,17 @@
 			<ColumnDefinition Width="5"></ColumnDefinition>
 			<ColumnDefinition Width="*"></ColumnDefinition>
 		</Grid.ColumnDefinitions>
-		<Grid Grid.Column="0">
-			<Grid.RowDefinitions>
-				<RowDefinition></RowDefinition>
-				<RowDefinition Height="Auto"></RowDefinition>
-			</Grid.RowDefinitions>
-			<controls:SMListView x:Name="lvwGentreGroups" Grid.Row="0"/>
-			<controls:SMToolbar x:Name="gentresToolbar" Grid.Row="1"/>
-		</Grid>
-		<GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"/>
-		<controls:SMListView Grid.Column="2"/>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
+		</Grid.RowDefinitions>
+		<TextBlock Text="Группы жанров:" FontFamily="Arial" FontSize="16" Margin="4" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0"/>
+		<controls:SMListView x:Name="lvwGentreGroups" Grid.Row="1" Grid.Column="0"/>
+		<controls:SMToolbar x:Name="gentresToolbar" Grid.Row="2" Grid.Column="0" Focusable="False"/>
+		<GridSplitter Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Stretch" Focusable="False"/>
+		<controls:SMGroupsPanel x:Name="classesPanel" Grid.Column="2" Grid.Row="0" Focusable="False"/>
+		<controls:SMListView x:Name ="classesView" Grid.Column="2" Grid.Row="1"/>
+		<controls:SMToolbar x:Name="classesToolbar" Grid.Row="2" Grid.Column="2" Focusable="False"/>
 	</Grid>
 </Window>

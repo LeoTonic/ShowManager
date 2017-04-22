@@ -23,6 +23,8 @@ namespace ShowManager
 	public partial class Gentres : Window, ICommandCatcher
 	{
 		private SMGentresBase gentreBase;
+		private List<SMListViewItem> helpList1 = new List<SMListViewItem>();
+		private List<SMListViewItem> helpList2 = new List<SMListViewItem>();
 
 		public Gentres(DragDropWindow wndDD, SMGentresBase gb)
 		{
@@ -34,7 +36,40 @@ namespace ShowManager
 			lvwGentreGroups.SetDragDropWindow(wndDD);
 			lvwGentreGroups.SetViewMode(Controls.SMListView.ViewMode.Gentre, this);
 			gentresToolbar.SetValues("prop-add", "Добавить жанр", "prop-edit", "Изменить жанр", "prop-delete", "Удалить жанр", this);
+
+			var genClasses = new List<string>()
+			{
+				"Жанр",
+				"Направление",
+				"Состав",
+				"Возраст",
+				"Категория",
+				"Оценка"
+			};
+			classesPanel.Initialize(genClasses, this, true);
 		}
+
+		// Помощник по коллекции
+		private void CreateHelperList(System.Collections.IList sourceList, List<SMListViewItem> destList, bool createItems)
+		{
+			destList.Clear();
+			foreach (SMListViewItem lvi in sourceList)
+			{
+				if (createItems)
+				{
+					SMListViewItem newItem = new SMListViewItem(lvi);
+					destList.Add(newItem);
+				}
+				else
+				{
+					destList.Add(lvi);
+				}
+			}
+		}
+
+		//
+		// НАСЛЕДОВАНИЕ ИНТЕРФЕЙСА ICommandCatcher
+		//
 
 		// Обработка панели инструментов
 		public void ToolBarAdd(SMToolbar tb)
@@ -99,41 +134,29 @@ namespace ShowManager
 			{
 				// Сброс в корзину
 
-				// Удаление из контрола
-				List<SMListViewItem> wList = new List<SMListViewItem>();
-				foreach(SMListViewItem lvi in draggedItem.selectedItems)
+				// Удаление из контрола и элемента данных
+				CreateHelperList(draggedItem.selectedItems, helpList1, false);
+				foreach(SMListViewItem lvi in helpList1)
 				{
-					wList.Add(lvi);
-				}
-				foreach(SMListViewItem lvi in wList)
-				{
+					gentreBase.Remove(lvi.ItemID);
 					items.Remove(lvi);
 				}
-				wList.Clear();
 			}
 
 			if (draggedTo.GetHashCode() == lView.GetHashCode())
 			{
 				// Перемещение внутри контрола
-				List<SMListViewItem> wList = new List<SMListViewItem>();
-				foreach (SMListViewItem lvi in draggedItem.selectedItems)
-				{
-					SMListViewItem newItem = new SMListViewItem(lvi);
-					wList.Add(newItem);
-				}
-
-				List<SMListViewItem> wList2 = new List<SMListViewItem>();
-				foreach (SMListViewItem lvi in draggedItem.selectedItems)
-				{
-					wList2.Add(lvi);
-				}
-				foreach (SMListViewItem lvi in wList2)
+				CreateHelperList(draggedItem.selectedItems, helpList1, true);
+				CreateHelperList(draggedItem.selectedItems, helpList2, false);
+				foreach (SMListViewItem lvi in helpList2)
 				{
 					items.Remove(lvi);
 				}
 
-				foreach (SMListViewItem lvi in wList)
+				foreach (SMListViewItem lvi in helpList1)
 				{
+					gentreBase.Move(lvi.ItemID, insertIndex);
+
 					if (insertIndex >= 0)
 					{
 						items.Insert(insertIndex, lvi);
@@ -143,9 +166,26 @@ namespace ShowManager
 						items.Add(lvi);
 					}
 				}
-				wList.Clear();
-				wList2.Clear();
 			}
+		}
+
+		public void PanelGroupClick(string groupName)
+		{
+			System.Diagnostics.Debug.WriteLine(string.Concat(groupName, " clicked"));
+		}
+		public void PanelGroupAdd(string groupName)
+		{
+
+		}
+
+		public void PanelGroupRename(string groupNameOld, string groupNameNew)
+		{
+
+		}
+
+		public void PanelGroupDelete(string groupName)
+		{
+			System.Diagnostics.Debug.WriteLine(string.Concat(groupName, " deleted"));
 		}
 	}
 }

@@ -25,27 +25,45 @@ namespace ShowManager.Controls
 		public ObservableCollection<SMGroupsItem> Items { get; set; }
 
 		private SMGroupsItem selectedFolder = null;
-		private SMListView connectedView = null;
+
+		private ICommandCatcher iCommandTo = null;
+		private string groupNameOld = null;
+		private bool modeReadOnly;
 
 		public SMGroupsPanel()
 		{
 			InitializeComponent();
 
-			Items = new ObservableCollection<SMGroupsItem>(new List<SMGroupsItem>
-			{
-				new SMGroupsItem { Text = "Основная группа", FolderImage = SMGroupsItem.GroupImageType.Opened },
-			});
-			Items[0].AssignParent(this);
-			SelectGroup(Items[0]);
-			AddNewGroupMarker();
+			Items = new ObservableCollection<SMGroupsItem>();
 
 			DataContext = this;
 		}
 
-		// Присвоение вида к панели
-		public void AssignView(SMListView view)
+		public void Initialize(List<string> groupNames, ICommandCatcher iTo, bool readOnly)
 		{
-			connectedView = view;
+			iCommandTo = iTo;
+			modeReadOnly = readOnly;
+
+			if (groupNames == null)
+			{
+				Items.Add(new SMGroupsItem { Text = "Основная группа", FolderImage = SMGroupsItem.GroupImageType.Opened });
+				Items[0].AssignParent(this, readOnly);
+			}
+			else
+			{
+				foreach(string s in groupNames)
+				{
+					SMGroupsItem newItem = new SMGroupsItem { Text = s, FolderImage = SMGroupsItem.GroupImageType.Closed };
+					newItem.AssignParent(this, readOnly);
+					Items.Add(newItem);
+				}
+			}
+			if (!readOnly)
+			{
+				AddNewGroupMarker();
+			}
+
+			SelectGroup(Items[0]);
 		}
 
 		protected void Group_MouseLeftDown(object sender, MouseButtonEventArgs e)
@@ -56,8 +74,10 @@ namespace ShowManager.Controls
 			var grpItem = sender as SMGroupsItem;
 			if (grpItem.FolderImage == SMGroupsItem.GroupImageType.AddNew)
 			{
+				grpItem.AssignParent(this, false);
+
 				// Создаем новое имя
-				EditGroupName(sender);
+				EditGroupName(sender, true);
 				return;
 			}
 
@@ -66,25 +86,42 @@ namespace ShowManager.Controls
 				SelectGroup(grpItem);
 			}
 		}
+
 		protected void Group_MouseDblClick(object sender, MouseButtonEventArgs e)
 		{
+			var grpItem = sender as SMGroupsItem;
+			if (grpItem.FolderImage == SMGroupsItem.GroupImageType.AddNew || modeReadOnly)
+				return;
+
 			if (e.LeftButton == MouseButtonState.Pressed)
-				EditGroupName(sender);
+				EditGroupName(sender, false);
 		}
 
 		// Редактируем имя
-		private void EditGroupName(object sender)
+		private void EditGroupName(object sender, bool newGroup)
 		{
 			if (sender == null)
 				return;
 
 			var grpItem = sender as SMGroupsItem;
-			grpItem.EditName();
+			groupNameOld = grpItem.Text;
+			grpItem.EditName(newGroup);
 		}
 
 		// Изменили имя элемента
-		public void GroupNameChanged(SMGroupsItem item)
+		public void GroupNameChanged(SMGroupsItem item, bool newGroup)
 		{
+			if (iCommandTo != null)
+			{
+				if (newGroup)
+				{
+					iCommandTo.PanelGroupAdd(item.Text);
+				}
+				else
+				{
+					iCommandTo.PanelGroupRename(groupNameOld, item.Text);
+				}
+			}
 			// Проверяем на именование новой вкладки
 			if (item.FolderImage == SMGroupsItem.GroupImageType.AddNew)
 			{
@@ -98,14 +135,20 @@ namespace ShowManager.Controls
 		private void AddNewGroupMarker()
 		{
 			SMGroupsItem newItem = new SMGroupsItem { Text = "", FolderImage = SMGroupsItem.GroupImageType.AddNew };
-			newItem.AssignParent(this);
+			newItem.AssignParent(this, true);
 			Items.Add(newItem);
 		}
 
 		// Удаление имени элемента
 		public void GroupDelete(SMGroupsItem item)
 		{
+			string removeName = item.Text;
 			Items.Remove(item);
+			if (iCommandTo != null)
+			{
+				iCommandTo.PanelGroupDelete(removeName);
+			}
+
 			SelectGroup(Items[0]);
 		}
 
@@ -119,6 +162,10 @@ namespace ShowManager.Controls
 			}
 			selectedFolder = item;
 			selectedFolder.FolderImage = SMGroupsItem.GroupImageType.Opened;
+			if (iCommandTo != null)
+			{
+				iCommandTo.PanelGroupClick(item.Text);
+			}
 		}
 	}
 }

@@ -25,6 +25,7 @@ namespace ShowManager.Controls
 		private const string NewGroupValue = "Новая группа";
 
 		private SMGroupsPanel parentPanel = null;
+		private bool addGroupMode;
 
 		public enum GroupImageType
 		{
@@ -43,8 +44,7 @@ namespace ShowManager.Controls
 			set
 			{
 				this.text = value;
-				if (PropertyChanged != null)
-					PropertyChanged(this, new PropertyChangedEventArgs("Text"));
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Text"));
 			}
 		}
 		private GroupImageType grpImage;
@@ -74,19 +74,11 @@ namespace ShowManager.Controls
 				}
 				this.grpImage = value;
 
-				if (value == GroupImageType.AddNew)
-				{
-					ContextMenu.Visibility = Visibility.Collapsed;
-				}
-				else
-				{
-					ContextMenu.Visibility = Visibility.Visible;
-					ContextMenu.IsOpen = false;
-				}
+				ContextMenu.IsOpen = false;
 
 				this.imgPath = "/ShowManager;component/Images/Tools/" + path;
-				if (PropertyChanged != null)
-					PropertyChanged(this, new PropertyChangedEventArgs("ImagePath"));
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ImagePath"));
+
 			}
 		}
 
@@ -106,14 +98,23 @@ namespace ShowManager.Controls
 		}
 
 		// Присвоение родительского хэндлера
-		public void AssignParent(SMGroupsPanel panel)
+		public void AssignParent(SMGroupsPanel panel, bool readOnly)
 		{
 			this.parentPanel = panel;
+			if (readOnly)
+			{
+				this.ContextMenu.Visibility = Visibility.Collapsed;
+			}
+			else
+			{
+				this.ContextMenu.Visibility = Visibility.Visible;
+			}
 		}
 
 		// Редактируем имя группы
-		public void EditName()
+		public void EditName(bool mode)
 		{
+			addGroupMode = mode;
 			editTextBox.Visibility = Visibility.Visible;
 			textLabel.Visibility = Visibility.Collapsed;
 
@@ -128,22 +129,54 @@ namespace ShowManager.Controls
 			editTextBox.Focus();
 		}
 
+		// Проверка на задвоение имени
+		private bool IsUniqueName(string sName)
+		{
+			if (this.parentPanel != null)
+			{
+				foreach (SMGroupsItem item in this.parentPanel.Items)
+				{
+					if (item.Text == sName)
+					{
+						return false;
+					}
+				}
+			}
+			return true;
+		}
 
 		// Потеря фокуса для текстового бокса редактирования имени
 		private void TextBox_LostFocus(object sender, RoutedEventArgs e)
-		{
+		{ 
 			var tb = sender as TextBox;
+			if (tb.Visibility != Visibility.Visible)
+			{
+				return;
+			}
+
 			if (string.IsNullOrWhiteSpace(tb.Text))
 			{
 				MessageBox.Show("Нельзя присвоить группе пустое имя!", "Пустое имя!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 				tb.Text = NewGroupValue;
 			}
-			this.Text = tb.Text;
+			// Проверяем на сохранение имени
+			if (textLabel.Text != tb.Text)
+			{
+				// Проверяем на уникальность имени
+				string tNameBase = tb.Text;
+				string tName = tNameBase;
+				int addIndex = 1;
+				while (!IsUniqueName(tName))
+				{
+					tName = string.Concat(tNameBase, " (", addIndex.ToString(), ")");
+					addIndex++;
+				}
+				this.Text = tName;
+				if (this.parentPanel != null)
+					this.parentPanel.GroupNameChanged(this, addGroupMode);
+			}
 			editTextBox.Visibility = Visibility.Collapsed;
 			textLabel.Visibility = Visibility.Visible;
-
-			if (this.parentPanel != null)
-				this.parentPanel.GroupNameChanged(this);
 		}
 		// Получение фокуса - выделение содержимого
 		private void TextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -164,7 +197,7 @@ namespace ShowManager.Controls
 		// Контекстное меню переименование группы
 		private void Rename_Click(object sender, RoutedEventArgs e)
 		{
-			EditName();
+			EditName(false);
 		}
 
 		// Контекстное меню удаление группы

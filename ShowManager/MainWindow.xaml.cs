@@ -44,7 +44,7 @@ namespace ShowManager
 
 			wndDragDrop.HideWindow();
 			ExampleView.SetDragDropWindow(wndDragDrop);
-			ExamplePanel.AssignView(ExampleView);
+			ExamplePanel.Initialize(null, null, false);
 
 			Closed += MainWindow_Closed;
 		}

@@ -49,6 +49,25 @@ namespace ShowManager.Models
 			}
 		}
 
+		// Перемещение элемента
+		public void Move(long id, int insertIndex)
+		{
+			int index = GetItemIndexByID(id);
+			if (index >= 0)
+			{
+				SMGentre gentre = GentreGroups[index];
+				GentreGroups.RemoveAt(index);
+				if (insertIndex >= 0)
+				{
+					GentreGroups.Insert(insertIndex, gentre);
+				}
+				else
+				{
+					GentreGroups.Add(gentre);
+				}
+			}
+		}
+
 		// Получение индекса элемента по ид
 		private int GetItemIndexByID(long id)
 		{
