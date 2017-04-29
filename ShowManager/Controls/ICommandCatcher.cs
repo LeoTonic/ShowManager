@@ -9,6 +9,9 @@ namespace ShowManager.Controls
 	// Ловец команд элементов управления
 	public interface ICommandCatcher
 	{
+		// Выборка элементов
+		void ItemSelect(Object parentControl, long itemID); // Выбор элемента в контроле
+
 		// Панель инструментов
 		void ToolBarAdd(SMToolbar tb); // Новый элемент
 		void ToolBarEdit(SMToolbar tb); // Редактируем элемент

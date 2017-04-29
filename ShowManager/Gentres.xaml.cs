@@ -26,6 +26,11 @@ namespace ShowManager
 		private List<SMListViewItem> helpList1 = new List<SMListViewItem>();
 		private List<SMListViewItem> helpList2 = new List<SMListViewItem>();
 
+		private SMGentre selectedGentreGroup = null;
+		private List<SMElement> classesList = null;
+
+		private List<string> genClasses;
+
 		public Gentres(DragDropWindow wndDD, SMGentresBase gb)
 		{
 			InitializeComponent();
@@ -33,11 +38,11 @@ namespace ShowManager
 			gentreBase = gb;
 
 			// Инициализация элементов управления
-			lvwGentreGroups.SetDragDropWindow(wndDD);
-			lvwGentreGroups.SetViewMode(Controls.SMListView.ViewMode.Gentre, this);
+			gentresView.SetDragDropWindow(wndDD);
+			gentresView.SetViewMode(SMListView.ViewMode.Gentre, this);
 			gentresToolbar.SetValues("prop-add", "Добавить жанр", "prop-edit", "Изменить жанр", "prop-delete", "Удалить жанр", this);
 
-			var genClasses = new List<string>()
+			genClasses = new List<string>()
 			{
 				"Жанр",
 				"Направление",
@@ -47,9 +52,13 @@ namespace ShowManager
 				"Оценка"
 			};
 			classesPanel.Initialize(genClasses, this, true);
+			classesToolbar.SetValues("prop-add", "Добавить элемент", "prop-edit", "Изменить элемент", "prop-delete", "Удалить элемент", this);
+			classesView.SetDragDropWindow(wndDD);
+			classesView.SetViewMode(SMListView.ViewMode.Gentre, this);
 		}
 
 		// Помощник по коллекции
+		// Перемещает элементы из одного списка в другой при обработке перетаскивания элементов
 		private void CreateHelperList(System.Collections.IList sourceList, List<SMListViewItem> destList, bool createItems)
 		{
 			destList.Clear();
@@ -67,6 +76,17 @@ namespace ShowManager
 			}
 		}
 
+		// Заполнение списка элементов в контроле классов
+		private void FillGentreClassItems(List<SMElement> elemList)
+		{
+			classesView.Clear();
+
+			foreach(SMElement sme in elemList)
+			{
+				classesView.Add(itemID: sme.ID, mainImgKey: sme.ImageKey, labelText1: sme.Name);
+			}
+		}
+
 		//
 		// НАСЛЕДОВАНИЕ ИНТЕРФЕЙСА ICommandCatcher
 		//
@@ -77,38 +97,91 @@ namespace ShowManager
 			// Отображаем диалог элемента
 			ElementDialog elemDlg = new ElementDialog(101, "Новый элемент");
 
-			Point pnt = lvwGentreGroups.PointToScreen(new Point(0, 0));
+			Point pnt;
+
+			if (tb.GetHashCode() == gentresToolbar.GetHashCode())
+			{
+				pnt = gentresView.PointToScreen(new Point(0, 0));
+			}
+			else
+			{
+				pnt = classesView.PointToScreen(new Point(0, 0));
+
+				if (classesList == null)
+				{
+					return;
+				}
+			}
+
 			elemDlg.Left = pnt.X + 8;
 			elemDlg.Top = pnt.Y + 8;
 
 			elemDlg.ShowDialog();
 			if (elemDlg.IsSet)
 			{
-				long itemID = gentreBase.Add(elemDlg.ElementName, elemDlg.ImageKey);
-				lvwGentreGroups.Add(itemID, elemDlg.ImageKey, labelText1: elemDlg.ElementName);
+				if (tb.GetHashCode() == gentresToolbar.GetHashCode())
+				{
+					// Добавляем новую группу
+					long itemID = gentreBase.Add(elemDlg.ElementName, elemDlg.ImageKey);
+					gentresView.Add(itemID, elemDlg.ImageKey, labelText1: elemDlg.ElementName);
+				}
+				else if (tb.GetHashCode() == classesToolbar.GetHashCode())
+				{
+					if (classesList == null)
+						return;
+					// Добавляем новый элемент в классе жанровой группы
+					var newItem = new SMElement(elemDlg.ElementName, elemDlg.ImageKey);
+					classesList.Add(newItem);
+					classesView.Add(newItem.ID, newItem.ImageKey, labelText1: newItem.Name);
+				}
 			}
 		}
 
 		public void ToolBarEdit(SMToolbar tb)
 		{
 			// Если элемент не выбран - выходим
-			if (lvwGentreGroups.ItemsSelected.Count > 0)
+			if (tb.GetHashCode() == gentresToolbar.GetHashCode())
 			{
-				var lvi = lvwGentreGroups.ItemsSelected[0] as SMListViewItem;
-				long id = lvi.ItemID;
-				SMGentre gentre = gentreBase.GetGentreItem(id);
-				if (gentre == null) return;
-
-				ElementDialog elemDlg = new ElementDialog(gentre.ImageKey, gentre.Name);
-				Point pnt = lvwGentreGroups.PointToScreen(new Point(0, 0));
-				elemDlg.Left = pnt.X + 8;
-				elemDlg.Top = pnt.Y + 8;
-
-				elemDlg.ShowDialog();
-				if (elemDlg.IsSet)
+				if (gentresView.ItemsSelected.Count > 0)
 				{
-					gentreBase.Edit(id, elemDlg.ElementName, elemDlg.ImageKey);
-					lvwGentreGroups.Edit(id, elemDlg.ImageKey, labelText1: elemDlg.ElementName);
+					var lvi = gentresView.ItemsSelected[0] as SMListViewItem;
+					long id = lvi.ItemID;
+					SMGentre gentre = gentreBase.GetGentreItem(id);
+					if (gentre == null) return;
+
+					ElementDialog elemDlg = new ElementDialog(gentre.ImageKey, gentre.Name);
+					Point pnt = gentresView.PointToScreen(new Point(0, 0));
+					elemDlg.Left = pnt.X + 8;
+					elemDlg.Top = pnt.Y + 8;
+
+					elemDlg.ShowDialog();
+					if (elemDlg.IsSet)
+					{
+						gentreBase.Edit(id, elemDlg.ElementName, elemDlg.ImageKey);
+						gentresView.Edit(id, elemDlg.ImageKey, labelText1: elemDlg.ElementName);
+					}
+				}
+			}
+			else if (tb.GetHashCode() == classesToolbar.GetHashCode() && classesList != null)
+			{
+				if (classesView.ItemsSelected.Count > 0)
+				{
+					var lvi = classesView.ItemsSelected[0] as SMListViewItem;
+					long id = lvi.ItemID;
+					SMElement sme = gentreBase.GetClassItem(classesList, id);
+					if (sme == null) return;
+
+					ElementDialog elemDlg = new ElementDialog(sme.ImageKey, sme.Name);
+					Point pnt = classesView.PointToScreen(new Point(0, 0));
+					elemDlg.Left = pnt.X + 8;
+					elemDlg.Top = pnt.Y + 8;
+
+					elemDlg.ShowDialog();
+					if (elemDlg.IsSet)
+					{
+						gentreBase.EditClassItem(classesList, id, elemDlg.ElementName, elemDlg.ImageKey);
+						classesView.Edit(id, elemDlg.ImageKey, labelText1: elemDlg.ElementName);
+					}
 				}
 			}
 		}
@@ -116,12 +189,25 @@ namespace ShowManager
 		public void ToolBarRemove(SMToolbar tb)
 		{
 			// Если элемент не выбран - выходим
-			if (lvwGentreGroups.ItemsSelected.Count > 0)
+			if (tb.GetHashCode() == gentresToolbar.GetHashCode())
 			{
-				var lvi = lvwGentreGroups.ItemsSelected[0] as SMListViewItem;
-				long id = lvi.ItemID;
-				gentreBase.Remove(id);
-				lvwGentreGroups.Remove(id);
+				if (gentresView.ItemsSelected.Count > 0)
+				{
+					var lvi = gentresView.ItemsSelected[0] as SMListViewItem;
+					long id = lvi.ItemID;
+					gentreBase.Remove(id);
+					gentresView.Remove(id);
+				}
+			}
+			else if (tb.GetHashCode() == classesToolbar.GetHashCode() && classesList != null)
+			{
+				if (classesView.ItemsSelected.Count > 0)
+				{
+					var lvi = classesView.ItemsSelected[0] as SMListViewItem;
+					long id = lvi.ItemID;
+					gentreBase.DeleteClassItem(classesList, id);
+					classesView.Remove(id);
+				}
 			}
 		}
 
@@ -133,14 +219,24 @@ namespace ShowManager
 			if (draggedTo.GetHashCode() == gentresToolbar.GetHashCode())
 			{
 				// Сброс в корзину
+				CreateHelperList(draggedItem.selectedItems, helpList1, false);
 
 				// Удаление из контрола и элемента данных
-				CreateHelperList(draggedItem.selectedItems, helpList1, false);
-				foreach(SMListViewItem lvi in helpList1)
+				foreach (SMListViewItem lvi in helpList1)
 				{
-					gentreBase.Remove(lvi.ItemID);
+					if (lView.GetHashCode() == gentresView.GetHashCode())
+					{
+						// Жанровые группы
+						gentreBase.Remove(lvi.ItemID);
+					}
+					else if (lView.GetHashCode() == classesView.GetHashCode() && classesList != null)
+					{
+						// Классы в жанровой группе
+						gentreBase.DeleteClassItem(classesList, lvi.ItemID);
+					}
 					items.Remove(lvi);
 				}
+
 			}
 
 			if (draggedTo.GetHashCode() == lView.GetHashCode())
@@ -155,7 +251,14 @@ namespace ShowManager
 
 				foreach (SMListViewItem lvi in helpList1)
 				{
-					gentreBase.Move(lvi.ItemID, insertIndex);
+					if (lView.GetHashCode() == gentresView.GetHashCode())
+					{
+						gentreBase.Move(lvi.ItemID, insertIndex);
+					}
+					else if (lView.GetHashCode() == classesView.GetHashCode() && classesList != null)
+					{
+						gentreBase.MoveClassItem(classesList, lvi.ItemID, insertIndex);
+					}
 
 					if (insertIndex >= 0)
 					{
@@ -169,23 +272,60 @@ namespace ShowManager
 			}
 		}
 
+		// Выбор элементв в контроле
+		public void ItemSelect(Object parentControl, long itemID)
+		{
+			if (parentControl.GetHashCode() == gentresView.GetHashCode())
+			{
+				// Обработка жанровой группы - заполнение элементов жанра в правом контроле
+				selectedGentreGroup = gentreBase.GetGentreItem(itemID);
+				if (selectedGentreGroup == null)
+					return;
+				classesPanel.SelectFirstGroup();
+			}
+		}
+
+		// ОБРАБОТЧИКИ ПАНЕЛИ
 		public void PanelGroupClick(string groupName)
 		{
-			System.Diagnostics.Debug.WriteLine(string.Concat(groupName, " clicked"));
+			if (selectedGentreGroup == null)
+				return;
+
+			if (groupName == genClasses[0])
+			{
+				classesList = selectedGentreGroup.Gentres;
+			}
+			else if (groupName == genClasses[1])
+			{
+				classesList = selectedGentreGroup.Directions;
+			}
+			else if (groupName == genClasses[2])
+			{
+				classesList = selectedGentreGroup.Contents;
+			}
+			else if (groupName == genClasses[3])
+			{
+				classesList = selectedGentreGroup.Ages;
+			}
+			else if (groupName == genClasses[4])
+			{
+				classesList = selectedGentreGroup.Categories;
+			}
+			else
+			{
+				classesList = selectedGentreGroup.EvaluateTypes;
+			}
+			FillGentreClassItems(classesList);
 		}
+
 		public void PanelGroupAdd(string groupName)
 		{
-
 		}
-
 		public void PanelGroupRename(string groupNameOld, string groupNameNew)
 		{
-
 		}
-
 		public void PanelGroupDelete(string groupName)
 		{
-			System.Diagnostics.Debug.WriteLine(string.Concat(groupName, " deleted"));
 		}
 	}
 }

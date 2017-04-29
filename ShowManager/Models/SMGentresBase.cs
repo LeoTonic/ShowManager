@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -90,6 +91,110 @@ namespace ShowManager.Models
 				return GentreGroups[itemIndex];
 			}
 			return null;
+		}
+
+		// Получение элемента в классе
+		public SMElement GetClassItem(List<SMElement> classesList, long itemID)
+		{
+			int index = GetClassItemIndex(classesList, itemID);
+			if (index >= 0)
+				return classesList[index];
+			else
+				return null;
+		}
+
+		// Редактирование элемента в классе
+		public void EditClassItem(List<SMElement> classesList, long itemID, string sName, int nKey)
+		{
+			int index = GetClassItemIndex(classesList, itemID);
+			if (index >= 0)
+			{
+				SMElement sme = classesList[index];
+				sme.Name = sName;
+				sme.ImageKey = nKey;
+			}
+		}
+
+		// Перемещение элемента в классе
+		public void MoveClassItem(List<SMElement> classesList, long itemID, int insertIndex)
+		{
+			int index = GetClassItemIndex(classesList, itemID);
+			if (index >= 0)
+			{
+				SMElement sme = classesList[index];
+				classesList.RemoveAt(index);
+				if (insertIndex >= 0)
+				{
+					classesList.Insert(insertIndex, sme);
+				}
+				else
+				{
+					classesList.Add(sme);
+				}
+			}
+		}
+
+		// Удаление элемента в классе
+		public void DeleteClassItem(List<SMElement> classesList, long itemID)
+		{
+			int itemIndex = GetClassItemIndex(classesList, itemID);
+			if (itemIndex >= 0)
+			{
+				classesList.RemoveAt(itemIndex);
+			}
+		}
+
+		private int GetClassItemIndex(List<SMElement> clsList, long itemID)
+		{
+			for (int n = 0; n < clsList.Count; n++)
+			{
+				if (clsList[n].ID == itemID)
+				{
+					return n;
+				}
+			}
+			return -1;
+		}
+
+		//
+		// РАБОТА С ФАЙЛОМ
+		//
+
+		// Сохранение
+		public void Save(BinaryWriter bw)
+		{
+			try
+			{
+				bw.Write(GentreGroups.Count);
+				foreach (SMGentre g in GentreGroups)
+				{
+					g.Save(bw);
+				}
+			}
+			catch (IOException ioex)
+			{
+				System.Diagnostics.Debug.WriteLine(ioex.Message);
+			}
+
+		}
+
+		// Загрузка
+		public void Load(BinaryReader br)
+		{
+			GentreGroups.Clear();
+			try
+			{
+				int gCount = br.ReadInt32();
+				for (int n = 0; n < gCount; n++)
+				{
+					var ng = new SMGentre(br);
+					GentreGroups.Add(ng);
+				}
+			}
+			catch (IOException ioex)
+			{
+				System.Diagnostics.Debug.WriteLine(ioex.Message);
+			}
 		}
 	}
 }

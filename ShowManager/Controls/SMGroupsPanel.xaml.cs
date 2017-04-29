@@ -167,5 +167,13 @@ namespace ShowManager.Controls
 				iCommandTo.PanelGroupClick(item.Text);
 			}
 		}
+
+		// Внешний вызов - выбор первой группы
+		public void SelectFirstGroup()
+		{
+			if (Items.Count == 0)
+				return;
+			SelectGroup(Items[0]);
+		}
 	}
 }

@@ -18,7 +18,7 @@
 			<RowDefinition Height="Auto"></RowDefinition>
 		</Grid.RowDefinitions>
 		<TextBlock Text="Группы жанров:" FontFamily="Arial" FontSize="16" Margin="4" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0"/>
-		<controls:SMListView x:Name="lvwGentreGroups" Grid.Row="1" Grid.Column="0"/>
+		<controls:SMListView x:Name="gentresView" Grid.Row="1" Grid.Column="0"/>
 		<controls:SMToolbar x:Name="gentresToolbar" Grid.Row="2" Grid.Column="0" Focusable="False"/>
 		<GridSplitter Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Stretch" Focusable="False"/>
 		<controls:SMGroupsPanel x:Name="classesPanel" Grid.Column="2" Grid.Row="0" Focusable="False"/>

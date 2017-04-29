@@ -167,6 +167,16 @@ namespace ShowManager.Controls
 			EndDrag();
 		}
 
+		protected void SMListView_ItemMouseLeftDown(object sender, MouseButtonEventArgs e)
+		{
+			if (sender is ListBoxItem && iCommandTo != null)
+			{
+				var lbi = sender as ListBoxItem;
+				var smi = lbi.DataContext as SMListViewItem;
+				iCommandTo.ItemSelect(this, smi.ItemID);
+			}
+		}
+
 		protected void SMListView_ItemMouseRightDown(object sender, MouseButtonEventArgs e)
 		{
 			EndDrag();
@@ -260,6 +270,12 @@ namespace ShowManager.Controls
 		}
 
 		// Работа с элементами
+
+		// Очистить список
+		public void Clear()
+		{
+			Items.Clear();
+		}
 
 		// Добавить новый элемент
 		public void Add(long itemID, int mainImgKey, string mainTimeText="", string subTimeText="", string labelText1="", string labelText2="", int ico0=101, int ico1=101, int ico2=101, int ico3=101)

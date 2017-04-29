@@ -70,38 +70,45 @@ namespace ShowManager.Models
 			this.name = "";
 		}
 
+		public SMElement(string sName, int nKey)
+		{
+			GenerateID();
+			this.name = sName;
+			this.imageKey = nKey;
+		}
+
 		// Генерация идентификатора
 		private void GenerateID()
 		{
 			this.id = DateTime.Now.Ticks;
 		}
 
-		protected bool Save(StreamWriter sw)
+		public virtual void Save(BinaryWriter bw)
 		{
 			try
 			{
-				sw.WriteLine("SM_ELEMENT:");
-				sw.WriteLine(ID.ToString());
-				sw.WriteLine(Name);
-				sw.WriteLine(ImageKey.ToString());
+				bw.Write(ID);
+				bw.Write(Name);
+				bw.Write(ImageKey);
 			}
 			catch (IOException ioex)
 			{
 				System.Diagnostics.Debug.WriteLine(ioex.Message);
-				return false;
 			}
-			return true;
 		}
 
-		/*
-		 * // Example #4: Append new text to an existing file.
-        // The using statement automatically flushes AND CLOSES the stream and calls 
-        // IDisposable.Dispose on the stream object.
-        using (System.IO.StreamWriter file = 
-            new System.IO.StreamWriter(@"C:\Users\Public\TestFolder\WriteLines2.txt", true))
-        {
-            file.WriteLine("Fourth line");
-        }
-		 */
+		public virtual void Load(BinaryReader br)
+		{
+			try
+			{
+				ID = br.ReadInt64();
+				Name = br.ReadString();
+				ImageKey = br.ReadInt32();
+			}
+			catch (IOException ioex)
+			{
+				System.Diagnostics.Debug.WriteLine(ioex.Message);
+			}
+		}
 	}
 }

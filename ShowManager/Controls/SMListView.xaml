@@ -20,6 +20,7 @@
 		<Style TargetType="{x:Type ListBoxItem}" x:Key="ContainerStyle">
 			<Setter Property="AllowDrop" Value="True"/>
 			<EventSetter Event="PreviewMouseRightButtonDown" Handler="SMListView_ItemMouseRightDown"/>
+			<EventSetter Event="PreviewMouseLeftButtonDown" Handler="SMListView_ItemMouseLeftDown"/>
 			<EventSetter Event="GiveFeedback" Handler="SMListView_GiveFeedback"/>
 			<EventSetter Event="Drop" Handler="SMListViewItem_Drop"/>
 		</Style>
