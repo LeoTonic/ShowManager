@@ -35,6 +35,9 @@ namespace ShowManager
 		{
 			InitializeComponent();
 
+			this.Closed += Gentres_Closed;
+			this.Loaded += Gentres_Loaded;
+
 			gentreBase = gb;
 
 			// Инициализация элементов управления
@@ -55,6 +58,22 @@ namespace ShowManager
 			classesToolbar.SetValues("prop-add", "Добавить элемент", "prop-edit", "Изменить элемент", "prop-delete", "Удалить элемент", this);
 			classesView.SetDragDropWindow(wndDD);
 			classesView.SetViewMode(SMListView.ViewMode.Gentre, this);
+		}
+
+		private void Gentres_Loaded(object sender, RoutedEventArgs e)
+		{
+			// Заполняем жанры
+			gentresView.Items.Clear();
+
+			foreach (SMElement sme in gentreBase.GentreGroups)
+			{
+				gentresView.Add(sme.ID, sme.ImageKey, labelText1: sme.Name);
+			}
+		}
+
+		private void Gentres_Closed(object sender, EventArgs e)
+		{
+			gentreBase.Save();
 		}
 
 		// Помощник по коллекции

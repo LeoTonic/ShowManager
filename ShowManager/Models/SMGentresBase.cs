@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +11,41 @@ namespace ShowManager.Models
 	// База групповых жанров
 	public class SMGentresBase
 	{
-		private List<SMGentre> GentreGroups;
+		private List<SMGentre> gentreGroups;
+
+		public List<SMGentre> GentreGroups
+		{
+			get
+			{
+				return gentreGroups;
+			}
+		}
+
+		private string filePath;
 
 		// Конструктор
 		public SMGentresBase()
 		{
-			GentreGroups = new List<SMGentre>();
+			gentreGroups = new List<SMGentre>();
+			App curApp = (App)Application.Current;
+			filePath = string.Concat(AppDomain.CurrentDomain.BaseDirectory, (string)curApp.FindResource("gentresFilePath"));
+
+			try
+			{
+				using (var br = new BinaryReader(File.Open(filePath, FileMode.Open)))
+				{
+					int gCount = br.ReadInt32();
+					for (int n = 0; n < gCount; n++)
+					{
+						var ng = new SMGentre(br);
+						gentreGroups.Add(ng);
+					}
+				}
+			}
+			catch (IOException ioex)
+			{
+				System.Diagnostics.Debug.WriteLine(ioex.Message);
+			}
 		}
 
 		// Управление элементами
@@ -24,7 +54,7 @@ namespace ShowManager.Models
 		public long Add(string name, int imgKey)
 		{
 			SMGentre newGentre = new SMGentre(name, imgKey);
-			GentreGroups.Add(newGentre);
+			gentreGroups.Add(newGentre);
 			return newGentre.ID;
 		}
 
@@ -34,7 +64,7 @@ namespace ShowManager.Models
 			int index = GetItemIndexByID(id);
 			if (index >= 0)
 			{
-				SMGentre gentre = GentreGroups[index];
+				SMGentre gentre = gentreGroups[index];
 				gentre.Name = name;
 				gentre.ImageKey = imgKey;
 			}
@@ -46,7 +76,7 @@ namespace ShowManager.Models
 			int index = GetItemIndexByID(id);
 			if (index >= 0)
 			{
-				GentreGroups.RemoveAt(index);
+				gentreGroups.RemoveAt(index);
 			}
 		}
 
@@ -56,15 +86,15 @@ namespace ShowManager.Models
 			int index = GetItemIndexByID(id);
 			if (index >= 0)
 			{
-				SMGentre gentre = GentreGroups[index];
-				GentreGroups.RemoveAt(index);
+				SMGentre gentre = gentreGroups[index];
+				gentreGroups.RemoveAt(index);
 				if (insertIndex >= 0)
 				{
-					GentreGroups.Insert(insertIndex, gentre);
+					gentreGroups.Insert(insertIndex, gentre);
 				}
 				else
 				{
-					GentreGroups.Add(gentre);
+					gentreGroups.Add(gentre);
 				}
 			}
 		}
@@ -72,9 +102,9 @@ namespace ShowManager.Models
 		// Получение индекса элемента по ид
 		private int GetItemIndexByID(long id)
 		{
-			for (int n = 0; n < GentreGroups.Count; n++)
+			for (int n = 0; n < gentreGroups.Count; n++)
 			{
-				if (GentreGroups[n].ID == id)
+				if (gentreGroups[n].ID == id)
 				{
 					return n;
 				}
@@ -88,7 +118,7 @@ namespace ShowManager.Models
 			int itemIndex = GetItemIndexByID(id);
 			if (itemIndex >= 0)
 			{
-				return GentreGroups[itemIndex];
+				return gentreGroups[itemIndex];
 			}
 			return null;
 		}
@@ -161,39 +191,36 @@ namespace ShowManager.Models
 		//
 
 		// Сохранение
-		public void Save(BinaryWriter bw)
+		public void Save()
 		{
+			BinaryWriter bw;
 			try
 			{
-				bw.Write(GentreGroups.Count);
-				foreach (SMGentre g in GentreGroups)
+				bw = new BinaryWriter(new FileStream(filePath, FileMode.Create));
+			}
+			catch (IOException ex)
+			{
+				System.Diagnostics.Debug.WriteLine(ex.Message);
+				return;
+			}
+
+			try
+			{
+				bw.Write(gentreGroups.Count);
+				foreach (SMGentre g in gentreGroups)
 				{
 					g.Save(bw);
 				}
 			}
-			catch (IOException ioex)
+			catch (IOException ex)
 			{
-				System.Diagnostics.Debug.WriteLine(ioex.Message);
+				System.Diagnostics.Debug.WriteLine(ex.Message);
+				return;
 			}
-
-		}
-
-		// Загрузка
-		public void Load(BinaryReader br)
-		{
-			GentreGroups.Clear();
-			try
+			finally
 			{
-				int gCount = br.ReadInt32();
-				for (int n = 0; n < gCount; n++)
-				{
-					var ng = new SMGentre(br);
-					GentreGroups.Add(ng);
-				}
-			}
-			catch (IOException ioex)
-			{
-				System.Diagnostics.Debug.WriteLine(ioex.Message);
+				bw.Flush();
+				bw.Close();
 			}
 		}
 	}

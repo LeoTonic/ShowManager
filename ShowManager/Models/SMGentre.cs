@@ -12,12 +12,12 @@ namespace ShowManager.Models
 	{
 		// Имя и идентификатор базового элемента - ИД и название группы жанра
 
-		private List<SMElement> gentres; // Жанры
-		private List<SMElement> directions; // Направления
-		private List<SMElement> contents; // Состав участников
-		private List<SMElement> ages; // Возрастные группы
-		private List<SMElement> categories; // Категории
-		private List<SMElement> evaluateTypes; // Типы оценок
+		private List<SMElement> gentres = new List<SMElement>(); // Жанры
+		private List<SMElement> directions = new List<SMElement>(); // Направления
+		private List<SMElement> contents = new List<SMElement>(); // Состав участников
+		private List<SMElement> ages = new List<SMElement>(); // Возрастные группы
+		private List<SMElement> categories = new List<SMElement>(); // Категории
+		private List<SMElement> evaluateTypes = new List<SMElement>(); // Типы оценок
 
 		public List<SMElement> Gentres
 		{
@@ -70,13 +70,6 @@ namespace ShowManager.Models
 		{
 			this.Name = name;
 			this.ImageKey = imgKey;
-
-			gentres = new List<SMElement>();
-			directions = new List<SMElement>();
-			contents = new List<SMElement>();
-			ages = new List<SMElement>();
-			categories = new List<SMElement>();
-			evaluateTypes = new List<SMElement>();
 		}
 
 		// Конструктор для загрузки

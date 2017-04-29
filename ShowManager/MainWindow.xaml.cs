@@ -24,7 +24,6 @@ namespace ShowManager
 	{
 		// Окна приложения
 		DragDropWindow wndDragDrop;
-		Gentres wndGentres;
 
 		// Объекты приложения
 		SMGentresBase gentres;
@@ -39,8 +38,6 @@ namespace ShowManager
 
 			// Инициализация окон
 			wndDragDrop = new DragDropWindow();
-			wndGentres = new Gentres(wndDragDrop, gentres);
-
 
 			wndDragDrop.HideWindow();
 			ExampleView.SetDragDropWindow(wndDragDrop);
@@ -52,7 +49,6 @@ namespace ShowManager
 		private void MainWindow_Closed(object sender, EventArgs e)
 		{
 			wndDragDrop.Close();
-			wndGentres.Close();
 		}
 
 		//
@@ -76,7 +72,8 @@ namespace ShowManager
 		// Жанры
 		public void Menu_Catalogue_Gentres(object sender, RoutedEventArgs e)
 		{
-			wndGentres.Show();
+			var wndGentres = new Gentres(wndDragDrop, gentres);
+			wndGentres.ShowDialog();
 		}
 
 		// Инициализация библиотеки изображений
