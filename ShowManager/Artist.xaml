@@ -1,0 +1,211 @@
+﻿<Window x:Class="ShowManager.Artist"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ShowManager"
+        mc:Ignorable="d"
+        Title="Artist" Height="400" Width="600">
+	<Window.Resources>
+		<Style TargetType="TextBlock">
+			<Setter Property="FontFamily" Value="Arial"/>
+			<Setter Property="FontSize" Value="12"/>
+			<Setter Property="FontWeight" Value="Bold"/>
+			<Setter Property="Margin" Value="4,0,0,2"/>
+		</Style>
+		<Style TargetType="TextBox">
+			<Setter Property="FontFamily" Value="Arial"/>
+			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="Padding" Value="4"/>
+		</Style>
+		<Style TargetType="ComboBox">
+			<Setter Property="FontFamily" Value="Arial"/>
+			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="Padding" Value="4"/>
+		</Style>
+		<Style TargetType="StackPanel">
+			<Setter Property="Margin" Value="8,4,8,8"/>
+		</Style>
+		<Style TargetType="StackPanel" x:Key="NumLR">
+			<Setter Property="Orientation" Value="Horizontal"/>
+			<Setter Property="Margin" Value="0"/>
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+		</Style>
+	</Window.Resources>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition></RowDefinition>
+			<RowDefinition Height="32"></RowDefinition>
+		</Grid.RowDefinitions>
+		<TabControl Grid.Row="0">
+			<TabItem Header="Персона/Коллектив">
+				<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<StackPanel Grid.Row="0">
+							<TextBlock Text="ФИО/Название:"/>
+							<TextBox Name="ArtistName"/>
+						</StackPanel>
+						<StackPanel Grid.Row="1">
+							<TextBlock Text="Общий жанр:"/>
+							<ComboBox Name="GentreGroup" ItemsSource="{Binding GentreGroups}"/>
+						</StackPanel>
+						<StackPanel Grid.Row="2">
+							<TextBlock Text="Подробный жанр:"/>
+							<ComboBox Name="GentreClass" ItemsSource="{Binding GentreClasses}"/>
+						</StackPanel>
+						<Grid Grid.Row="3">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
+							<StackPanel Grid.Row="0" Grid.Column="0">
+								<TextBlock Text="Направление:"/>
+								<ComboBox Name="GentreDirection" ItemsSource="{Binding GentreDirections}"/>
+							</StackPanel>
+							<StackPanel Grid.Row="0" Grid.Column="1">
+								<TextBlock Text="Состав:"/>
+								<ComboBox Name="GentreContent" ItemsSource="{Binding GentreContents}"/>
+							</StackPanel>
+							<StackPanel Grid.Row="1" Grid.Column="0">
+								<TextBlock Text="Возрастная группа:"/>
+								<ComboBox Name="GentreAge" ItemsSource="{Binding GentreAges}"/>
+							</StackPanel>
+							<StackPanel Grid.Row="1" Grid.Column="1">
+								<TextBlock Text="Категория:"/>
+								<ComboBox Name="GentreCategory" ItemsSource="{Binding GentreCategories}"/>
+							</StackPanel>
+						</Grid>
+					</Grid>
+				</ScrollViewer>
+			</TabItem>
+			<TabItem Header="Организация">
+				<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<StackPanel Grid.Row="0">
+							<TextBlock Text="Название:"/>
+							<TextBox Name="CompanyName"/>
+						</StackPanel>
+						<StackPanel Grid.Row="1">
+							<TextBlock Text="Руководитель:"/>
+							<TextBox Name="CompanyDirector"/>
+						</StackPanel>
+						<Grid Grid.Row="2">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
+							<StackPanel Grid.Row="0" Grid.Column="0">
+								<TextBlock Text="Концертмейстер:"/>
+								<TextBox Name="CompanyConcertMaster"/>
+							</StackPanel>
+							<StackPanel Grid.Row="0" Grid.Column="1">
+								<TextBlock Text="Звукорежиссер:"/>
+								<TextBox Name="CompanySoundDirector"/>
+							</StackPanel>
+							<StackPanel Grid.Row="1" Grid.Column="0">
+								<TextBlock Text="Педагог по вокалу:"/>
+								<TextBox Name="CompanyVocalTeacher"/>
+							</StackPanel>
+							<StackPanel Grid.Row="1" Grid.Column="1">
+								<TextBlock Text="Хореограф:"/>
+								<TextBox Name="CompanyDanceTeacher"/>
+							</StackPanel>
+						</Grid>
+					</Grid>
+				</ScrollViewer>
+			</TabItem>
+			<TabItem Header="Контакты">
+				<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition/>
+							<ColumnDefinition/>
+						</Grid.ColumnDefinitions>
+						<StackPanel Grid.Row="0" Grid.Column="0">
+							<TextBlock Text="Телефон:"/>
+							<TextBox Name="ContactPhone"/>
+						</StackPanel>
+						<StackPanel Grid.Row="0" Grid.Column="1">
+							<TextBlock Text="Электронная почта:"/>
+							<TextBox Name="ContactEmail"/>
+						</StackPanel>
+						<StackPanel Grid.Row="1" Grid.Column="0">
+							<TextBlock Text="Населенный пункт:"/>
+							<TextBox Name="ContactCity"/>
+						</StackPanel>
+						<StackPanel Grid.Row="1" Grid.Column="1">
+							<TextBlock Text="Регион/Область:"/>
+							<TextBox Name="ContactRegion"/>
+						</StackPanel>
+						<StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+							<TextBlock Text="Почтовый адрес:"/>
+							<TextBox Name="ContactAddress"/>
+						</StackPanel>
+					</Grid>
+				</ScrollViewer>
+			</TabItem>
+			<TabItem Header="Программа">
+				
+			</TabItem>
+			<TabItem Header="Дополнительно">
+				<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<Grid Grid.Row="0">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
+							<StackPanel Grid.Row="0" Grid.Column="0">
+								<TextBlock Text="Численность коллектива:"/>
+								<StackPanel Style="{StaticResource NumLR}">
+									<Button Name="NumLR_Dec" Width="32" Margin="0,0,1,0" Content="-"/>
+									<TextBox Name="NumLR_Val" Width="96" Text="0" HorizontalContentAlignment="Center"/>
+									<Button Name="NumLR_Inc" Width="32" Margin="1,0,0,0" Content="+"/>
+								</StackPanel>
+							</StackPanel>
+							<StackPanel Grid.Row="0" Grid.Column="1">
+								<TextBlock Text="Инструмент:"/>
+								<TextBox Name="AdditionTool"/>
+							</StackPanel>
+						</Grid>
+						<StackPanel Grid.Row="1">
+							<TextBlock Text="Техрайдер:"/>
+							<TextBox Name="AdditionRider" Height="128" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" TextWrapping="Wrap" AcceptsReturn="True"/>
+						</StackPanel>
+					</Grid>
+				</ScrollViewer>
+			</TabItem>
+		</TabControl>
+	</Grid>
+</Window>

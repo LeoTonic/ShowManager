@@ -20,7 +20,7 @@ namespace ShowManager
 	/// <summary>
 	/// Логика взаимодействия для MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow : Window
+	public partial class MainWindow : Window, ICommandCatcher
 	{
 		// Окна приложения
 		DragDropWindow wndDragDrop;
@@ -40,8 +40,14 @@ namespace ShowManager
 			wndDragDrop = new DragDropWindow();
 
 			wndDragDrop.HideWindow();
-			ExampleView.SetDragDropWindow(wndDragDrop);
-			ExamplePanel.Initialize(null, null, false);
+			ArtistView.SetDragDropWindow(wndDragDrop);
+			ArtistView.SetViewMode(SMListView.ViewMode.ArtistName, this);
+			ArtistPanel.Initialize(null, null, false);
+
+			TrackView.SetDragDropWindow(wndDragDrop);
+			TrackView.SetViewMode(SMListView.ViewMode.ArtistTrack, this);
+
+			ArtistToolBar.SetValues("user-add", "Добавить исполнителя", "user-edit", "Изменить исполнителя", "user-delete", "Удалить исполнителя", this);
 
 			Closed += MainWindow_Closed;
 		}
@@ -54,7 +60,7 @@ namespace ShowManager
 		//
 		// Обработка команд меню
 		//
-
+#region Menu Calls
 		//
 		// Фестиваль
 		//
@@ -75,6 +81,52 @@ namespace ShowManager
 			var wndGentres = new Gentres(wndDragDrop, gentres);
 			wndGentres.ShowDialog();
 		}
+
+		#endregion
+
+#region CommandCather definitions
+		public void ItemSelect(object sender, long itemID)
+		{
+
+		}
+
+		// Новый артист
+		public void ToolBarAdd(SMToolbar tb)
+		{
+			var artistWindow = new Artist();
+			artistWindow.ShowDialog();
+		}
+		public void ToolBarEdit(SMToolbar tb)
+		{
+
+		}
+		public void ToolBarRemove(SMToolbar tb)
+		{
+
+		}
+
+		public void PanelGroupClick(string panelName)
+		{
+
+		}
+		public void PanelGroupAdd(string panelName)
+		{
+
+		}
+		public void PanelGroupRename(string oldName, string newName)
+		{
+
+		}
+		public void PanelGroupDelete(string panelName)
+		{
+
+		}
+
+		public void DropItems(int insertIndex, SMListViewItem draggedItem, Object draggedTo)
+		{
+
+		}
+#endregion
 
 		// Инициализация библиотеки изображений
 		private void ImgLibInit()

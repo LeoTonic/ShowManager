@@ -5,14 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 				xmlns:controls="clr-namespace:ShowManager.Controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="Исполнители" Height="350" Width="525">
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"></RowDefinition>
-			<RowDefinition Height="Auto"></RowDefinition>
-			<RowDefinition Height="*"></RowDefinition>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="5"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
-		<Menu Grid.Row="0">
+		<Menu Grid.Row="0" Focusable="False">
 			<MenuItem Header="Фестиваль">
 				<MenuItem Header="Создать"/>
 				<MenuItem Header="Открыть"/>
@@ -24,10 +27,16 @@
 			</MenuItem>
 			<MenuItem Header="Каталог">
 				<MenuItem Header="Жанры..." Click="Menu_Catalogue_Gentres"/>
-				<MenuItem Header="Составы жюри..."/>
+				<MenuItem Header="Жюри">
+					<MenuItem Header="Составы..."/>
+					<MenuItem Header="База..."/>
+				</MenuItem>
 			</MenuItem>
 		</Menu>
-		<controls:SMGroupsPanel x:Name="ExamplePanel" Grid.Row="1"/>
-		<controls:SMListView x:Name="ExampleView" Grid.Row="2"/>
+		<controls:SMGroupsPanel x:Name="ArtistPanel" Grid.Row="1" Focusable="False"/>
+		<controls:SMListView x:Name="ArtistView" Grid.Row="2"/>
+		<GridSplitter Grid.Row="3" HorizontalAlignment="Stretch" Focusable="False"/>
+		<controls:SMListView x:Name="TrackView" Grid.Row="4"/>
+		<controls:SMToolbar x:Name="ArtistToolBar" Grid.Row="5" Focusable="False"/>
 	</Grid>
 </Window>
