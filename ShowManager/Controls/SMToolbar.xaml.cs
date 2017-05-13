@@ -108,6 +108,12 @@ namespace ShowManager.Controls
 			return "/ShowManager;component/Images/Tools/" + image + ".png";
 		}
 
+		// Скрыть корзину
+		public void HideRecycle()
+		{
+			Recycle.Visibility = Visibility.Collapsed;
+		}
+
 		public void SetValues(string imgAdd, string tooltipAdd, string imgEdit, string tooltipEdit, string imgRemove, string tooltipRemove, ICommandCatcher catchTo)
 		{
 			if (!string.IsNullOrWhiteSpace(imgAdd))

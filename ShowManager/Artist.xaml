@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ShowManager"
+				xmlns:controls="clr-namespace:ShowManager.Controls"
         mc:Ignorable="d"
         Title="Artist" Height="400" Width="600">
 	<Window.Resources>
@@ -26,16 +26,29 @@
 		<Style TargetType="StackPanel">
 			<Setter Property="Margin" Value="8,4,8,8"/>
 		</Style>
-		<Style TargetType="StackPanel" x:Key="NumLR">
-			<Setter Property="Orientation" Value="Horizontal"/>
-			<Setter Property="Margin" Value="0"/>
-			<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Style TargetType="ListView">
+			<Setter Property="FontFamily" Value="Arial"/>
+			<Setter Property="FontSize" Value="10"/>
+			<Setter Property="FontWeight" Value="Normal"/>
+		</Style>
+		<Style TargetType="ListViewItem">
+			<Setter Property="Foreground" Value="Black"/>
+			<Setter Property="BorderBrush" Value="LightGray" />
+			<Setter Property="BorderThickness" Value="0,0,0,1" />
+			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+		</Style>
+		<Style TargetType="Button">
+			<Setter Property="FontFamily" Value="Arial"/>
+			<Setter Property="FontSize" Value="12"/>
+			<Setter Property="Padding" Value="8"/>
+			<Setter Property="Margin" Value="8"/>
+			<Setter Property="Width" Value="96"/>
 		</Style>
 	</Window.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition></RowDefinition>
-			<RowDefinition Height="32"></RowDefinition>
+			<RowDefinition Height="48"></RowDefinition>
 		</Grid.RowDefinitions>
 		<TabControl Grid.Row="0">
 			<TabItem Header="Персона/Коллектив">
@@ -169,12 +182,28 @@
 				</ScrollViewer>
 			</TabItem>
 			<TabItem Header="Программа">
-				
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+					<ListView Grid.Row="0" Name="tracksView">
+						<ListView.View>
+							<GridView>
+								<GridViewColumn Header="Произведение" Width="200" DisplayMemberBinding="{Binding TrackName}"/>
+								<GridViewColumn Header="Длительность" Width="100" DisplayMemberBinding="{Binding TrackLength}"/>
+								<GridViewColumn Header="Фонограмма" Width="200" DisplayMemberBinding="{Binding TrackMusic}"/>
+							</GridView>
+						</ListView.View>
+					</ListView>
+					<controls:SMToolbar Grid.Row="1" x:Name="TracksToolbar" Focusable="False"/>
+				</Grid>
 			</TabItem>
 			<TabItem Header="Дополнительно">
 				<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
 					<Grid>
 						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
@@ -188,11 +217,7 @@
 							</Grid.ColumnDefinitions>
 							<StackPanel Grid.Row="0" Grid.Column="0">
 								<TextBlock Text="Численность коллектива:"/>
-								<StackPanel Style="{StaticResource NumLR}">
-									<Button Name="NumLR_Dec" Width="32" Margin="0,0,1,0" Content="-"/>
-									<TextBox Name="NumLR_Val" Width="96" Text="0" HorizontalContentAlignment="Center"/>
-									<Button Name="NumLR_Inc" Width="32" Margin="1,0,0,0" Content="+"/>
-								</StackPanel>
+								<TextBox Name="TeamCount" Text="0"/>
 							</StackPanel>
 							<StackPanel Grid.Row="0" Grid.Column="1">
 								<TextBlock Text="Инструмент:"/>
@@ -203,9 +228,27 @@
 							<TextBlock Text="Техрайдер:"/>
 							<TextBox Name="AdditionRider" Height="128" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" TextWrapping="Wrap" AcceptsReturn="True"/>
 						</StackPanel>
+						<Grid Grid.Row="2">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
+							<StackPanel Grid.Row="0" Grid.Column="0">
+								<TextBlock Text="Время на сборку:"/>
+								<controls:TimePicker x:Name="PrepareTimeBegin"/>
+							</StackPanel>
+							<StackPanel Grid.Row="0" Grid.Column="1">
+								<TextBlock Text="Время на разбор:"/>
+								<controls:TimePicker x:Name="PrepareTimeEnd"/>
+							</StackPanel>
+						</Grid>
 					</Grid>
 				</ScrollViewer>
 			</TabItem>
 		</TabControl>
+		<Button Grid.Row="1" Content="Сохранить" HorizontalAlignment="Right"/>
 	</Grid>
 </Window>

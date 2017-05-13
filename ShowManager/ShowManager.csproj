@@ -91,6 +91,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\TimePicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TrackDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Gentres.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -130,6 +138,12 @@
     </Compile>
     <Compile Include="Controls\SMToolbar.xaml.cs">
       <DependentUpon>SMToolbar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TimePicker.xaml.cs">
+      <DependentUpon>TimePicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TrackDialog.xaml.cs">
+      <DependentUpon>TrackDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Gentres.xaml.cs">
       <DependentUpon>Gentres.xaml</DependentUpon>
