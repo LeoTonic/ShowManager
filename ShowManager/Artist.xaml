@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 				xmlns:controls="clr-namespace:ShowManager.Controls"
         mc:Ignorable="d"
-        Title="Artist" Height="400" Width="600">
+        Title="Artist" Height="408" Width="600">
 	<Window.Resources>
 		<Style TargetType="TextBlock">
 			<Setter Property="FontFamily" Value="Arial"/>
@@ -37,7 +37,7 @@
 			<Setter Property="BorderThickness" Value="0,0,0,1" />
 			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
 		</Style>
-		<Style TargetType="Button">
+		<Style TargetType="Button" x:Key="StdButton">
 			<Setter Property="FontFamily" Value="Arial"/>
 			<Setter Property="FontSize" Value="12"/>
 			<Setter Property="Padding" Value="8"/>
@@ -62,15 +62,15 @@
 						</Grid.RowDefinitions>
 						<StackPanel Grid.Row="0">
 							<TextBlock Text="ФИО/Название:"/>
-							<TextBox Name="ArtistName"/>
+							<TextBox Text="{Binding ArtistName}"/>
 						</StackPanel>
 						<StackPanel Grid.Row="1">
 							<TextBlock Text="Общий жанр:"/>
-							<ComboBox Name="GentreGroup" ItemsSource="{Binding GentreGroups}"/>
+							<ComboBox Name="GentreGroup" SelectionChanged="GentreGroup_SelectionChanged"/>
 						</StackPanel>
 						<StackPanel Grid.Row="2">
 							<TextBlock Text="Подробный жанр:"/>
-							<ComboBox Name="GentreClass" ItemsSource="{Binding GentreClasses}"/>
+							<ComboBox Name="GentreClass"/>
 						</StackPanel>
 						<Grid Grid.Row="3">
 							<Grid.RowDefinitions>
@@ -83,19 +83,19 @@
 							</Grid.ColumnDefinitions>
 							<StackPanel Grid.Row="0" Grid.Column="0">
 								<TextBlock Text="Направление:"/>
-								<ComboBox Name="GentreDirection" ItemsSource="{Binding GentreDirections}"/>
+								<ComboBox Name="GentreDirection"/>
 							</StackPanel>
 							<StackPanel Grid.Row="0" Grid.Column="1">
 								<TextBlock Text="Состав:"/>
-								<ComboBox Name="GentreContent" ItemsSource="{Binding GentreContents}"/>
+								<ComboBox Name="GentreContent"/>
 							</StackPanel>
 							<StackPanel Grid.Row="1" Grid.Column="0">
 								<TextBlock Text="Возрастная группа:"/>
-								<ComboBox Name="GentreAge" ItemsSource="{Binding GentreAges}"/>
+								<ComboBox Name="GentreAge"/>
 							</StackPanel>
 							<StackPanel Grid.Row="1" Grid.Column="1">
 								<TextBlock Text="Категория:"/>
-								<ComboBox Name="GentreCategory" ItemsSource="{Binding GentreCategories}"/>
+								<ComboBox Name="GentreCategory"/>
 							</StackPanel>
 						</Grid>
 					</Grid>
@@ -111,11 +111,11 @@
 						</Grid.RowDefinitions>
 						<StackPanel Grid.Row="0">
 							<TextBlock Text="Название:"/>
-							<TextBox Name="CompanyName"/>
+							<TextBox Text="{Binding CompanyName}"/>
 						</StackPanel>
 						<StackPanel Grid.Row="1">
 							<TextBlock Text="Руководитель:"/>
-							<TextBox Name="CompanyDirector"/>
+							<TextBox Text="{Binding TeamDirector}"/>
 						</StackPanel>
 						<Grid Grid.Row="2">
 							<Grid.RowDefinitions>
@@ -128,19 +128,19 @@
 							</Grid.ColumnDefinitions>
 							<StackPanel Grid.Row="0" Grid.Column="0">
 								<TextBlock Text="Концертмейстер:"/>
-								<TextBox Name="CompanyConcertMaster"/>
+								<TextBox Text="{Binding TeamConcertMaster}"/>
 							</StackPanel>
 							<StackPanel Grid.Row="0" Grid.Column="1">
 								<TextBlock Text="Звукорежиссер:"/>
-								<TextBox Name="CompanySoundDirector"/>
+								<TextBox Text="{Binding TeamSoundDirector}"/>
 							</StackPanel>
 							<StackPanel Grid.Row="1" Grid.Column="0">
 								<TextBlock Text="Педагог по вокалу:"/>
-								<TextBox Name="CompanyVocalTeacher"/>
+								<TextBox Text="{Binding TeamVocalMaster}"/>
 							</StackPanel>
 							<StackPanel Grid.Row="1" Grid.Column="1">
 								<TextBlock Text="Хореограф:"/>
-								<TextBox Name="CompanyDanceTeacher"/>
+								<TextBox Text="{Binding TeamDanceMaster}"/>
 							</StackPanel>
 						</Grid>
 					</Grid>
@@ -160,23 +160,23 @@
 						</Grid.ColumnDefinitions>
 						<StackPanel Grid.Row="0" Grid.Column="0">
 							<TextBlock Text="Телефон:"/>
-							<TextBox Name="ContactPhone"/>
+							<TextBox Text="{Binding ContactPhone}"/>
 						</StackPanel>
 						<StackPanel Grid.Row="0" Grid.Column="1">
 							<TextBlock Text="Электронная почта:"/>
-							<TextBox Name="ContactEmail"/>
+							<TextBox Text="{Binding ContactEmail}"/>
 						</StackPanel>
 						<StackPanel Grid.Row="1" Grid.Column="0">
 							<TextBlock Text="Населенный пункт:"/>
-							<TextBox Name="ContactCity"/>
+							<TextBox Text="{Binding ContactCity}"/>
 						</StackPanel>
 						<StackPanel Grid.Row="1" Grid.Column="1">
 							<TextBlock Text="Регион/Область:"/>
-							<TextBox Name="ContactRegion"/>
+							<TextBox Text="{Binding ContactRegion}"/>
 						</StackPanel>
 						<StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
 							<TextBlock Text="Почтовый адрес:"/>
-							<TextBox Name="ContactAddress"/>
+							<TextBox Text="{Binding ContactAddress}"/>
 						</StackPanel>
 					</Grid>
 				</ScrollViewer>
@@ -192,7 +192,7 @@
 							<GridView>
 								<GridViewColumn Header="Произведение" Width="200" DisplayMemberBinding="{Binding TrackName}"/>
 								<GridViewColumn Header="Длительность" Width="100" DisplayMemberBinding="{Binding TrackLength}"/>
-								<GridViewColumn Header="Фонограмма" Width="200" DisplayMemberBinding="{Binding TrackMusic}"/>
+								<GridViewColumn Header="Фонограмма" Width="200" DisplayMemberBinding="{Binding MusicExist}"/>
 							</GridView>
 						</ListView.View>
 					</ListView>
@@ -204,7 +204,8 @@
 					<Grid>
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto"/>
-							<RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
 						<Grid Grid.Row="0">
@@ -217,38 +218,47 @@
 							</Grid.ColumnDefinitions>
 							<StackPanel Grid.Row="0" Grid.Column="0">
 								<TextBlock Text="Численность коллектива:"/>
-								<TextBox Name="TeamCount" Text="0"/>
+								<TextBox Text="{Binding TeamCount}"/>
 							</StackPanel>
 							<StackPanel Grid.Row="0" Grid.Column="1">
 								<TextBlock Text="Инструмент:"/>
-								<TextBox Name="AdditionTool"/>
+								<TextBox Text="{Binding TeamTool}"/>
 							</StackPanel>
 						</Grid>
 						<StackPanel Grid.Row="1">
 							<TextBlock Text="Техрайдер:"/>
-							<TextBox Name="AdditionRider" Height="128" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" TextWrapping="Wrap" AcceptsReturn="True"/>
+							<TextBox Text="{Binding TeamRider}" Height="96" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" TextWrapping="Wrap" AcceptsReturn="True"/>
 						</StackPanel>
 						<Grid Grid.Row="2">
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto"/>
 							</Grid.RowDefinitions>
 							<Grid.ColumnDefinitions>
-								<ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
 								<ColumnDefinition/>
 							</Grid.ColumnDefinitions>
 							<StackPanel Grid.Row="0" Grid.Column="0">
 								<TextBlock Text="Время на сборку:"/>
-								<controls:TimePicker x:Name="PrepareTimeBegin"/>
+								<controls:TimePicker x:Name="PrepareTimeStart"/>
 							</StackPanel>
 							<StackPanel Grid.Row="0" Grid.Column="1">
 								<TextBlock Text="Время на разбор:"/>
-								<controls:TimePicker x:Name="PrepareTimeEnd"/>
+								<controls:TimePicker x:Name="PrepareTimeFinish"/>
 							</StackPanel>
-						</Grid>
-					</Grid>
+                            <StackPanel Grid.Row="0" Grid.Column="2">
+                                <TextBlock Text="Время репетиции:"/>
+                                <controls:TimePicker x:Name="PrepareTimeLength"/>
+                            </StackPanel>
+                        </Grid>
+                        <StackPanel Grid.Row="3">
+                            <TextBlock Text="Информация для репетиции:"/>
+                            <TextBox Text="{Binding PrepareInfo}"/>
+                        </StackPanel>
+                    </Grid>
 				</ScrollViewer>
 			</TabItem>
 		</TabControl>
-		<Button Grid.Row="1" Content="Сохранить" HorizontalAlignment="Right"/>
+		<Button Grid.Row="1" Content="Сохранить" HorizontalAlignment="Right" Style="{StaticResource StdButton}"/>
 	</Grid>
 </Window>

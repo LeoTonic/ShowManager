@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace ShowManager.Models
 {
 	// Базовый элемент во всех массивах моделей данных
 	public class SMElement
 	{
-		private long id; // Идентификатор элемента (для поиска)
+        private long id; // Идентификатор элемента (для поиска)
 		private string name; // Имя элемента
 
 		private int imageKey; // Ключ к изображению (из словаря ImgPath в App)

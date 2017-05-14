@@ -93,7 +93,7 @@ namespace ShowManager
 		// Новый артист
 		public void ToolBarAdd(SMToolbar tb)
 		{
-			var artistWindow = new Artist();
+			var artistWindow = new Artist(gentres, null);
 			artistWindow.ShowDialog();
 		}
 		public void ToolBarEdit(SMToolbar tb)
