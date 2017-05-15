@@ -59,6 +59,37 @@ namespace ShowManager.Models
             }
         }
 
+        public string MinusID
+        {
+            get
+            {
+                if (this.minusID != 0)
+                    return this.minusID.ToString();
+                else
+                    return "";
+            }
+        }
+
+        public string MinusExtention
+        {
+            get
+            {
+                return this.minusExtention;
+            }
+        }
+
+        public TimeSpan TrackLength
+        {
+            get
+            {
+                return this.length;
+            }
+            set
+            {
+                this.length = value;
+            }
+        }
+        /*
         public string TrackLength
         {
             get
@@ -78,6 +109,7 @@ namespace ShowManager.Models
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TrackLength"));
             }
         }
+        */
 
         public string MinusExist
         {
@@ -91,15 +123,27 @@ namespace ShowManager.Models
         }
 
 		// Конструктор
-		public SMTrack(SMArtist parent, string name, TimeSpan length)
+		public SMTrack(SMArtist parent)
 		{
 			this.artist = parent;
-			this.Name = name;
-			this.length = length;
+			this.Name = "";
+			this.length = TimeSpan.Zero;
             this.minusID = 0;
             this.minusTrack = "";
             this.minusArtist = "";
             this.minusExtention = "";
 		}
+
+        // Копия свойств из другого объекта
+        public void Assign(SMTrack from)
+        {
+            this.Name = from.Name;
+            this.ID = from.ID;
+            this.length = from.length;
+            this.minusID = from.minusID;
+            this.minusTrack = from.minusTrack;
+            this.minusArtist = from.minusArtist;
+            this.minusExtention = from.minusExtention;
+        }
 	}
 }

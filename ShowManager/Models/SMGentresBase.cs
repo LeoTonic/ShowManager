@@ -44,7 +44,7 @@ namespace ShowManager.Models
 			}
 			catch (IOException ioex)
 			{
-				System.Diagnostics.Debug.WriteLine(ioex.Message);
+                System.Console.WriteLine(ioex.Message);
 			}
 		}
 
@@ -200,8 +200,8 @@ namespace ShowManager.Models
 			}
 			catch (IOException ex)
 			{
-				System.Diagnostics.Debug.WriteLine(ex.Message);
-				return;
+                System.Console.WriteLine(ex.Message);
+    			return;
 			}
 
 			try
@@ -214,8 +214,8 @@ namespace ShowManager.Models
 			}
 			catch (IOException ex)
 			{
-				System.Diagnostics.Debug.WriteLine(ex.Message);
-				return;
+                System.Console.WriteLine(ex.Message);
+                return;
 			}
 			finally
 			{

@@ -66,13 +66,19 @@ namespace ShowManager
         // Получение идентификатора по элементу
         private long GetComboItemID(ComboBoxItem cbi)
         {
-            return (long)cbi.Tag;
+            if (cbi == null)
+                return -1;
+            else
+                return (long)cbi.Tag;
         }
 
 		public void ToolBarAdd(SMToolbar tb)
 		{
 			var tDlg = new TrackDialog();
-			tDlg.ShowDialog();
+            if (tDlg.ShowDialog() == true)
+            {
+                System.Console.WriteLine("OK");
+            }
 		}
 		public void ToolBarEdit(SMToolbar tb)
 		{
@@ -96,7 +102,16 @@ namespace ShowManager
             // Определим жанровую группу
             var cb = sender as ComboBox;
             var gID = GetComboItemID((ComboBoxItem)cb.SelectedItem);
+            if (gID == -1)
+            {
+                System.Console.WriteLine("Gentre group selection failed");
+                return;
+            }
+
             var gentre = gentresBase.GetGentreItem(gID);
+
+            // Запомним для артиста
+            artist.GentreGroup = gID;
 
             // Установим подробный жанр
             GentreClass.Items.Clear();
@@ -158,6 +173,61 @@ namespace ShowManager
                 GentreCategory.SelectedIndex = GetComboItemIndex(artist.GentreCategory, GentreCategory.Items);
             }
 
+        }
+
+        private void GentreClass_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Определим жанр
+            var cb = sender as ComboBox;
+            var gID = GetComboItemID((ComboBoxItem)cb.SelectedItem);
+            if (gID == -1)
+                return;
+            // Запомним для артиста
+            artist.GentreClass = gID;
+        }
+
+        private void GentreDirection_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Определим направление
+            var cb = sender as ComboBox;
+            var gID = GetComboItemID((ComboBoxItem)cb.SelectedItem);
+            if (gID == -1)
+                return;
+            // Запомним для артиста
+            artist.GentreDirection = gID;
+        }
+
+        private void GentreContent_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Определим состав
+            var cb = sender as ComboBox;
+            var gID = GetComboItemID((ComboBoxItem)cb.SelectedItem);
+            if (gID == -1)
+                return;
+            // Запомним для артиста
+            artist.GentreContent = gID;
+        }
+
+        private void GentreAge_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Определим возрастную группу
+            var cb = sender as ComboBox;
+            var gID = GetComboItemID((ComboBoxItem)cb.SelectedItem);
+            if (gID == -1)
+                return;
+            // Запомним для артиста
+            artist.GentreAge = gID;
+        }
+
+        private void GentreCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Определим категорию
+            var cb = sender as ComboBox;
+            var gID = GetComboItemID((ComboBoxItem)cb.SelectedItem);
+            if (gID == -1)
+                return;
+            // Запомним для артиста
+            artist.GentreCategory = gID;
         }
     }
 }

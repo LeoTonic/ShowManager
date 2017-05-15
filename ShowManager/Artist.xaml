@@ -70,7 +70,7 @@
 						</StackPanel>
 						<StackPanel Grid.Row="2">
 							<TextBlock Text="Подробный жанр:"/>
-							<ComboBox Name="GentreClass"/>
+							<ComboBox Name="GentreClass" SelectionChanged="GentreClass_SelectionChanged"/>
 						</StackPanel>
 						<Grid Grid.Row="3">
 							<Grid.RowDefinitions>
@@ -83,19 +83,19 @@
 							</Grid.ColumnDefinitions>
 							<StackPanel Grid.Row="0" Grid.Column="0">
 								<TextBlock Text="Направление:"/>
-								<ComboBox Name="GentreDirection"/>
+								<ComboBox Name="GentreDirection" SelectionChanged="GentreDirection_SelectionChanged"/>
 							</StackPanel>
 							<StackPanel Grid.Row="0" Grid.Column="1">
 								<TextBlock Text="Состав:"/>
-								<ComboBox Name="GentreContent"/>
+								<ComboBox Name="GentreContent" SelectionChanged="GentreContent_SelectionChanged"/>
 							</StackPanel>
 							<StackPanel Grid.Row="1" Grid.Column="0">
 								<TextBlock Text="Возрастная группа:"/>
-								<ComboBox Name="GentreAge"/>
+								<ComboBox Name="GentreAge" SelectionChanged="GentreAge_SelectionChanged"/>
 							</StackPanel>
 							<StackPanel Grid.Row="1" Grid.Column="1">
 								<TextBlock Text="Категория:"/>
-								<ComboBox Name="GentreCategory"/>
+								<ComboBox Name="GentreCategory" SelectionChanged="GentreCategory_SelectionChanged"/>
 							</StackPanel>
 						</Grid>
 					</Grid>

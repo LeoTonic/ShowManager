@@ -109,7 +109,7 @@ namespace ShowManager.Models
 			}
 			catch (IOException ioex)
 			{
-				System.Diagnostics.Debug.WriteLine(ioex.Message);
+                System.Console.WriteLine(ioex.Message);
 			}
 		}
 
@@ -129,7 +129,7 @@ namespace ShowManager.Models
 			}
 			catch (IOException ioex)
 			{
-				System.Diagnostics.Debug.WriteLine(ioex.Message);
+                System.Console.WriteLine(ioex.Message);
 			}
 		}
 	}

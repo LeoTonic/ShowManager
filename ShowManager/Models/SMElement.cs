@@ -30,8 +30,8 @@ namespace ShowManager.Models
 				}
 				else
 				{
-					System.Diagnostics.Debug.WriteLine("SMElement ID is not valid!");
-					GenerateID();
+                    System.Console.WriteLine("SMElement ID is not valid!");
+                    GenerateID();
 				}
 			}
 		}
@@ -46,7 +46,7 @@ namespace ShowManager.Models
 			{
 				if (string.IsNullOrWhiteSpace(value))
 				{
-					System.Diagnostics.Debug.WriteLine("SMElement Name is empty!");
+                    System.Console.WriteLine("SMElement Name is empty!");
 				}
 				this.name = value;
 			}
@@ -94,7 +94,7 @@ namespace ShowManager.Models
 			}
 			catch (IOException ioex)
 			{
-				System.Diagnostics.Debug.WriteLine(ioex.Message);
+                System.Console.WriteLine(ioex.Message);
 			}
 		}
 
@@ -108,7 +108,7 @@ namespace ShowManager.Models
 			}
 			catch (IOException ioex)
 			{
-				System.Diagnostics.Debug.WriteLine(ioex.Message);
+                System.Console.WriteLine(ioex.Message);
 			}
 		}
 	}
