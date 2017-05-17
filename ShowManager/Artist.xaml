@@ -187,12 +187,12 @@
 						<RowDefinition/>
 						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
-					<ListView Grid.Row="0" Name="tracksView">
+					<ListView Grid.Row="0" x:Name="tracksView">
 						<ListView.View>
 							<GridView>
 								<GridViewColumn Header="Произведение" Width="200" DisplayMemberBinding="{Binding TrackName}"/>
 								<GridViewColumn Header="Длительность" Width="100" DisplayMemberBinding="{Binding TrackLength}"/>
-								<GridViewColumn Header="Фонограмма" Width="200" DisplayMemberBinding="{Binding MusicExist}"/>
+								<GridViewColumn Header="Фонограмма" Width="200" DisplayMemberBinding="{Binding MinusExist}"/>
 							</GridView>
 						</ListView.View>
 					</ListView>

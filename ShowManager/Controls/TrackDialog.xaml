@@ -56,12 +56,12 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-				<Button Grid.Column="0" Content="Добавить..."/>
-				<Button Grid.Column="1" Content="Убрать"/>
-                <TextBlock Grid.Column="2" Name="TrackMinusID"/>
-            </Grid>
+          <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+				<Button Grid.Column="0" Content="Добавить..." x:Name="AddMinus" Click="AddMinus_Click"/>
+				<Button Grid.Column="1" Content="Убрать" x:Name="RemoveMinus" Click="RemoveMinus_Click"/>
+        <TextBlock Grid.Column="2" x:Name="TrackMinusID" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+       </Grid>
 		</StackPanel>
 		<StackPanel Grid.Row="2">
 			<TextBlock Text="Имя файла для звукорежиссера [артист]:"/>

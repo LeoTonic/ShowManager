@@ -4,24 +4,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace ShowManager.Models
 {
 	// Класс исполнителя
 	public class SMArtist: SMElement, INotifyPropertyChanged
 	{
-        public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler PropertyChanged;
+    private SMGentresBase gentreBase;
+		private SMProject project;
+		public SMProject ParentProject
+		{
+			get
+			{
+				return this.project;
+			}
+		}
+		
+    public ObservableCollection<SMTrack> Tracks
+    {
+      get
+      {
+        return this.tracks;
+      }
+    }
+		private ObservableCollection<SMTrack> tracks = new ObservableCollection<SMTrack>(); // Массив композиций участника
 
-        private SMGentresBase gentreBase;
-
-        public List<SMTrack> Tracks
-        {
-            get
-            {
-                return this.tracks;
-            }
-        }
-		private List<SMTrack> tracks; // Массив композиций участника
 #region Artist_Props
         public string ArtistName
         {
@@ -345,20 +354,20 @@ namespace ShowManager.Models
 #endregion
 
         // Конструктор
-        public SMArtist(SMGentresBase gb, SMArtist from)
+        public SMArtist(SMProject parent, SMGentresBase gb, SMArtist from)
         {
-            this.gentreBase = gb;
-            this.tracks = new List<SMTrack>();
+					this.project = parent;
+					this.gentreBase = gb;
 
-            if (from == null)
-            {
-                this.Name = "";
-            }
-            else
-            {
-                this.Name = from.Name;
-                this.ID = from.ID;
-            }
+          if (from == null)
+          {
+            this.Name = "";
+          }
+          else
+          {
+            this.Name = from.Name;
+            this.ID = from.ID;
+          }
         }
 	}
 }

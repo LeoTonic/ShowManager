@@ -28,6 +28,9 @@ namespace ShowManager
 		// Объекты приложения
 		SMGentresBase gentres;
 
+		// Текущий проект
+		SMProject currentProject;
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -35,6 +38,12 @@ namespace ShowManager
 
 			// Инициализация объектов
 			gentres = new SMGentresBase();
+
+			// Инициализация проекта
+			currentProject = new SMProject()
+			{
+				TrackFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+			};
 
 			// Инициализация окон
 			wndDragDrop = new DragDropWindow();
@@ -93,7 +102,7 @@ namespace ShowManager
 		// Новый артист
 		public void ToolBarAdd(SMToolbar tb)
 		{
-			var artistWindow = new Artist(gentres, null);
+			var artistWindow = new Artist(currentProject, gentres, null);
 			artistWindow.ShowDialog();
 		}
 		public void ToolBarEdit(SMToolbar tb)
