@@ -11,11 +11,11 @@ namespace ShowManager.Models
 	// Базовый элемент во всех массивах моделей данных
 	public class SMElement
 	{
-        private long id; // Идентификатор элемента (для поиска)
+		private long id; // Идентификатор элемента (для поиска)
 		private string name; // Имя элемента
 
 		private int imageKey; // Ключ к изображению (из словаря ImgPath в App)
-		
+
 		public long ID
 		{
 			get
@@ -30,8 +30,8 @@ namespace ShowManager.Models
 				}
 				else
 				{
-                    System.Console.WriteLine("SMElement ID is not valid!");
-                    GenerateID();
+					System.Console.WriteLine("SMElement ID is not valid!");
+					GenerateID();
 				}
 			}
 		}
@@ -44,10 +44,10 @@ namespace ShowManager.Models
 			}
 			set
 			{
-				if (string.IsNullOrWhiteSpace(value))
-				{
-                    System.Console.WriteLine("SMElement Name is empty!");
-				}
+//				if (string.IsNullOrWhiteSpace(value))
+//				{
+//					System.Console.WriteLine("SMElement Name is empty!");
+//				}
 				this.name = value;
 			}
 		}
@@ -94,7 +94,7 @@ namespace ShowManager.Models
 			}
 			catch (IOException ioex)
 			{
-                System.Console.WriteLine(ioex.Message);
+				System.Console.WriteLine(ioex.Message);
 			}
 		}
 
@@ -108,7 +108,7 @@ namespace ShowManager.Models
 			}
 			catch (IOException ioex)
 			{
-                System.Console.WriteLine(ioex.Message);
+				System.Console.WriteLine(ioex.Message);
 			}
 		}
 	}

@@ -24,6 +24,8 @@ namespace ShowManager.Controls
 	{
 		private SMTrack track;
 
+		private bool needRemoveMinus;
+
 		public SMTrack Track
 		{
 			get
@@ -57,6 +59,8 @@ namespace ShowManager.Controls
 			}
 			TrackMinusArtist.Text = track.MinusArtistName;
 			TrackMinusTrack.Text = track.MinusTrackName;
+
+			needRemoveMinus = false;
 		}
 
 		private void SaveData_Click(object sender, RoutedEventArgs e)
@@ -87,8 +91,19 @@ namespace ShowManager.Controls
 			track.Name = TrackName.Text;
 			track.TrackLength = TrackLength.Value;
 
-			track.MinusArtistName = TrackMinusArtist.Text;
-			track.MinusTrackName = TrackMinusTrack.Text;
+			// Убираем минусовку если пользователь удалил ее
+			if (track.MinusID != 0 && needRemoveMinus)
+			{
+				track.MinusID = 0;
+				track.MinusArtistName = "";
+				track.MinusTrackName = "";
+				track.MinusExtention = "";
+			}
+			else
+			{
+				track.MinusArtistName = TrackMinusArtist.Text;
+				track.MinusTrackName = TrackMinusTrack.Text;
+			}
 
 			// Пишем минусовку в коллекцию
 			if (Directory.Exists(track.ParentArtist.ParentProject.TrackFolderPath) && !string.IsNullOrWhiteSpace(minusFilePath))
@@ -121,6 +136,7 @@ namespace ShowManager.Controls
 				minusFilePath = ofd.FileName;
 				TrackMinusID.Text = "Фонограмма добавлена";
 				RemoveMinus.IsEnabled = true;
+				needRemoveMinus = false;
 			}
 		}
 
@@ -131,6 +147,7 @@ namespace ShowManager.Controls
 				minusFilePath = "";
 				TrackMinusID.Text = "";
 				RemoveMinus.IsEnabled = false;
+				needRemoveMinus = true;
 			}
 		}
 

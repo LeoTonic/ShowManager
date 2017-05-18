@@ -31,6 +31,9 @@ namespace ShowManager
 		// Текущий проект
 		SMProject currentProject;
 
+		// Имя текущей группы (в панели групп артистов)
+		private string selectedPanelName;
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -51,7 +54,7 @@ namespace ShowManager
 			wndDragDrop.HideWindow();
 			ArtistView.SetDragDropWindow(wndDragDrop);
 			ArtistView.SetViewMode(SMListView.ViewMode.ArtistName, this);
-			ArtistPanel.Initialize(null, null, false);
+			ArtistPanel.Initialize(null, this, false, currentProject.GroupsArtist);
 
 			TrackView.SetDragDropWindow(wndDragDrop);
 			TrackView.SetViewMode(SMListView.ViewMode.ArtistTrack, this);
@@ -103,7 +106,20 @@ namespace ShowManager
 		public void ToolBarAdd(SMToolbar tb)
 		{
 			var artistWindow = new Artist(currentProject, gentres, null);
-			artistWindow.ShowDialog();
+			if (artistWindow.ShowDialog() == true)
+			{
+				// Добавляем в массив
+				var newArtist = new SMArtist(currentProject, gentres, artistWindow.ArtistObj);
+				currentProject.Artists.Add(newArtist);
+
+				// И в группу
+				SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, selectedPanelName);
+				if (getGroup != null)
+				{
+					getGroup.Add(newArtist.ID);
+					ArtistView.Add(newArtist.ID, 106, labelText1: newArtist.Name, labelText2: newArtist.CompanyName);
+				}
+			}
 		}
 		public void ToolBarEdit(SMToolbar tb)
 		{
@@ -116,19 +132,22 @@ namespace ShowManager
 
 		public void PanelGroupClick(string panelName)
 		{
-
+			selectedPanelName = panelName;
+			// Сюда добавить код отображения артистов группы
+			RefreshArtistView();
 		}
-		public void PanelGroupAdd(string panelName)
-		{
-
+		public void PanelGroupAdd(string panelName) {
+			currentProject.GroupsArtist.Add(new SMGroup(panelName));
 		}
-		public void PanelGroupRename(string oldName, string newName)
-		{
 
+		public void PanelGroupRename(string oldName, string newName) {
+			// Ищем группу
+			SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, oldName);
+			getGroup.Name = newName;
 		}
-		public void PanelGroupDelete(string panelName)
-		{
 
+		public void PanelGroupDelete(string panelName) {
+			// Написать обработку удаления или переноса элементов в основную группу
 		}
 
 		public void DropItems(int insertIndex, SMListViewItem draggedItem, Object draggedTo)
@@ -137,6 +156,19 @@ namespace ShowManager
 		}
 #endregion
 
+		// Отображение элементов при изменении группы
+		private void RefreshArtistView()
+		{
+			ArtistView.Clear();
+			SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, selectedPanelName);
+			if (getGroup == null)
+				return;
+			foreach(long artistID in getGroup.IDList)
+			{
+				SMArtist getArtist = currentProject.GetArtistByID(artistID);
+				ArtistView.Add(getArtist.ID, 106, labelText1: getArtist.Name, labelText2: getArtist.CompanyName);
+			}
+		}
 		// Инициализация библиотеки изображений
 		private void ImgLibInit()
 		{

@@ -51,7 +51,7 @@
 			<RowDefinition Height="48"></RowDefinition>
 		</Grid.RowDefinitions>
 		<TabControl Grid.Row="0">
-			<TabItem Header="Персона/Коллектив">
+			<TabItem Header="Персона/Коллектив" x:Name="ArtistTab">
 				<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
 					<Grid>
 						<Grid.RowDefinitions>
@@ -62,7 +62,7 @@
 						</Grid.RowDefinitions>
 						<StackPanel Grid.Row="0">
 							<TextBlock Text="ФИО/Название:"/>
-							<TextBox Text="{Binding ArtistName}"/>
+							<TextBox Text="{Binding ArtistName}" x:Name="TBArtistName"/>
 						</StackPanel>
 						<StackPanel Grid.Row="1">
 							<TextBlock Text="Общий жанр:"/>
@@ -204,8 +204,8 @@
 					<Grid>
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
 						<Grid Grid.Row="0">
@@ -234,8 +234,8 @@
 								<RowDefinition Height="Auto"/>
 							</Grid.RowDefinitions>
 							<Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
+								<ColumnDefinition/>
+								<ColumnDefinition/>
 								<ColumnDefinition/>
 							</Grid.ColumnDefinitions>
 							<StackPanel Grid.Row="0" Grid.Column="0">
@@ -246,19 +246,19 @@
 								<TextBlock Text="Время на разбор:"/>
 								<controls:TimePicker x:Name="PrepareTimeFinish"/>
 							</StackPanel>
-                            <StackPanel Grid.Row="0" Grid.Column="2">
-                                <TextBlock Text="Время репетиции:"/>
-                                <controls:TimePicker x:Name="PrepareTimeLength"/>
-                            </StackPanel>
-                        </Grid>
-                        <StackPanel Grid.Row="3">
-                            <TextBlock Text="Информация для репетиции:"/>
-                            <TextBox Text="{Binding PrepareInfo}"/>
-                        </StackPanel>
-                    </Grid>
+							<StackPanel Grid.Row="0" Grid.Column="2">
+								<TextBlock Text="Время репетиции:"/>
+								<controls:TimePicker x:Name="PrepareTimeLength"/>
+							</StackPanel>
+						</Grid>
+						<StackPanel Grid.Row="3">
+							<TextBlock Text="Информация для репетиции:"/>
+							<TextBox Text="{Binding PrepareInfo}"/>
+						</StackPanel>
+					</Grid>
 				</ScrollViewer>
 			</TabItem>
 		</TabControl>
-		<Button Grid.Row="1" Content="Сохранить" HorizontalAlignment="Right" Style="{StaticResource StdButton}"/>
+		<Button Grid.Row="1" x:Name="SaveArtist" Content="Сохранить" HorizontalAlignment="Right" Style="{StaticResource StdButton}" Click="SaveArtist_Click"/>
 	</Grid>
 </Window>

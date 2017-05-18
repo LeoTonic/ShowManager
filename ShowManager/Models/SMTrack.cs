@@ -102,27 +102,6 @@ namespace ShowManager.Models
 				this.length = value;
 			}
 		}
-		/*
-		public string TrackLength
-		{
-				get
-				{
-						return this.length.ToString(@"hh\:mm\:ss", ci);
-				}
-				set
-				{
-						try
-						{
-								this.length = TimeSpan.Parse(value);
-						}
-						catch (FormatException)
-						{
-								this.length = TimeSpan.Zero;
-						}
-						PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TrackLength"));
-				}
-		}
-		*/
 
 		public string MinusExist
 		{

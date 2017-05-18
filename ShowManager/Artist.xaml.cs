@@ -21,6 +21,14 @@ namespace ShowManager
 	/// </summary>
 	public partial class Artist : Window, ICommandCatcher
 	{
+		public SMArtist ArtistObj
+		{
+			get
+			{
+				return this.artist;
+			}
+		}
+
 		private SMArtist artist;
 		private SMGentresBase gentresBase;
 
@@ -35,6 +43,11 @@ namespace ShowManager
 
 			this.DataContext = artist;
 			tracksView.ItemsSource = artist.Tracks;
+
+			// Заливка непривязанных элементов
+			PrepareTimeStart.Value = artist.PrepareTimeStart;
+			PrepareTimeFinish.Value = artist.PrepareTimeFinish;
+			PrepareTimeLength.Value = artist.PrepareTimeLength;
 
 			// Формирование групп жанров
 			GentreGroup.Items.Clear();
@@ -84,11 +97,41 @@ namespace ShowManager
 		}
 		public void ToolBarEdit(SMToolbar tb)
 		{
-
+			var selItem = tracksView.SelectedItem as SMTrack;
+			if (selItem == null)
+				return;
+			var tDlg = new TrackDialog(artist, selItem);
+			if (tDlg.ShowDialog() == true)
+			{
+				// Ищем трек
+				foreach (SMTrack getTrack in artist.Tracks)
+				{
+					if (getTrack.ID == selItem.ID)
+					{
+						// Обновляем его
+						getTrack.Assign(tDlg.Track);
+						tracksView.Items.Refresh();
+						return;
+					}
+				}
+			}
 		}
 		public void ToolBarRemove(SMToolbar tb)
 		{
-
+			var selItem = tracksView.SelectedItem as SMTrack;
+			if (selItem == null)
+				return;
+			if (MessageBox.Show("Удаляем композицию?", "Внимание!", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+			{
+				for (int n = 0; n < artist.Tracks.Count; n++)
+				{
+					if (artist.Tracks[n].ID == selItem.ID)
+					{
+						artist.Tracks.RemoveAt(n);
+						return;
+					}
+				} 
+			}
 		}
 
 		public void ItemSelect(object parentControl, long itemID) { }
@@ -230,6 +273,48 @@ namespace ShowManager
 				return;
 			// Запомним для артиста
 			artist.GentreCategory = gID;
+		}
+
+		private void SaveArtist_Click(object sender, RoutedEventArgs e)
+		{
+			// Проверка данных полей
+			if (string.IsNullOrWhiteSpace(artist.Name))
+			{
+				MessageBox.Show("Не указано имя артиста/коллектива!", "Пустое поле", MessageBoxButton.OK, MessageBoxImage.Information);
+				ArtistTab.IsSelected = true;
+				TBArtistName.Focus();
+				return;
+			}
+
+			// Заливка непривязанных элементов и жанров
+			artist.PrepareTimeStart = PrepareTimeStart.Value;
+			artist.PrepareTimeFinish = PrepareTimeFinish.Value;
+			artist.PrepareTimeLength = PrepareTimeLength.Value;
+			if (GentreGroup.SelectedItem != null)
+			{
+				artist.GentreGroup = GetComboItemID((ComboBoxItem)GentreGroup.SelectedItem);
+			}
+			if (GentreClass.SelectedItem != null)
+			{
+				artist.GentreClass = GetComboItemID((ComboBoxItem)GentreClass.SelectedItem);
+			}
+			if (GentreDirection.SelectedItem != null)
+			{
+				artist.GentreDirection = GetComboItemID((ComboBoxItem)GentreDirection.SelectedItem);
+			}
+			if (GentreContent.SelectedItem != null)
+			{
+				artist.GentreContent = GetComboItemID((ComboBoxItem)GentreContent.SelectedItem);
+			}
+			if (GentreAge.SelectedItem != null)
+			{
+				artist.GentreAge = GetComboItemID((ComboBoxItem)GentreAge.SelectedItem);
+			}
+			if (GentreCategory.SelectedItem != null)
+			{
+				artist.GentreCategory = GetComboItemID((ComboBoxItem)GentreCategory.SelectedItem);
+			}
+			DialogResult = true;
 		}
 	}
 }

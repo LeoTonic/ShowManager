@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ShowManager.Models;
 
 namespace ShowManager.Controls
 {
@@ -39,15 +40,29 @@ namespace ShowManager.Controls
 			DataContext = this;
 		}
 
-		public void Initialize(List<string> groupNames, ICommandCatcher iTo, bool readOnly)
+		public void Initialize(List<string> groupNames, ICommandCatcher iTo, bool readOnly, List<SMGroup> connectList = null)
 		{
 			iCommandTo = iTo;
 			modeReadOnly = readOnly;
 
 			if (groupNames == null)
 			{
-				Items.Add(new SMGroupsItem { Text = "Основная группа", FolderImage = SMGroupsItem.GroupImageType.Opened });
-				Items[0].AssignParent(this, readOnly);
+				Items.Clear();
+
+				if (connectList != null)
+				{
+					foreach(SMGroup grp in connectList)
+					{
+						var newItem = new SMGroupsItem { Text = grp.Name, FolderImage = SMGroupsItem.GroupImageType.Closed };
+						newItem.AssignParent(this, readOnly);
+						Items.Add(newItem);
+					}
+				}
+				else
+				{
+					Items.Add(new SMGroupsItem { Text = "Основная группа", FolderImage = SMGroupsItem.GroupImageType.Opened });
+					Items[0].AssignParent(this, readOnly);
+				}
 			}
 			else
 			{
@@ -118,7 +133,7 @@ namespace ShowManager.Controls
 					iCommandTo.PanelGroupAdd(item.Text);
 				}
 				else
-				{
+				{					
 					iCommandTo.PanelGroupRename(groupNameOld, item.Text);
 				}
 			}
