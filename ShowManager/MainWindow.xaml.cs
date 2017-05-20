@@ -104,7 +104,7 @@ namespace ShowManager
 				// Сюда код отображения треков
 				TrackView.Clear();
 
-				foreach(SMListViewItem selItem in ArtistView.ItemsSelected)
+				foreach (SMListViewItem selItem in ArtistView.ItemsSelected)
 				{
 					long artistID = selItem.ItemID;
 					SMArtist getArtist = currentProject.GetArtistByID(artistID);
@@ -112,7 +112,7 @@ namespace ShowManager
 						continue;
 
 					// Добавляем треки
-					foreach(SMTrack track in getArtist.Tracks)
+					foreach (SMTrack track in getArtist.Tracks)
 					{
 						TrackView.Add(track.ID, 202, subTimeText: track.TrackLength.ToString(), labelText1: track.Name, labelText2: getArtist.Name);
 					}
@@ -135,7 +135,13 @@ namespace ShowManager
 				if (getGroup != null)
 				{
 					getGroup.Add(newArtist.ID);
-					ArtistView.Add(newArtist.ID, 201, labelText1: newArtist.Name, labelText2: newArtist.CompanyName);
+					ArtistView.Add(
+						newArtist.ID,
+						gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, 0),
+						labelText1: newArtist.Name,
+						labelText2: newArtist.CompanyName,
+						ico0: gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.Age, newArtist.GentreAge)
+						);
 				}
 			}
 		}
@@ -153,7 +159,13 @@ namespace ShowManager
 			{
 				// Редактируем элемент
 				getArtist.Assign(artistWindow.ArtistObj);
-				ArtistView.Edit(getArtist.ID, 201, labelText1: getArtist.Name, labelText2: getArtist.CompanyName);
+				ArtistView.Edit(
+					getArtist.ID,
+					gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, 0),
+					labelText1: getArtist.Name,
+					labelText2: getArtist.CompanyName,
+					ico0: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Age, getArtist.GentreAge)
+					);
 			}
 		}
 
@@ -219,9 +231,16 @@ namespace ShowManager
 			foreach (long artistID in getGroup.IDList)
 			{
 				SMArtist getArtist = currentProject.GetArtistByID(artistID);
-				ArtistView.Add(getArtist.ID, 201, labelText1: getArtist.Name, labelText2: getArtist.CompanyName);
+				ArtistView.Add(
+					getArtist.ID,
+					gentres.GetImageKey(getArtist.GentreGroup,SMGentresBase.GentreClassType.GentreGroup, 0),
+					labelText1: getArtist.Name,
+					labelText2: getArtist.CompanyName,
+					ico0: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Age, getArtist.GentreAge)
+					);
 			}
 		}
+
 		// Инициализация библиотеки изображений
 		private void ImgLibInit()
 		{
@@ -260,6 +279,34 @@ namespace ShowManager
 			curApp.ImgDesc.Add(112, "Худ.гимнастика");
 			curApp.ImgDesc.Add(113, "Театр");
 			curApp.ImgDesc.Add(114, "Вокал");
+
+
+			// Возрастные группы
+			curApp.ImgPath.Add(131, "/ShowManager;component/Images/Gentres/age-0.png");
+			curApp.ImgPath.Add(132, "/ShowManager;component/Images/Gentres/age-6.png");
+			curApp.ImgPath.Add(133, "/ShowManager;component/Images/Gentres/age-7.png");
+			curApp.ImgPath.Add(134, "/ShowManager;component/Images/Gentres/age-8.png");
+			curApp.ImgPath.Add(135, "/ShowManager;component/Images/Gentres/age-10.png");
+			curApp.ImgPath.Add(136, "/ShowManager;component/Images/Gentres/age-13.png");
+			curApp.ImgPath.Add(137, "/ShowManager;component/Images/Gentres/age-16.png");
+			curApp.ImgPath.Add(138, "/ShowManager;component/Images/Gentres/age-19.png");
+			curApp.ImgPath.Add(139, "/ShowManager;component/Images/Gentres/age-20.png");
+			curApp.ImgPath.Add(140, "/ShowManager;component/Images/Gentres/age-26.png");
+			curApp.ImgPath.Add(141, "/ShowManager;component/Images/Gentres/age-40.png");
+			curApp.ImgPath.Add(142, "/ShowManager;component/Images/Gentres/age-mix.png");
+
+			curApp.ImgDesc.Add(131, "Возраст 0+");
+			curApp.ImgDesc.Add(132, "Возраст 6+");
+			curApp.ImgDesc.Add(133, "Возраст 7+");
+			curApp.ImgDesc.Add(134, "Возраст 8+");
+			curApp.ImgDesc.Add(135, "Возраст 10+");
+			curApp.ImgDesc.Add(136, "Возраст 13+");
+			curApp.ImgDesc.Add(137, "Возраст 16+");
+			curApp.ImgDesc.Add(138, "Возраст 19+");
+			curApp.ImgDesc.Add(139, "Возраст 20+");
+			curApp.ImgDesc.Add(140, "Возраст 26+");
+			curApp.ImgDesc.Add(141, "Возраст 40+");
+			curApp.ImgDesc.Add(142, "Возраст смешанный");
 
 			// Дополнительно
 			curApp.ImgPath.Add(201, "/ShowManager;component/Images/View/user.png");

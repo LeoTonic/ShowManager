@@ -209,7 +209,7 @@ namespace ShowManager.Controls
 			set
 			{
 				App curApp = (App)Application.Current;
-				iconsPath0 = curApp.ImgPath[value];
+				IconsPath0 = curApp.ImgPath[value];
 			}
 		}
 		public int Ico1Key
@@ -217,7 +217,7 @@ namespace ShowManager.Controls
 			set
 			{
 				App curApp = (App)Application.Current;
-				iconsPath1 = curApp.ImgPath[value];
+				IconsPath1 = curApp.ImgPath[value];
 			}
 		}
 		public int Ico2Key
@@ -225,7 +225,7 @@ namespace ShowManager.Controls
 			set
 			{
 				App curApp = (App)Application.Current;
-				iconsPath2 = curApp.ImgPath[value];
+				IconsPath2 = curApp.ImgPath[value];
 			}
 		}
 		public int Ico3Key
@@ -233,7 +233,7 @@ namespace ShowManager.Controls
 			set
 			{
 				App curApp = (App)Application.Current;
-				iconsPath3 = curApp.ImgPath[value];
+				IconsPath3 = curApp.ImgPath[value];
 			}
 		}
 

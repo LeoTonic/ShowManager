@@ -186,6 +186,52 @@ namespace ShowManager.Models
 			return -1;
 		}
 
+		// Вспомогательная функция для получения ключей изображений
+		public enum GentreClassType
+		{
+			GentreGroup = 0,
+			GentreClass,
+			Direction,
+			Content,
+			Age,
+			Category
+		}
+
+		public int GetImageKey(long gentreID, GentreClassType gcType, long itemID)
+		{
+			// Получим жанр
+			SMGentre getGentre = GetGentreItem(gentreID);
+
+			if (getGentre == null)
+				return 101;
+
+			List<SMElement> getList = null;
+			switch (gcType)
+			{
+				case GentreClassType.GentreGroup:
+					return getGentre.ImageKey;
+				case GentreClassType.GentreClass:
+					getList = getGentre.Gentres;
+					break;
+				case GentreClassType.Direction:
+					getList = getGentre.Directions;
+					break;
+				case GentreClassType.Content:
+					getList = getGentre.Contents;
+					break;
+				case GentreClassType.Age:
+					getList = getGentre.Ages;
+					break;
+				case GentreClassType.Category:
+					getList = getGentre.Categories;
+					break;
+			}
+			if (getList == null)
+				return 101;
+			SMElement getItem = GetClassItem(getList, itemID);
+			return getItem.ImageKey;
+		}
+
 		//
 		// РАБОТА С ФАЙЛОМ
 		//
