@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:ShowManager.Controls"
         mc:Ignorable="d"
-        Title="Жанры" Height="422.99" Width="816.369" ShowInTaskbar="False">
+        Title="Жанры" Height="422.99" Width="816.369" ShowInTaskbar="False" Icon="Images/Gentres/music.png">
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*"></ColumnDefinition>

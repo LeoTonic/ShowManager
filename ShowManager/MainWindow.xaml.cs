@@ -114,7 +114,16 @@ namespace ShowManager
 					// Добавляем треки
 					foreach (SMTrack track in getArtist.Tracks)
 					{
-						TrackView.Add(track.ID, 202, subTimeText: track.TrackLength.ToString(), labelText1: track.Name, labelText2: getArtist.Name);
+						TrackView.Add(
+							track.ID,
+							gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, getArtist.GentreGroup),
+							subTimeText: track.TrackLength.ToString(),
+							labelText1: track.Name,
+							labelText2: getArtist.Name,
+							ico0: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Age, getArtist.GentreAge),
+							ico1: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Category, getArtist.GentreCategory),
+							ico2: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Content, getArtist.GentreContent)
+							);
 					}
 				}
 			}
@@ -140,7 +149,9 @@ namespace ShowManager
 						gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, 0),
 						labelText1: newArtist.Name,
 						labelText2: newArtist.CompanyName,
-						ico0: gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.Age, newArtist.GentreAge)
+						ico0: gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.Age, newArtist.GentreAge),
+						ico1: gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.Category, newArtist.GentreCategory),
+						ico2: gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.Content, newArtist.GentreContent)
 						);
 				}
 			}
@@ -164,8 +175,11 @@ namespace ShowManager
 					gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, 0),
 					labelText1: getArtist.Name,
 					labelText2: getArtist.CompanyName,
-					ico0: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Age, getArtist.GentreAge)
+					ico0: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Age, getArtist.GentreAge),
+					ico1: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Category, getArtist.GentreCategory),
+					ico2: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Content, getArtist.GentreContent)
 					);
+				ItemSelectionChange(ArtistView);
 			}
 		}
 
@@ -186,6 +200,7 @@ namespace ShowManager
 				{
 					getGroup.Remove(artistID);
 					ArtistView.Remove(artistID);
+					TrackView.Clear();
 				}
 			}
 		}
@@ -236,7 +251,9 @@ namespace ShowManager
 					gentres.GetImageKey(getArtist.GentreGroup,SMGentresBase.GentreClassType.GentreGroup, 0),
 					labelText1: getArtist.Name,
 					labelText2: getArtist.CompanyName,
-					ico0: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Age, getArtist.GentreAge)
+					ico0: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Age, getArtist.GentreAge),
+					ico1: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Category, getArtist.GentreCategory),
+					ico2: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Content, getArtist.GentreContent)
 					);
 			}
 		}
@@ -308,12 +325,43 @@ namespace ShowManager
 			curApp.ImgDesc.Add(141, "Возраст 40+");
 			curApp.ImgDesc.Add(142, "Возраст смешанный");
 
+			// Категории
+			curApp.ImgPath.Add(151, "/ShowManager;component/Images/Gentres/category-0.png");
+			curApp.ImgPath.Add(152, "/ShowManager;component/Images/Gentres/category-1.png");
+			curApp.ImgPath.Add(153, "/ShowManager;component/Images/Gentres/category-2.png");
+
+			curApp.ImgDesc.Add(151, "Кат. начинающий");
+			curApp.ImgDesc.Add(152, "Кат. любитель");
+			curApp.ImgDesc.Add(153, "Кат. профессионал");
+
+			// Состав
+			curApp.ImgPath.Add(171, "/ShowManager;component/Images/Gentres/content-solo.png");
+			curApp.ImgPath.Add(172, "/ShowManager;component/Images/Gentres/content-double.png");
+			curApp.ImgPath.Add(173, "/ShowManager;component/Images/Gentres/content-triple.png");
+			curApp.ImgPath.Add(174, "/ShowManager;component/Images/Gentres/content-quad.png");
+			curApp.ImgPath.Add(175, "/ShowManager;component/Images/Gentres/content-ensemble.png");
+
+			curApp.ImgDesc.Add(171, "Состав соло");
+			curApp.ImgDesc.Add(172, "Состав дуэт");
+			curApp.ImgDesc.Add(173, "Состав трио");
+			curApp.ImgDesc.Add(174, "Состав квартет");
+			curApp.ImgDesc.Add(175, "Состав ансамбль");
+
 			// Дополнительно
 			curApp.ImgPath.Add(201, "/ShowManager;component/Images/View/user.png");
 			curApp.ImgPath.Add(202, "/ShowManager;component/Images/View/music.png");
 
 			curApp.ImgDesc.Add(201, "Пользователь");
 			curApp.ImgDesc.Add(202, "Музыка");
+
+			curApp.ImgPath.Add(221, "/ShowManager;component/Images/View/in-show-no.png");
+			curApp.ImgPath.Add(222, "/ShowManager;component/Images/View/in-show-half.png");
+			curApp.ImgPath.Add(223, "/ShowManager;component/Images/View/in-show-yes.png");
+
+			curApp.ImgDesc.Add(221, "Выступление нет");
+			curApp.ImgDesc.Add(222, "Выступление частично");
+			curApp.ImgDesc.Add(223, "Выступление да");
+
 		}
 	}
 }

@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:ShowManager.Controls"
-        Title="Произведение исполнителя" Width="480" Height="312" ResizeMode="NoResize" ShowInTaskbar="False" SizeToContent="Height">
+        Title="Произведение исполнителя" Width="480" Height="312" ResizeMode="NoResize" ShowInTaskbar="False" SizeToContent="Height" Icon="/ShowManager;component/Images/View/music.png">
 	<Window.Resources>
 		<Style TargetType="TextBlock">
 			<Setter Property="FontFamily" Value="Arial"/>
