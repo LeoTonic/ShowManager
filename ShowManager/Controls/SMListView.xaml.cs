@@ -129,11 +129,6 @@ namespace ShowManager.Controls
 				ListViewControl.CaptureMouse();
 			}
 
-			if (iCommandTo != null && ItemsSelected.Count == 0)
-			{
-				iCommandTo.ItemSelect(this, -1);
-			}
-
 			e.Handled = true;
 		}
 
@@ -178,7 +173,7 @@ namespace ShowManager.Controls
 			{
 				var lbi = sender as ListBoxItem;
 				var smi = lbi.DataContext as SMListViewItem;
-				iCommandTo.ItemSelect(this, smi.ItemID);
+				// Раньше здесь была отправка изменений выделения элемента
 			}
 		}
 
@@ -192,6 +187,14 @@ namespace ShowManager.Controls
 				var smItem = draggedItem.DataContext as SMListViewItem;
 				smItem.selectedItems = ItemsSelected;
 				smItem.dragFromControl = this;
+			}
+		}
+
+		private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (iCommandTo != null)
+			{
+				iCommandTo.ItemSelectionChange(this);
 			}
 		}
 
@@ -296,6 +299,16 @@ namespace ShowManager.Controls
 		}
 
 		// Работа с элементами
+
+    // Получение по ID
+		public long GetFirstSelectedID()
+		{
+			if (ItemsSelected.Count == 0)
+				return -1;
+
+			var firstItem = ItemsSelected[0] as SMListViewItem;
+			return firstItem.ItemID;
+		}
 
 		// Очистить список
 		public void Clear()

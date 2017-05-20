@@ -100,7 +100,7 @@ namespace ShowManager
 		{
 			classesView.Clear();
 
-			foreach(SMElement sme in elemList)
+			foreach (SMElement sme in elemList)
 			{
 				classesView.Add(itemID: sme.ID, mainImgKey: sme.ImageKey, labelText1: sme.Name);
 			}
@@ -161,24 +161,23 @@ namespace ShowManager
 			// Если элемент не выбран - выходим
 			if (tb.GetHashCode() == gentresToolbar.GetHashCode())
 			{
-				if (gentresView.ItemsSelected.Count > 0)
+				long itemID = gentresView.GetFirstSelectedID();
+				if (itemID == -1)
+					return;
+
+				SMGentre gentre = gentreBase.GetGentreItem(itemID);
+				if (gentre == null) return;
+
+				ElementDialog elemDlg = new ElementDialog(gentre.ImageKey, gentre.Name);
+				Point pnt = gentresView.PointToScreen(new Point(0, 0));
+				elemDlg.Left = pnt.X + 8;
+				elemDlg.Top = pnt.Y + 8;
+
+				elemDlg.ShowDialog();
+				if (elemDlg.IsSet)
 				{
-					var lvi = gentresView.ItemsSelected[0] as SMListViewItem;
-					long id = lvi.ItemID;
-					SMGentre gentre = gentreBase.GetGentreItem(id);
-					if (gentre == null) return;
-
-					ElementDialog elemDlg = new ElementDialog(gentre.ImageKey, gentre.Name);
-					Point pnt = gentresView.PointToScreen(new Point(0, 0));
-					elemDlg.Left = pnt.X + 8;
-					elemDlg.Top = pnt.Y + 8;
-
-					elemDlg.ShowDialog();
-					if (elemDlg.IsSet)
-					{
-						gentreBase.Edit(id, elemDlg.ElementName, elemDlg.ImageKey);
-						gentresView.Edit(id, elemDlg.ImageKey, labelText1: elemDlg.ElementName);
-					}
+					gentreBase.Edit(itemID, elemDlg.ElementName, elemDlg.ImageKey);
+					gentresView.Edit(itemID, elemDlg.ImageKey, labelText1: elemDlg.ElementName);
 				}
 			}
 			else if (tb.GetHashCode() == classesToolbar.GetHashCode() && classesList != null)
@@ -292,11 +291,15 @@ namespace ShowManager
 		}
 
 		// Выбор элементв в контроле
-		public void ItemSelect(Object parentControl, long itemID)
+		public void ItemSelectionChange(Object parentControl)
 		{
 			if (parentControl.GetHashCode() == gentresView.GetHashCode())
 			{
 				// Обработка жанровой группы - заполнение элементов жанра в правом контроле
+				long itemID = gentresView.GetFirstSelectedID();
+				if (itemID == -1)
+					return;
+
 				selectedGentreGroup = gentreBase.GetGentreItem(itemID);
 				if (selectedGentreGroup == null)
 					return;

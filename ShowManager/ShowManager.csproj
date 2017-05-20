@@ -178,6 +178,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Gentres.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -189,7 +192,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Tools\drag.png" />
-    <None Include="Thinks.txt" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Gentres\vocal.png" />
@@ -251,6 +253,12 @@
   <ItemGroup>
     <Resource Include="Images\Tools\prop-delete.png" />
     <Resource Include="Images\Tools\user-delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\View\music.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\View\user.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

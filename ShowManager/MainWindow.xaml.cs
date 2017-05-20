@@ -34,9 +34,6 @@ namespace ShowManager
 		// Имя текущей группы (в панели групп артистов)
 		private string selectedPanelName;
 
-		// Идентификатор выбранного артиста
-		private long selectedArtistID = -1;
-
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -75,7 +72,7 @@ namespace ShowManager
 		//
 		// Обработка команд меню
 		//
-#region Menu Calls
+		#region Menu Calls
 		//
 		// Фестиваль
 		//
@@ -99,13 +96,27 @@ namespace ShowManager
 
 		#endregion
 
-#region CommandCather definitions
-		public void ItemSelect(object sender, long itemID)
+		#region CommandCather definitions
+		public void ItemSelectionChange(object sender)
 		{
 			if (sender.GetHashCode() == ArtistView.GetHashCode())
 			{
-				selectedArtistID = itemID;
 				// Сюда код отображения треков
+				TrackView.Clear();
+
+				foreach(SMListViewItem selItem in ArtistView.ItemsSelected)
+				{
+					long artistID = selItem.ItemID;
+					SMArtist getArtist = currentProject.GetArtistByID(artistID);
+					if (getArtist == null)
+						continue;
+
+					// Добавляем треки
+					foreach(SMTrack track in getArtist.Tracks)
+					{
+						TrackView.Add(track.ID, 202, subTimeText: track.TrackLength.ToString(), labelText1: track.Name, labelText2: getArtist.Name);
+					}
+				}
 			}
 		}
 
@@ -124,15 +135,17 @@ namespace ShowManager
 				if (getGroup != null)
 				{
 					getGroup.Add(newArtist.ID);
-					ArtistView.Add(newArtist.ID, 106, labelText1: newArtist.Name, labelText2: newArtist.CompanyName);
+					ArtistView.Add(newArtist.ID, 201, labelText1: newArtist.Name, labelText2: newArtist.CompanyName);
 				}
 			}
 		}
+
 		public void ToolBarEdit(SMToolbar tb)
 		{
-			if (selectedArtistID == -1)
+			long artistID = ArtistView.GetFirstSelectedID();
+			if (artistID == -1)
 				return;
-			SMArtist getArtist = currentProject.GetArtistByID(selectedArtistID);
+			SMArtist getArtist = currentProject.GetArtistByID(artistID);
 			if (getArtist == null)
 				return;
 			var artistWindow = new Artist(currentProject, gentres, getArtist);
@@ -140,14 +153,16 @@ namespace ShowManager
 			{
 				// Редактируем элемент
 				getArtist.Assign(artistWindow.ArtistObj);
-				ArtistView.Edit(getArtist.ID, 106, labelText1: getArtist.Name, labelText2: getArtist.CompanyName);
+				ArtistView.Edit(getArtist.ID, 201, labelText1: getArtist.Name, labelText2: getArtist.CompanyName);
 			}
 		}
+
 		public void ToolBarRemove(SMToolbar tb)
 		{
-			if (selectedArtistID == -1)
+			long artistID = ArtistView.GetFirstSelectedID();
+			if (artistID == -1)
 				return;
-			SMArtist getArtist = currentProject.GetArtistByID(selectedArtistID);
+			SMArtist getArtist = currentProject.GetArtistByID(artistID);
 			if (getArtist == null)
 				return;
 
@@ -157,9 +172,8 @@ namespace ShowManager
 				SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, selectedPanelName);
 				if (getGroup != null)
 				{
-					getGroup.Remove(selectedArtistID);
-					ArtistView.Remove(selectedArtistID);
-					selectedArtistID = -1;
+					getGroup.Remove(artistID);
+					ArtistView.Remove(artistID);
 				}
 			}
 		}
@@ -170,17 +184,20 @@ namespace ShowManager
 			// Сюда добавить код отображения артистов группы
 			RefreshArtistView();
 		}
-		public void PanelGroupAdd(string panelName) {
+		public void PanelGroupAdd(string panelName)
+		{
 			currentProject.GroupsArtist.Add(new SMGroup(panelName));
 		}
 
-		public void PanelGroupRename(string oldName, string newName) {
+		public void PanelGroupRename(string oldName, string newName)
+		{
 			// Ищем группу
 			SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, oldName);
 			getGroup.Name = newName;
 		}
 
-		public void PanelGroupDelete(string panelName) {
+		public void PanelGroupDelete(string panelName)
+		{
 			// Написать обработку удаления или переноса элементов в основную группу
 		}
 
@@ -188,19 +205,21 @@ namespace ShowManager
 		{
 
 		}
-#endregion
+		#endregion
 
 		// Отображение элементов при изменении группы
 		private void RefreshArtistView()
 		{
 			ArtistView.Clear();
+			TrackView.Clear();
+
 			SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, selectedPanelName);
 			if (getGroup == null)
 				return;
-			foreach(long artistID in getGroup.IDList)
+			foreach (long artistID in getGroup.IDList)
 			{
 				SMArtist getArtist = currentProject.GetArtistByID(artistID);
-				ArtistView.Add(getArtist.ID, 106, labelText1: getArtist.Name, labelText2: getArtist.CompanyName);
+				ArtistView.Add(getArtist.ID, 201, labelText1: getArtist.Name, labelText2: getArtist.CompanyName);
 			}
 		}
 		// Инициализация библиотеки изображений
@@ -210,6 +229,8 @@ namespace ShowManager
 			curApp.ImgPath = new Dictionary<int, string>();
 			curApp.ImgDesc = new Dictionary<int, string>();
 
+
+			// Жанры
 			curApp.ImgPath.Add(101, "/ShowManager;component/Images/Gentres/art.png");
 			curApp.ImgPath.Add(102, "/ShowManager;component/Images/Gentres/cinema.png");
 			curApp.ImgPath.Add(103, "/ShowManager;component/Images/Gentres/circus.png");
@@ -239,6 +260,13 @@ namespace ShowManager
 			curApp.ImgDesc.Add(112, "Худ.гимнастика");
 			curApp.ImgDesc.Add(113, "Театр");
 			curApp.ImgDesc.Add(114, "Вокал");
+
+			// Дополнительно
+			curApp.ImgPath.Add(201, "/ShowManager;component/Images/View/user.png");
+			curApp.ImgPath.Add(202, "/ShowManager;component/Images/View/music.png");
+
+			curApp.ImgDesc.Add(201, "Пользователь");
+			curApp.ImgDesc.Add(202, "Музыка");
 		}
 	}
 }

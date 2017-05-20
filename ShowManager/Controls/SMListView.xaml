@@ -16,7 +16,8 @@
 			<EventSetter Event="MouseLeftButtonDown" Handler="ListViewControl_MouseLeftDown"/>
 			<EventSetter Event="MouseLeftButtonUp" Handler="ListViewControl_MouseLeftUp"/>
 			<EventSetter Event="MouseMove" Handler="ListViewControl_MouseMove"/>
-			<EventSetter Event="Drop" Handler="ListViewControl_Drop"/>
+            <EventSetter Event="SelectionChanged" Handler="ListBox_SelectionChanged"/>
+            <EventSetter Event="Drop" Handler="ListViewControl_Drop"/>
 		</Style>
 		<Style TargetType="{x:Type ListBoxItem}" x:Key="ContainerStyle">
 			<Setter Property="FocusVisualStyle" Value="{x:Null}"/>

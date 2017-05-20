@@ -134,7 +134,7 @@ namespace ShowManager
 			}
 		}
 
-		public void ItemSelect(object parentControl, long itemID) { }
+		public void ItemSelectionChange(object parentControl) { }
 		public void PanelGroupClick(string groupName) { }
 		public void PanelGroupAdd(string groupName) { }
 		public void PanelGroupRename(string groupNameOld, string groupNameNew) { }
