@@ -36,5 +36,16 @@ namespace ShowManager.Models
 			idList.Add(id);
 			return true;
 		}
+
+		// Удаление идентификатора
+		public bool Remove(long id)
+		{
+			if (!idList.Contains(id))
+			{
+				return false;
+			}
+			idList.Remove(id);
+			return true;
+		}
 	}
 }

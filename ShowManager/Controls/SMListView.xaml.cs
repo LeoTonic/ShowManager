@@ -129,6 +129,11 @@ namespace ShowManager.Controls
 				ListViewControl.CaptureMouse();
 			}
 
+			if (iCommandTo != null && ItemsSelected.Count == 0)
+			{
+				iCommandTo.ItemSelect(this, -1);
+			}
+
 			e.Handled = true;
 		}
 
@@ -237,6 +242,27 @@ namespace ShowManager.Controls
 			selectRect.Width = Math.Abs(pt1.X - pt2.X);
 			selectRect.Height = Math.Abs(pt1.Y - pt2.Y);
 
+			Size lvcSize = ListViewControl.RenderSize;
+			
+			if (selectRect.X + selectRect.Width > lvcSize.Width)
+			{
+				selectRect.Width -= ((selectRect.X + selectRect.Width) - lvcSize.Width);
+			}
+			if (selectRect.Y + selectRect.Height > lvcSize.Height)
+			{
+				selectRect.Height -= ((selectRect.Y + selectRect.Height) - lvcSize.Height);
+			}
+
+			if (selectRect.X < 0)
+			{
+				selectRect.Width += selectRect.X;
+				selectRect.X = 0;
+			}
+			if (selectRect.Y < 0)
+			{
+				selectRect.Height += selectRect.Y;
+				selectRect.Y = 0;
+			}
 			Canvas.SetLeft(DragSelectionBorder, selectRect.X);
 			Canvas.SetTop(DragSelectionBorder, selectRect.Y);
 			DragSelectionBorder.Width = selectRect.Width;

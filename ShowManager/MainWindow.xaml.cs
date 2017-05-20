@@ -34,6 +34,9 @@ namespace ShowManager
 		// Имя текущей группы (в панели групп артистов)
 		private string selectedPanelName;
 
+		// Идентификатор выбранного артиста
+		private long selectedArtistID = -1;
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -99,7 +102,11 @@ namespace ShowManager
 #region CommandCather definitions
 		public void ItemSelect(object sender, long itemID)
 		{
-
+			if (sender.GetHashCode() == ArtistView.GetHashCode())
+			{
+				selectedArtistID = itemID;
+				// Сюда код отображения треков
+			}
 		}
 
 		// Новый артист
@@ -123,11 +130,38 @@ namespace ShowManager
 		}
 		public void ToolBarEdit(SMToolbar tb)
 		{
-
+			if (selectedArtistID == -1)
+				return;
+			SMArtist getArtist = currentProject.GetArtistByID(selectedArtistID);
+			if (getArtist == null)
+				return;
+			var artistWindow = new Artist(currentProject, gentres, getArtist);
+			if (artistWindow.ShowDialog() == true)
+			{
+				// Редактируем элемент
+				getArtist.Assign(artistWindow.ArtistObj);
+				ArtistView.Edit(getArtist.ID, 106, labelText1: getArtist.Name, labelText2: getArtist.CompanyName);
+			}
 		}
 		public void ToolBarRemove(SMToolbar tb)
 		{
+			if (selectedArtistID == -1)
+				return;
+			SMArtist getArtist = currentProject.GetArtistByID(selectedArtistID);
+			if (getArtist == null)
+				return;
 
+			if (MessageBox.Show("Удаляем выбранного исполнителя?", "Внимание!", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+			{
+				currentProject.Artists.Remove(getArtist);
+				SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, selectedPanelName);
+				if (getGroup != null)
+				{
+					getGroup.Remove(selectedArtistID);
+					ArtistView.Remove(selectedArtistID);
+					selectedArtistID = -1;
+				}
+			}
 		}
 
 		public void PanelGroupClick(string panelName)
