@@ -18,8 +18,8 @@
 			<!-- Main Time block -->
 			<TextBlock x:Name="MainTimeBlock" Text="{Binding MainTimeText}" TextWrapping="NoWrap" Width="64" FontFamily="Arial" TextAlignment="Center" VerticalAlignment="Center" FontSize="16" Margin="2" Grid.Column="0"/>
 			<!-- Image block -->
-			<Image Source="{Binding MainImagePath}" Width="32" Height="32" HorizontalAlignment="Left" Margin="2" Stretch="Fill" Grid.Column="1"/>
-			<!-- One line text block -->
+            <Image Source="{Binding MainImagePath}" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" Width="32" Height="32" HorizontalAlignment="Left" Margin="2" Stretch="Fill" Grid.Column="1"/>
+            <!-- One line text block -->
 			<TextBlock x:Name="OneLineBlock" Text="{Binding OneLineText}" TextWrapping="NoWrap" FontFamily="Arial" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Grid.Column="2" Margin="2" Visibility="Collapsed"/>
 			<!-- Two lines text block -->
 			<StackPanel x:Name="TwoLineBlock" Orientation="Vertical" VerticalAlignment="Center" Grid.Column="2" Visibility="Visible">
@@ -38,10 +38,10 @@
 					<RowDefinition></RowDefinition>
 					<RowDefinition></RowDefinition>
 				</Grid.RowDefinitions>
-				<Image Source="{Binding IconsPath0}" Width="16" Height="16" Stretch="Fill" Grid.Column="0" Grid.Row="0"/>
-				<Image Source="{Binding IconsPath1}" Width="16" Height="16" Stretch="Fill" Grid.Column="1" Grid.Row="0"/>
-				<Image Source="{Binding IconsPath2}" Width="16" Height="16" Stretch="Fill" Grid.Column="0" Grid.Row="1"/>
-				<Image Source="{Binding IconsPath3}" Width="16" Height="16" Stretch="Fill" Grid.Column="1" Grid.Row="1"/>
+                <Image Source="{Binding IconsPath0}" RenderOptions.BitmapScalingMode="Fant" Width="16" Height="16" Stretch="Fill" Grid.Column="0" Grid.Row="0"/>
+                <Image Source="{Binding IconsPath1}" RenderOptions.BitmapScalingMode="Fant" Width="16" Height="16" Stretch="Fill" Grid.Column="1" Grid.Row="0"/>
+                <Image Source="{Binding IconsPath2}" RenderOptions.BitmapScalingMode="Fant" Width="16" Height="16" Stretch="Fill" Grid.Column="0" Grid.Row="1"/>
+                <Image Source="{Binding IconsPath3}" RenderOptions.BitmapScalingMode="Fant" Width="16" Height="16" Stretch="Fill" Grid.Column="1" Grid.Row="1"/>
 			</Grid>
 		</Grid>
 	</Border>

@@ -33,7 +33,7 @@
 				<ColumnDefinition Width="Auto"></ColumnDefinition>
 				<ColumnDefinition Width="Auto"></ColumnDefinition>
 			</Grid.ColumnDefinitions>
-			<Image Source="{Binding ImagePath}" Width="16" Height="16" HorizontalAlignment="Left" Margin="1" Stretch="Fill" />
+            <Image Source="{Binding ImagePath}" RenderOptions.BitmapScalingMode="Fant" Width="16" Height="16" HorizontalAlignment="Left" Margin="1" Stretch="Fill" />
 			<TextBlock Name="textLabel" Text="{Binding Text}" TextWrapping="NoWrap" FontFamily="Arial" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12" Grid.Column="1" Margin="6,4,8,4"/>
 			<TextBox Name="editTextBox" Text="" Grid.Column="2" TextAlignment="Left" FontFamily="Arial" VerticalAlignment="Center" FontSize="12" Visibility="Collapsed"/>
 		</Grid>

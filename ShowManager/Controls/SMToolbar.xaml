@@ -16,22 +16,22 @@
 		<!-- Add -->
 		<Button x:Name="btnAdd" BorderThickness="1" BorderBrush="#FFB0B0B0" Margin="2" Width="28" Height="28" Grid.Column="0" Background="Transparent" ToolTip="{Binding Path=TooltipAdd}" Click="ButtonAdd_Click" Focusable="False">
 			<Button.Content>
-				<Image Source="{Binding Path=ImageAdd}" Stretch="Fill"/>
+                <Image Source="{Binding Path=ImageAdd}" RenderOptions.BitmapScalingMode="Fant" Stretch="Fill"/>
 			</Button.Content>
 		</Button>
 		<!-- Edit -->
 		<Button x:Name="btnEdit" BorderThickness="1" BorderBrush="#FFB0B0B0" Margin="2" Width="28" Height="28" Grid.Column="1" Background="Transparent" ToolTip="{Binding Path=TooltipEdit}" Click="ButtonEdit_Click" Focusable="False">
 			<Button.Content>
-				<Image Source="{Binding Path=ImageEdit}" Stretch="Fill"/>
+                <Image Source="{Binding Path=ImageEdit}" RenderOptions.BitmapScalingMode="Fant" Stretch="Fill"/>
 			</Button.Content>
 		</Button>
 		<!-- Remove -->
 		<Button x:Name="btnRemove" BorderThickness="1" BorderBrush="#FFB0B0B0" Margin="8,2,2,2" Width="28" Height="28" Grid.Column="2" Background="Transparent" ToolTip="{Binding Path=TooltipRemove}" Click="ButtonRemove_Click" Focusable="False">
 			<Button.Content>
-				<Image Source="{Binding Path=ImageRemove}" Stretch="Fill"/>
+                <Image Source="{Binding Path=ImageRemove}" RenderOptions.BitmapScalingMode="Fant" Stretch="Fill"/>
 			</Button.Content>
 		</Button>
 		<!-- Recycle -->
-		<Image Name="Recycle" Grid.Column="3" Source="/ShowManager;component/Images/Tools/delete.png" Width="32" Height="32" Margin="0" HorizontalAlignment="Right" Stretch="Fill" ToolTip="Корзина" AllowDrop="True" Drop="DropItems"/>
+        <Image Name="Recycle" Grid.Column="3" Source="/ShowManager;component/Images/Tools/delete.png" RenderOptions.BitmapScalingMode="Fant" Width="32" Height="32" Margin="0" HorizontalAlignment="Right" Stretch="Fill" ToolTip="Корзина" AllowDrop="True" Drop="DropItems"/>
 	</Grid>
 </UserControl>

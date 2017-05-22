@@ -38,7 +38,14 @@ namespace ShowManager.Controls
 
 			ImagesView.ItemsSource = Items;
 
-			selectedItem = GetItem(curApp.ImgPath[imageKey]);
+			try
+			{
+				selectedItem = GetItem(curApp.ImgPath[imageKey]);
+			}
+			catch (Exception)
+			{
+				selectedItem = GetItem(curApp.ImgPath[101]);
+			}
 			selectedItem.StackColor = "LightBlue";
 		}
 

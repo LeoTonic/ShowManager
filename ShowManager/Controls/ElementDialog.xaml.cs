@@ -64,7 +64,14 @@ namespace ShowManager.Controls
 			{
 				imageKey = value;
 				App curApp = (App)Application.Current;
-				ImagePath = curApp.ImgPath[imageKey];
+				try
+				{
+					ImagePath = curApp.ImgPath[imageKey];
+				}
+				catch (Exception)
+				{
+					ImagePath = curApp.ImgPath[101];
+				}
 			}
 		}
 

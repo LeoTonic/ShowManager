@@ -259,20 +259,6 @@
     <Resource Include="Images\View\user.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Gentres\age-0.png" />
-    <Resource Include="Images\Gentres\age-10.png" />
-    <Resource Include="Images\Gentres\age-13.png" />
-    <Resource Include="Images\Gentres\age-16.png" />
-    <Resource Include="Images\Gentres\age-19.png" />
-    <Resource Include="Images\Gentres\age-20.png" />
-    <Resource Include="Images\Gentres\age-26.png" />
-    <Resource Include="Images\Gentres\age-40.png" />
-    <Resource Include="Images\Gentres\age-6.png" />
-    <Resource Include="Images\Gentres\age-7.png" />
-    <Resource Include="Images\Gentres\age-8.png" />
-    <Resource Include="Images\Gentres\age-mix.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\Gentres\category-2.png" />
     <Resource Include="Images\Gentres\category-0.png" />
     <Resource Include="Images\Gentres\category-1.png" />
@@ -300,6 +286,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\View\in-show-yes.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Gentres\age-0.png" />
+    <Resource Include="Images\Gentres\age-10.png" />
+    <Resource Include="Images\Gentres\age-16.png" />
+    <Resource Include="Images\Gentres\age-20.png" />
+    <Resource Include="Images\Gentres\age-26.png" />
+    <Resource Include="Images\Gentres\age-40.png" />
+    <Resource Include="Images\Gentres\age-6.png" />
+    <Resource Include="Images\Gentres\age-mix.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

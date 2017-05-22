@@ -201,7 +201,14 @@ namespace ShowManager.Controls
 			set
 			{
 				App curApp = (App)Application.Current;
-				MainImagePath = curApp.ImgPath[value];
+				try
+				{
+					MainImagePath = curApp.ImgPath[value];
+				}
+				catch (Exception)
+				{
+					MainImagePath = curApp.ImgPath[101];
+				}
 			}
 		}
 		public int Ico0Key

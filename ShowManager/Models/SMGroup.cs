@@ -47,5 +47,24 @@ namespace ShowManager.Models
 			idList.Remove(id);
 			return true;
 		}
+
+		// Перемещение
+		public void Move(long id, int insertIndex)
+		{
+			if (!idList.Contains(id))
+			{
+				return;
+			}
+
+			idList.Remove(id);
+			if (insertIndex >= 0)
+			{
+				idList.Insert(insertIndex, id);
+			}
+			else
+			{
+				idList.Add(id);
+			}
+		}
 	}
 }

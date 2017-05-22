@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,6 +34,10 @@ namespace ShowManager
 
 		// Имя текущей группы (в панели групп артистов)
 		private string selectedPanelName;
+
+		// Списки для помощи при переносе итемов
+		private List<SMListViewItem> helpList1 = new List<SMListViewItem>();
+		private List<SMListViewItem> helpList2 = new List<SMListViewItem>();
 
 		public MainWindow()
 		{
@@ -228,9 +233,88 @@ namespace ShowManager
 			// Написать обработку удаления или переноса элементов в основную группу
 		}
 
+		// Помощник по коллекции
+		// Перемещает элементы из одного списка в другой при обработке перетаскивания элементов
+		private void CreateHelperList(System.Collections.IList sourceList, List<SMListViewItem> destList, bool createItems)
+		{
+			destList.Clear();
+			foreach (SMListViewItem lvi in sourceList)
+			{
+				if (createItems)
+				{
+					SMListViewItem newItem = new SMListViewItem(lvi);
+					destList.Add(newItem);
+				}
+				else
+				{
+					destList.Add(lvi);
+				}
+			}
+		}
+
 		public void DropItems(int insertIndex, SMListViewItem draggedItem, Object draggedTo)
 		{
+			var lView = draggedItem.dragFromControl as SMListView;
+			var items = lView.Items as ObservableCollection<SMListViewItem>;
 
+			if (draggedTo.GetHashCode() == ArtistToolBar.GetHashCode())
+			{
+				// Сброс в корзину
+				CreateHelperList(draggedItem.selectedItems, helpList1, false);
+
+				// Удаление из контрола и элемента данных
+				foreach (SMListViewItem lvi in helpList1)
+				{
+					if (lView.GetHashCode() == ArtistView.GetHashCode())
+					{
+						// Жанровые группы
+						long artistID = lvi.ItemID;
+						SMArtist getArtist = currentProject.GetArtistByID(artistID);
+						if (getArtist != null)
+							currentProject.Artists.Remove(getArtist);
+
+						SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, selectedPanelName);
+						if (getGroup != null)
+						{
+							getGroup.Remove(artistID);
+							TrackView.Clear();
+						}
+					}
+					items.Remove(lvi);
+				}
+
+			}
+			else if (draggedTo.GetHashCode() == lView.GetHashCode())
+			{
+				// Перемещение внутри контрола
+				CreateHelperList(draggedItem.selectedItems, helpList1, true);
+				CreateHelperList(draggedItem.selectedItems, helpList2, false);
+				foreach (SMListViewItem lvi in helpList2)
+				{
+					items.Remove(lvi);
+				}
+
+				foreach (SMListViewItem lvi in helpList1)
+				{
+					if (lView.GetHashCode() == ArtistView.GetHashCode())
+					{
+						SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, selectedPanelName);
+						if (getGroup != null)
+						{
+							getGroup.Move(lvi.ItemID, insertIndex);
+						}
+					}
+
+					if (insertIndex >= 0)
+					{
+						items.Insert(insertIndex, lvi);
+					}
+					else
+					{
+						items.Add(lvi);
+					}
+				}
+			}
 		}
 		#endregion
 
@@ -301,12 +385,8 @@ namespace ShowManager
 			// Возрастные группы
 			curApp.ImgPath.Add(131, "/ShowManager;component/Images/Gentres/age-0.png");
 			curApp.ImgPath.Add(132, "/ShowManager;component/Images/Gentres/age-6.png");
-			curApp.ImgPath.Add(133, "/ShowManager;component/Images/Gentres/age-7.png");
-			curApp.ImgPath.Add(134, "/ShowManager;component/Images/Gentres/age-8.png");
 			curApp.ImgPath.Add(135, "/ShowManager;component/Images/Gentres/age-10.png");
-			curApp.ImgPath.Add(136, "/ShowManager;component/Images/Gentres/age-13.png");
 			curApp.ImgPath.Add(137, "/ShowManager;component/Images/Gentres/age-16.png");
-			curApp.ImgPath.Add(138, "/ShowManager;component/Images/Gentres/age-19.png");
 			curApp.ImgPath.Add(139, "/ShowManager;component/Images/Gentres/age-20.png");
 			curApp.ImgPath.Add(140, "/ShowManager;component/Images/Gentres/age-26.png");
 			curApp.ImgPath.Add(141, "/ShowManager;component/Images/Gentres/age-40.png");
@@ -314,12 +394,8 @@ namespace ShowManager
 
 			curApp.ImgDesc.Add(131, "Возраст 0+");
 			curApp.ImgDesc.Add(132, "Возраст 6+");
-			curApp.ImgDesc.Add(133, "Возраст 7+");
-			curApp.ImgDesc.Add(134, "Возраст 8+");
 			curApp.ImgDesc.Add(135, "Возраст 10+");
-			curApp.ImgDesc.Add(136, "Возраст 13+");
 			curApp.ImgDesc.Add(137, "Возраст 16+");
-			curApp.ImgDesc.Add(138, "Возраст 19+");
 			curApp.ImgDesc.Add(139, "Возраст 20+");
 			curApp.ImgDesc.Add(140, "Возраст 26+");
 			curApp.ImgDesc.Add(141, "Возраст 40+");
