@@ -147,7 +147,7 @@ namespace ShowManager.Controls
 		{
 			if (iCommandTo != null)
 			{
-				iCommandTo.DropItems(-1, e.Data.GetData(typeof(SMListViewItem)) as SMListViewItem, this);
+				iCommandTo.DropItems(-1, e.Data.GetData(typeof(SMListViewItem)) as SMListViewItem, this, null);
 			}
 
 			EndDrag();
@@ -160,7 +160,7 @@ namespace ShowManager.Controls
 				var lbi = sender as ListBoxItem;
 				var smItem = lbi.DataContext as SMListViewItem;
 				int itemIndex = Items.IndexOf(smItem);
-				iCommandTo.DropItems(itemIndex, e.Data.GetData(typeof(SMListViewItem)) as SMListViewItem, this);
+				iCommandTo.DropItems(itemIndex, e.Data.GetData(typeof(SMListViewItem)) as SMListViewItem, this, null);
 			}
 
 			e.Handled = true;
@@ -377,6 +377,25 @@ namespace ShowManager.Controls
 				}
 			}
 			return -1;
+		}
+
+		//Создание списка помощника
+		// Перемещает элементы из одного списка в другой при обработке перетаскивания элементов
+		static public void CreateHelperList(System.Collections.IList sourceList, List<SMListViewItem> destList, bool createItems)
+		{
+			destList.Clear();
+			foreach (SMListViewItem lvi in sourceList)
+			{
+				if (createItems)
+				{
+					SMListViewItem newItem = new SMListViewItem(lvi);
+					destList.Add(newItem);
+				}
+				else
+				{
+					destList.Add(lvi);
+				}
+			}
 		}
 	}
 }

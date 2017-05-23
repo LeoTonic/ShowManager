@@ -66,5 +66,11 @@ namespace ShowManager.Models
 				idList.Add(id);
 			}
 		}
+
+		// Удаляем содержимое
+		public void Clear()
+		{
+			idList.Clear();
+		}
 	}
 }

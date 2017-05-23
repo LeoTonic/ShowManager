@@ -76,25 +76,6 @@ namespace ShowManager
 			gentreBase.Save();
 		}
 
-		// Помощник по коллекции
-		// Перемещает элементы из одного списка в другой при обработке перетаскивания элементов
-		private void CreateHelperList(System.Collections.IList sourceList, List<SMListViewItem> destList, bool createItems)
-		{
-			destList.Clear();
-			foreach (SMListViewItem lvi in sourceList)
-			{
-				if (createItems)
-				{
-					SMListViewItem newItem = new SMListViewItem(lvi);
-					destList.Add(newItem);
-				}
-				else
-				{
-					destList.Add(lvi);
-				}
-			}
-		}
-
 		// Заполнение списка элементов в контроле классов
 		private void FillGentreClassItems(List<SMElement> elemList)
 		{
@@ -229,7 +210,7 @@ namespace ShowManager
 			}
 		}
 
-		public void DropItems(int insertIndex, SMListViewItem draggedItem, Object draggedTo)
+		public void DropItems(int insertIndex, SMListViewItem draggedItem, Object draggedTo, Object draggedToSubItem)
 		{
 			var lView = draggedItem.dragFromControl as SMListView;
 			var items = lView.Items as ObservableCollection<SMListViewItem>;
@@ -237,7 +218,7 @@ namespace ShowManager
 			if (draggedTo.GetHashCode() == gentresToolbar.GetHashCode())
 			{
 				// Сброс в корзину
-				CreateHelperList(draggedItem.selectedItems, helpList1, false);
+				SMListView.CreateHelperList(draggedItem.selectedItems, helpList1, false);
 
 				// Удаление из контрола и элемента данных
 				foreach (SMListViewItem lvi in helpList1)
@@ -260,8 +241,8 @@ namespace ShowManager
 			if (draggedTo.GetHashCode() == lView.GetHashCode())
 			{
 				// Перемещение внутри контрола
-				CreateHelperList(draggedItem.selectedItems, helpList1, true);
-				CreateHelperList(draggedItem.selectedItems, helpList2, false);
+				SMListView.CreateHelperList(draggedItem.selectedItems, helpList1, true);
+				SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
 				foreach (SMListViewItem lvi in helpList2)
 				{
 					items.Remove(lvi);

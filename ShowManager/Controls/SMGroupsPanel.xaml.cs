@@ -55,6 +55,9 @@ namespace ShowManager.Controls
 					{
 						var newItem = new SMGroupsItem { Text = grp.Name, FolderImage = SMGroupsItem.GroupImageType.Closed };
 						newItem.AssignParent(this, readOnly);
+						// Добавляем возможность дропа элементов
+						newItem.AllowDrop = true;
+						newItem.Drop += PanelItemDrop;
 						Items.Add(newItem);
 					}
 				}
@@ -81,6 +84,16 @@ namespace ShowManager.Controls
 			SelectGroup(Items[0]);
 		}
 
+		// Сброс элементов в заголовок панели
+		private void PanelItemDrop(object sender, DragEventArgs e)
+		{
+			if (iCommandTo != null)
+			{
+				var panelItem = sender as SMGroupsItem;
+				iCommandTo.DropItems(-1, e.Data.GetData(typeof(SMListViewItem)) as SMListViewItem, this, panelItem);
+			}
+		}
+
 		protected void Group_MouseLeftDown(object sender, MouseButtonEventArgs e)
 		{
 			if (sender == null)
@@ -90,6 +103,8 @@ namespace ShowManager.Controls
 			if (grpItem.FolderImage == SMGroupsItem.GroupImageType.AddNew)
 			{
 				grpItem.AssignParent(this, false);
+				grpItem.AllowDrop = true;
+				grpItem.Drop += PanelItemDrop;
 
 				// Создаем новое имя
 				EditGroupName(sender, true);
@@ -151,6 +166,7 @@ namespace ShowManager.Controls
 		{
 			SMGroupsItem newItem = new SMGroupsItem { Text = "", FolderImage = SMGroupsItem.GroupImageType.AddNew };
 			newItem.AssignParent(this, true);
+			newItem.AllowDrop = false;
 			Items.Add(newItem);
 		}
 

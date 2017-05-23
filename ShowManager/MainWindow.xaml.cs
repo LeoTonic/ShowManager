@@ -225,42 +225,29 @@ namespace ShowManager
 		{
 			// Ищем группу
 			SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, oldName);
-			getGroup.Name = newName;
+			if (getGroup != null)
+				getGroup.Name = newName;
 		}
 
 		public void PanelGroupDelete(string panelName)
 		{
-			// Написать обработку удаления или переноса элементов в основную группу
-		}
-
-		// Помощник по коллекции
-		// Перемещает элементы из одного списка в другой при обработке перетаскивания элементов
-		private void CreateHelperList(System.Collections.IList sourceList, List<SMListViewItem> destList, bool createItems)
-		{
-			destList.Clear();
-			foreach (SMListViewItem lvi in sourceList)
+			SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, panelName);
+			if (getGroup != null)
 			{
-				if (createItems)
-				{
-					SMListViewItem newItem = new SMListViewItem(lvi);
-					destList.Add(newItem);
-				}
-				else
-				{
-					destList.Add(lvi);
-				}
+				getGroup.Clear();
+				currentProject.GroupsArtist.Remove(getGroup);
 			}
 		}
 
-		public void DropItems(int insertIndex, SMListViewItem draggedItem, Object draggedTo)
+		public void DropItems(int insertIndex, SMListViewItem draggedItem, Object draggedTo, Object draggedToSubItem)
 		{
 			var lView = draggedItem.dragFromControl as SMListView;
 			var items = lView.Items as ObservableCollection<SMListViewItem>;
 
+			// Удаление в корзину
 			if (draggedTo.GetHashCode() == ArtistToolBar.GetHashCode())
 			{
-				// Сброс в корзину
-				CreateHelperList(draggedItem.selectedItems, helpList1, false);
+				SMListView.CreateHelperList(draggedItem.selectedItems, helpList1, false);
 
 				// Удаление из контрола и элемента данных
 				foreach (SMListViewItem lvi in helpList1)
@@ -284,21 +271,22 @@ namespace ShowManager
 				}
 
 			}
+			// Перемещение внутри контрола
 			else if (draggedTo.GetHashCode() == lView.GetHashCode())
 			{
 				// Перемещение внутри контрола
-				CreateHelperList(draggedItem.selectedItems, helpList1, true);
-				CreateHelperList(draggedItem.selectedItems, helpList2, false);
+				SMListView.CreateHelperList(draggedItem.selectedItems, helpList1, true);
+				SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
 				foreach (SMListViewItem lvi in helpList2)
 				{
 					items.Remove(lvi);
 				}
 
+				SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, selectedPanelName);
 				foreach (SMListViewItem lvi in helpList1)
 				{
 					if (lView.GetHashCode() == ArtistView.GetHashCode())
 					{
-						SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, selectedPanelName);
 						if (getGroup != null)
 						{
 							getGroup.Move(lvi.ItemID, insertIndex);
@@ -310,6 +298,37 @@ namespace ShowManager
 						items.Insert(insertIndex, lvi);
 					}
 					else
+					{
+						items.Add(lvi);
+					}
+				}
+			}
+			// Перемещение в панель группы
+			else if (draggedTo.GetHashCode() == ArtistPanel.GetHashCode())
+			{
+				var dropPanel = draggedToSubItem as SMGroupsItem;
+
+				// Создаем помощников
+				SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
+
+				SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, selectedPanelName);
+				SMGroup newGroup = currentProject.GetGroup(SMProject.GroupType.Artist, dropPanel.Text);
+
+				// Удаляем из текущей панели и группы и добавляем в новую
+				foreach (SMListViewItem lvi in helpList2)
+				{
+					if (getGroup != null)
+					{
+						getGroup.Remove(lvi.ItemID);
+					}
+					if (newGroup != null)
+					{
+						newGroup.Add(lvi.ItemID);
+					}
+					items.Remove(lvi);
+
+					// Если та же группа - вставляем для отображения
+					if (getGroup.GetHashCode() == newGroup.GetHashCode())
 					{
 						items.Add(lvi);
 					}

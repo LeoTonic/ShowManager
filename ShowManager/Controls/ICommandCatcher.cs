@@ -24,6 +24,6 @@ namespace ShowManager.Controls
 		void PanelGroupDelete(string groupName); // Удаление панели
 	
 		// Перенос элементов
-		void DropItems(int insertIndex, SMListViewItem draggedItem, Object draggedTo);
+		void DropItems(int insertIndex, SMListViewItem draggedItem, Object draggedTo, Object draggedToSubItem);
 	}
 }

@@ -139,7 +139,7 @@ namespace ShowManager
 		public void PanelGroupAdd(string groupName) { }
 		public void PanelGroupRename(string groupNameOld, string groupNameNew) { }
 		public void PanelGroupDelete(string groupName) { }
-		public void DropItems(int insertIndex, SMListViewItem draggedItem, Object draggedTo) { }
+		public void DropItems(int insertIndex, SMListViewItem draggedItem, Object draggedTo, Object draggedToSubItem) { }
 
 		// Группа жанра изменение элемента
 		private void GentreGroup_SelectionChanged(object sender, SelectionChangedEventArgs e)

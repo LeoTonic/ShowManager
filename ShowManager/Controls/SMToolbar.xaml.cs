@@ -178,7 +178,7 @@ namespace ShowManager.Controls
 		private void DropItems(object sender, DragEventArgs e) {
 			if (iCommandTo != null)
 			{
-				iCommandTo.DropItems(-1, e.Data.GetData(typeof(SMListViewItem)) as SMListViewItem, this);
+				iCommandTo.DropItems(-1, e.Data.GetData(typeof(SMListViewItem)) as SMListViewItem, this, null);
 			}
 		}
 	}
