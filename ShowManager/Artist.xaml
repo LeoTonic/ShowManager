@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 				xmlns:controls="clr-namespace:ShowManager.Controls"
         mc:Ignorable="d"
-        Title="Artist" Height="408" Width="600" Icon="Images/Tools/user-edit.png">
+        Title="Исполнитель" Height="408" Width="600" Icon="Images/Tools/user-edit.png">
 	<Window.Resources>
 		<Style TargetType="TextBlock">
 			<Setter Property="FontFamily" Value="Arial"/>

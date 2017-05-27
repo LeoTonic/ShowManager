@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 				xmlns:controls="clr-namespace:ShowManager.Controls"
         mc:Ignorable="d"
-        Title="Исполнители" Height="350" Width="525" Icon="Images/View/user.png">
+        Title="Участники фестиваля" Height="350" Width="525" Icon="Images/View/user.png">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
@@ -32,11 +32,17 @@
 					<MenuItem Header="База..."/>
 				</MenuItem>
 			</MenuItem>
+			<MenuItem Header="Окна">
+				<MenuItem Name="MenuWindowShow"  Header="Порядок выступлений" Click="MenuWindowShow_Click"/>
+				<MenuItem Name="MenuWindowPrep" Header="Порядок репетиций" Click="MenuWindowPrep_Click"/>
+				<Separator/>
+				<MenuItem Name="MenuWindowArrange" Header="Упорядочить" Click="MenuWindowArrange_Click"/>
+			</MenuItem>
 		</Menu>
 		<controls:SMGroupsPanel x:Name="ArtistPanel" Grid.Row="1" Focusable="False"/>
-		<controls:SMListView x:Name="ArtistView" Grid.Row="2"/>
+		<controls:SMListView x:Name="ArtistView" Grid.Row="2" ToolTip="Исполнители"/>
 		<GridSplitter Grid.Row="3" HorizontalAlignment="Stretch" Focusable="False"/>
-		<controls:SMListView x:Name="TrackView" Grid.Row="4"/>
+		<controls:SMListView x:Name="TrackView" Grid.Row="4" ToolTip="Композиции"/>
 		<controls:SMToolbar x:Name="ArtistToolBar" Grid.Row="5" Focusable="False"/>
 	</Grid>
 </Window>

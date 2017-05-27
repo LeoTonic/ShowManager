@@ -134,7 +134,8 @@ namespace ShowManager
 			}
 		}
 
-		public void ItemSelectionChange(object parentControl) { }
+		public void ItemSelectionChange(Object parentControl) { }
+		public void ItemDoubleClick(Object parentControl, SMListViewItem selectedItem) { }
 		public void PanelGroupClick(string groupName) { }
 		public void PanelGroupAdd(string groupName) { }
 		public void PanelGroupRename(string groupNameOld, string groupNameNew) { }

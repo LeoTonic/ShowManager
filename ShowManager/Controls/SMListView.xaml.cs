@@ -190,6 +190,16 @@ namespace ShowManager.Controls
 			}
 		}
 
+		protected void SMListView_ItemMouseDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			if (iCommandTo != null)
+			{
+				var lbItem = sender as ListBoxItem;
+				var smItem = lbItem.DataContext as SMListViewItem;
+				iCommandTo.ItemDoubleClick(this, smItem);
+			}
+		}
+
 		private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (iCommandTo != null)

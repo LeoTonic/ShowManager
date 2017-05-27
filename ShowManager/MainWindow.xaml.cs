@@ -1,18 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using ShowManager.Controls;
 using ShowManager.Models;
 
@@ -35,6 +24,14 @@ namespace ShowManager
 		// Имя текущей группы (в панели групп артистов)
 		private string selectedPanelName;
 
+		// Окно порядка выступлений
+		ShowOrder wndOrdersShow;
+		public bool isOrderShowActive = false;
+
+		// Окно порядка репетиций
+		PrepOrder wndOrdersPrep;
+		public bool isOrderPrepActive = false;
+
 		// Списки для помощи при переносе итемов
 		private List<SMListViewItem> helpList1 = new List<SMListViewItem>();
 		private List<SMListViewItem> helpList2 = new List<SMListViewItem>();
@@ -55,8 +52,11 @@ namespace ShowManager
 
 			// Инициализация окон
 			wndDragDrop = new DragDropWindow();
-
 			wndDragDrop.HideWindow();
+
+			OpenWindowShow(true);
+			OpenWindowPrep(true);
+
 			ArtistView.SetDragDropWindow(wndDragDrop);
 			ArtistView.SetViewMode(SMListView.ViewMode.ArtistName, this);
 			ArtistPanel.Initialize(null, this, false, currentProject.GroupsArtist);
@@ -69,8 +69,50 @@ namespace ShowManager
 			Closed += MainWindow_Closed;
 		}
 
+		// Отображение окна выступлений
+		private void OpenWindowShow(bool mode)
+		{
+			if (!isOrderShowActive && mode)
+			{
+				wndOrdersShow = new ShowOrder(wndDragDrop, currentProject, this);
+				wndOrdersShow.Show();
+				isOrderShowActive = true;
+				MenuWindowShow.IsChecked = true;
+			}
+			else if (isOrderShowActive && !mode)
+			{
+				wndOrdersShow.Close();
+				wndOrdersShow = null;
+				isOrderShowActive = false;
+				MenuWindowShow.IsChecked = false;
+			}
+		}
+
+		// Отображение окна репетиций
+		private void OpenWindowPrep(bool mode)
+		{
+			if (!isOrderPrepActive && mode)
+			{
+				wndOrdersPrep = new PrepOrder(wndDragDrop, currentProject, this);
+				wndOrdersPrep.Show();
+				isOrderPrepActive = true;
+				MenuWindowPrep.IsChecked = true;
+			}
+			else if (isOrderPrepActive && !mode)
+			{
+				wndOrdersPrep.Close();
+				wndOrdersPrep = null;
+				isOrderPrepActive = false;
+				MenuWindowPrep.IsChecked = false;
+			}
+		}
+
+
 		private void MainWindow_Closed(object sender, EventArgs e)
 		{
+			OpenWindowShow(false);
+			OpenWindowPrep(false);
+
 			wndDragDrop.Close();
 		}
 
@@ -98,6 +140,74 @@ namespace ShowManager
 			var wndGentres = new Gentres(wndDragDrop, gentres);
 			wndGentres.ShowDialog();
 		}
+
+		// Окна
+		private void MenuWindowShow_Click(object sender, RoutedEventArgs e)
+		{
+			if (MenuWindowShow.IsChecked)
+			{
+				OpenWindowShow(false);
+			}
+			else
+			{
+				OpenWindowShow(true);
+			}
+		}
+		private void MenuWindowPrep_Click(object sender, RoutedEventArgs e)
+		{
+			if (MenuWindowPrep.IsChecked)
+			{
+				OpenWindowPrep(false);
+			}
+			else
+			{
+				OpenWindowPrep(true);
+			}
+		}
+
+		// Упорядочивание окон
+		private void MenuWindowArrange_Click(object sender, RoutedEventArgs e)
+		{
+			// Установка положения окна исполнителей
+			this.Left = SystemParameters.WorkArea.Left;
+			this.Top = SystemParameters.WorkArea.Top;
+			this.Height = SystemParameters.WorkArea.Height;
+			this.Width = SystemParameters.WorkArea.Width * 0.5;
+
+			double showHeight, prepHeight;
+			double showTop, prepTop;
+			if (isOrderShowActive)
+			{
+				showTop = SystemParameters.WorkArea.Top;
+				showHeight = SystemParameters.WorkArea.Height;
+				if (isOrderPrepActive)
+					showHeight *= 0.5;
+
+				wndOrdersShow.Left = SystemParameters.WorkArea.Width * 0.5;
+				wndOrdersShow.Top = showTop;
+				wndOrdersShow.Width = SystemParameters.WorkArea.Width * 0.5;
+				wndOrdersShow.Height = showHeight;
+			}
+
+			if (isOrderPrepActive)
+			{
+				prepTop = SystemParameters.WorkArea.Height * 0.5;
+				prepHeight = SystemParameters.WorkArea.Height * 0.5;
+
+				if (!isOrderShowActive)
+				{
+					prepTop = SystemParameters.WorkArea.Top;
+					prepHeight = SystemParameters.WorkArea.Height;
+				}
+
+				wndOrdersPrep.Left = SystemParameters.WorkArea.Width * 0.5;
+				wndOrdersPrep.Top = prepTop;
+				wndOrdersPrep.Width = SystemParameters.WorkArea.Width * 0.5;
+				wndOrdersPrep.Height = prepHeight;
+			}
+
+		}
+
 
 		#endregion
 
@@ -137,29 +247,7 @@ namespace ShowManager
 		// Новый артист
 		public void ToolBarAdd(SMToolbar tb)
 		{
-			var artistWindow = new Artist(currentProject, gentres, null);
-			if (artistWindow.ShowDialog() == true)
-			{
-				// Добавляем в массив
-				var newArtist = new SMArtist(currentProject, gentres, artistWindow.ArtistObj);
-				currentProject.Artists.Add(newArtist);
-
-				// И в группу
-				SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, selectedPanelName);
-				if (getGroup != null)
-				{
-					getGroup.Add(newArtist.ID);
-					ArtistView.Add(
-						newArtist.ID,
-						gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, 0),
-						labelText1: newArtist.Name,
-						labelText2: newArtist.CompanyName,
-						ico0: gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.Age, newArtist.GentreAge),
-						ico1: gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.Category, newArtist.GentreCategory),
-						ico2: gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.Content, newArtist.GentreContent)
-						);
-				}
-			}
+			ShowArtistDialog(null);
 		}
 
 		public void ToolBarEdit(SMToolbar tb)
@@ -170,22 +258,7 @@ namespace ShowManager
 			SMArtist getArtist = currentProject.GetArtistByID(artistID);
 			if (getArtist == null)
 				return;
-			var artistWindow = new Artist(currentProject, gentres, getArtist);
-			if (artistWindow.ShowDialog() == true)
-			{
-				// Редактируем элемент
-				getArtist.Assign(artistWindow.ArtistObj);
-				ArtistView.Edit(
-					getArtist.ID,
-					gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, 0),
-					labelText1: getArtist.Name,
-					labelText2: getArtist.CompanyName,
-					ico0: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Age, getArtist.GentreAge),
-					ico1: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Category, getArtist.GentreCategory),
-					ico2: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Content, getArtist.GentreContent)
-					);
-				ItemSelectionChange(ArtistView);
-			}
+			ShowArtistDialog(getArtist);
 		}
 
 		public void ToolBarRemove(SMToolbar tb)
@@ -206,6 +279,64 @@ namespace ShowManager
 					getGroup.Remove(artistID);
 					ArtistView.Remove(artistID);
 					TrackView.Clear();
+				}
+			}
+		}
+
+		// Двойной клик по элементу
+		public void ItemDoubleClick(Object parentControl, SMListViewItem selectedItem)
+		{
+			if (parentControl.GetHashCode() == ArtistView.GetHashCode())
+			{
+				long artistID = selectedItem.ItemID;
+				SMArtist getArtist = currentProject.GetArtistByID(artistID);
+				if (getArtist == null)
+					return;
+				ShowArtistDialog(getArtist);
+			}
+		}
+
+		// Отображение диалога исполнителя
+		private void ShowArtistDialog(SMArtist artist)
+		{
+			var artistWindow = new Artist(currentProject, gentres, artist);
+			if (artistWindow.ShowDialog() == true)
+			{
+				if (artist == null)
+				{
+					// Добавляем в массив
+					var newArtist = new SMArtist(currentProject, gentres, artistWindow.ArtistObj);
+					currentProject.Artists.Add(newArtist);
+					// И в группу
+					SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, selectedPanelName);
+					if (getGroup != null)
+					{
+						getGroup.Add(newArtist.ID);
+						ArtistView.Add(
+							newArtist.ID,
+							gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, 0),
+							labelText1: newArtist.Name,
+							labelText2: newArtist.CompanyName,
+							ico0: gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.Age, newArtist.GentreAge),
+							ico1: gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.Category, newArtist.GentreCategory),
+							ico2: gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.Content, newArtist.GentreContent)
+							);
+					}
+				}
+				else
+				{
+					// Редактируем элемент
+					artist.Assign(artistWindow.ArtistObj);
+					ArtistView.Edit(
+						artist.ID,
+						gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, 0),
+						labelText1: artist.Name,
+						labelText2: artist.CompanyName,
+						ico0: gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Age, artist.GentreAge),
+						ico1: gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Category, artist.GentreCategory),
+						ico2: gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Content, artist.GentreContent)
+						);
+					ItemSelectionChange(ArtistView);
 				}
 			}
 		}
@@ -458,5 +589,6 @@ namespace ShowManager
 			curApp.ImgDesc.Add(223, "Выступление да");
 
 		}
+
 	}
 }

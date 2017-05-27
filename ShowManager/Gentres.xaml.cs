@@ -210,6 +210,8 @@ namespace ShowManager
 			}
 		}
 
+		public void ItemDoubleClick(Object parentControl, SMListViewItem selectedItem) { }
+
 		public void DropItems(int insertIndex, SMListViewItem draggedItem, Object draggedTo, Object draggedToSubItem)
 		{
 			var lView = draggedItem.dragFromControl as SMListView;

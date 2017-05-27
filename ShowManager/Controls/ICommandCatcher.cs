@@ -12,6 +12,9 @@ namespace ShowManager.Controls
 		// Выборка элементов
 		void ItemSelectionChange(Object parentControl); // Выбор элемента в контроле
 
+		// Двойной клик по элементу
+		void ItemDoubleClick(Object parentControl, SMListViewItem selectedItem);
+
 		// Панель инструментов
 		void ToolBarAdd(SMToolbar tb); // Новый элемент
 		void ToolBarEdit(SMToolbar tb); // Редактируем элемент
