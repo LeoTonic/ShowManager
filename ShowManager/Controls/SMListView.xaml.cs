@@ -327,7 +327,7 @@ namespace ShowManager.Controls
 		}
 
 		// Добавить новый элемент
-		public void Add(long itemID, int mainImgKey, string mainTimeText="", string subTimeText="", string labelText1="", string labelText2="", int ico0=101, int ico1=101, int ico2=101, int ico3=101)
+		public void Add(long itemID, int mainImgKey, string mainTimeText="", string subTimeText="", string labelText1="", string labelText2="", int ico0=101, int ico1=101, int ico2=101, int ico3=101, int insIndex=-1)
 		{
 			SMListViewItem newItem = new SMListViewItem(viewMode, itemID)
 			{
@@ -343,7 +343,10 @@ namespace ShowManager.Controls
 				Ico3Key = ico3
 			};
 
-			Items.Add(newItem);
+			if (insIndex == -1)
+				Items.Add(newItem);
+			else
+				Items.Insert(insIndex, newItem);
 		}
 
 		// Редактирование данных элемента

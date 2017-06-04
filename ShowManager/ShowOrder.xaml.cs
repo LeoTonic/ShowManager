@@ -18,6 +18,7 @@ namespace ShowManager
 	{
 		private SMProject currentProject = null;
 		private MainWindow parentWindow = null;
+		private SMGentresBase gentres = null;
 
 		// Имя текущей группы (в панели групп выступлений)
 		private string selectedPanelName;
@@ -28,10 +29,11 @@ namespace ShowManager
 		private List<SMListViewItem> helpList1 = new List<SMListViewItem>();
 		private List<SMListViewItem> helpList2 = new List<SMListViewItem>();
 
-		public ShowOrder(DragDropWindow wndDD, SMProject project, MainWindow parent)
+		public ShowOrder(DragDropWindow wndDD, SMProject project, MainWindow parent, SMGentresBase gnt)
 		{
 			currentProject = project;
 			parentWindow = parent;
+			gentres = gnt;
 
 			InitializeComponent();
 
@@ -101,10 +103,54 @@ namespace ShowManager
 				}
 			}
 
-			// Если элемент с которого тянем объекты не является artistView главного окна - выходим
-			if (lView.GetHashCode() != parentWindow.ArtistView.GetHashCode())
-				return;
-
+			// Перенос из вьюшки с артистом - будем вставлять все треки артиста
+			if (lView.GetHashCode() == parentWindow.ArtistView.GetHashCode())
+			{
+				SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
+				foreach (SMListViewItem lvi in helpList2)
+				{
+					var getArtist = currentProject.GetArtistByID(lvi.ItemID);
+					if (getArtist != null)
+					{
+						foreach(SMTrack track in getArtist.Tracks)
+						{
+							ShowOrderView.Add(
+								track.ID,
+								gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, getArtist.GentreGroup),
+								labelText1: track.Name,
+								labelText2: getArtist.Name,
+								ico0: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Age, getArtist.GentreAge),
+								ico1: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Category, getArtist.GentreCategory),
+								ico2: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Content, getArtist.GentreContent),
+								insIndex: insertIndex
+								);
+						}
+					}
+				}
+			}
+			// Перенос из вьюшки с треками - вставляем то что тащим
+			if (lView.GetHashCode() == parentWindow.TrackView.GetHashCode())
+			{
+				SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
+				foreach (SMListViewItem lvi in helpList2)
+				{
+					var getTrack = currentProject.GetTrackByID(lvi.ItemID);
+					if (getTrack != null)
+					{
+						var getArtist = getTrack.ParentArtist;
+						ShowOrderView.Add(
+							getTrack.ID,
+							gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, getArtist.GentreGroup),
+							labelText1: getTrack.Name,
+							labelText2: getArtist.Name,
+							ico0: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Age, getArtist.GentreAge),
+							ico1: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Category, getArtist.GentreCategory),
+							ico2: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Content, getArtist.GentreContent),
+							insIndex: insertIndex
+							);
+					}
+				}
+			}
 		}
 		public void ToolBarAdd(SMToolbar tb) { }
 		public void ToolBarEdit(SMToolbar tb) { }

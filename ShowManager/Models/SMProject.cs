@@ -125,5 +125,19 @@ namespace ShowManager.Models
 			}
 			return null;
 		}
+
+		// Получение ссылки на объект трека по идентификатору
+		public SMTrack GetTrackByID(long ID)
+		{
+			foreach(SMArtist artist in artists)
+			{
+				foreach(SMTrack track in artist.Tracks)
+				{
+					if (track.ID == ID)
+						return track;
+				}
+			}
+			return null;
+		}
 	}
 }

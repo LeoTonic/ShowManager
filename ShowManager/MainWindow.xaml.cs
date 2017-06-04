@@ -54,17 +54,16 @@ namespace ShowManager
 			wndDragDrop = new DragDropWindow();
 			wndDragDrop.HideWindow();
 
-			OpenWindowShow(true);
-			OpenWindowPrep(true);
-
 			ArtistView.SetDragDropWindow(wndDragDrop);
 			ArtistView.SetViewMode(SMListView.ViewMode.ArtistName, this);
 			ArtistPanel.Initialize(null, this, false, currentProject.GroupsArtist);
+			ArtistToolBar.SetValues("user-add", "Добавить исполнителя", "user-edit", "Изменить исполнителя", "user-delete", "Удалить исполнителя", this);
 
 			TrackView.SetDragDropWindow(wndDragDrop);
 			TrackView.SetViewMode(SMListView.ViewMode.ArtistTrack, this);
 
-			ArtistToolBar.SetValues("user-add", "Добавить исполнителя", "user-edit", "Изменить исполнителя", "user-delete", "Удалить исполнителя", this);
+			OpenWindowShow(true);
+			OpenWindowPrep(true);
 
 			Closed += MainWindow_Closed;
 		}
@@ -74,7 +73,7 @@ namespace ShowManager
 		{
 			if (!isOrderShowActive && mode)
 			{
-				wndOrdersShow = new ShowOrder(wndDragDrop, currentProject, this);
+				wndOrdersShow = new ShowOrder(wndDragDrop, currentProject, this, gentres);
 				wndOrdersShow.Show();
 				isOrderShowActive = true;
 				MenuWindowShow.IsChecked = true;
@@ -397,6 +396,14 @@ namespace ShowManager
 							getGroup.Remove(artistID);
 							TrackView.Clear();
 						}
+					}
+					else if (lView.GetHashCode() == wndOrdersShow.ShowOrderView.GetHashCode())
+					{
+						// Удаление из порядка выступлений
+					}
+					else if (lView.GetHashCode() == wndOrdersPrep.PrepOrderView.GetHashCode())
+					{
+						// Удаление из порядка репетиций
 					}
 					items.Remove(lvi);
 				}
