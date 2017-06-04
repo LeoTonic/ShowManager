@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Globalization;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
 
 namespace ShowManager.Controls
 {
@@ -47,7 +48,7 @@ namespace ShowManager.Controls
 				{
 					Value = TimeSpan.Parse(value);
 				}
-				catch (FormatException)
+				catch (Exception)
 				{
 					Value = TimeSpan.Zero;
 				}
@@ -59,16 +60,40 @@ namespace ShowManager.Controls
 		{
 			var tb = sender as TextBox;
 			var text = tb.Text;
+			var cIndex = tb.CaretIndex;
 
-			if (text.Length > lastText.Length)
+			var onlyNum = Regex.Replace(text, @"[^\d]", "");
+			if (onlyNum.Length > 6)
 			{
-				if (text.Length == 2 || text.Length==5)
+				if (cIndex > 8)
 				{
-					text = string.Concat(text, ':');
-					tb.Text = text;
-					tb.CaretIndex = text.Length;
+					onlyNum = onlyNum.Substring(onlyNum.Length - 6, 6);
+				}
+				else
+				{
+					onlyNum = onlyNum.Substring(0, 6);
 				}
 			}
+			else if (onlyNum.Length < 6)
+			{
+				onlyNum = string.Concat(onlyNum, new string('0', 6 - onlyNum.Length));
+			}
+			// set dividers
+			onlyNum = string.Concat(onlyNum.Substring(0, 2), ':', onlyNum.Substring(2, 2), ':', onlyNum.Substring(4, 2));
+			tb.Text = onlyNum;
+			if (lastText.Length > text.Length)
+			{
+				// deleting
+				if (cIndex == 3 || cIndex == 6)
+					cIndex--;
+			}
+			else
+			{
+				// adding
+				if (cIndex == 2 || cIndex == 5)
+					cIndex++;
+			}
+			tb.CaretIndex = cIndex;
 			lastText = text;
 		}
 	}

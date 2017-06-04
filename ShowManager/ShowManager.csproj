@@ -55,6 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\TimeDialog.xaml.cs">
+      <DependentUpon>TimeDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PrepOrder.xaml.cs">
       <DependentUpon>PrepOrder.xaml</DependentUpon>
     </Compile>
@@ -96,6 +99,10 @@
     <Page Include="Controls\SMToolbar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TimeDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\TimePicker.xaml">
       <SubType>Designer</SubType>

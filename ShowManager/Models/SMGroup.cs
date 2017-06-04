@@ -18,6 +18,18 @@ namespace ShowManager.Models
 		}
 		private List<long> idList; // Список элементов группы (идентификаторы)
 
+		private TimeSpan timeStart; // Время начала активности группы (для репетиций и выступлений)
+		public TimeSpan TimeStart
+		{
+			get
+			{
+				return this.timeStart;
+			}
+			set
+			{
+				this.timeStart = value;
+			}
+		}
 		// Конструктор
 		public SMGroup(string name)
 		{

@@ -11,5 +11,5 @@
 			<Setter Property="Padding" Value="4"/>
 		</Style>
 	</UserControl.Resources>
-	<TextBox Text="{Binding StringTime}" TextAlignment="Center" TextChanged="TextBox_TextChanged"/>
+	<TextBox x:Name="TextBoxControl" Text="{Binding StringTime}" TextAlignment="Center" TextChanged="TextBox_TextChanged"/>
 </UserControl>

@@ -6,12 +6,52 @@
         xmlns:controls="clr-namespace:ShowManager.Controls"
         mc:Ignorable="d"
         Title="Порядок выступлений" Height="300" Width="500" ShowInTaskbar="False" WindowStyle="ToolWindow">
+    <Window.Resources>
+        <Style TargetType="TextBlock" x:Key="TextLabel">
+            <Setter Property="FontFamily" Value="Arial"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="4,0,0,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="TextLike">
+            <Setter Property="FontFamily" Value="Arial"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Background" Value="GhostWhite"/>
+        </Style>
+    </Window.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 		<controls:SMGroupsPanel x:Name="ShowOrderPanel" Grid.Row="0" Focusable="False"/>
-		<controls:SMListView x:Name="ShowOrderView" Grid.Row="1"/>
+        <Grid Grid.Row="1" Margin="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Style="{StaticResource TextLabel}"  Text="Начало: "/>
+            <Border Grid.Column="1" BorderThickness="1" BorderBrush="Gray">
+                <TextBlock x:Name="TimeStart" Style="{StaticResource TextLike}" MouseDown="TimeStart_MouseDown"  Cursor="Hand" Text="00:00:00"/>
+            </Border>
+            <TextBlock Grid.Column="3" Style="{StaticResource TextLabel}" Text="Продолж-ть: "/>
+            <Border Grid.Column="4" BorderThickness="1" BorderBrush="Gray">
+                <TextBlock x:Name="TimeLength" Style="{StaticResource TextLike}" Text="00:00:00"/>
+            </Border>
+            <TextBlock Grid.Column="6" Style="{StaticResource TextLabel}"  Text="Окончание: "/>
+            <Border Grid.Column="7" BorderThickness="1" BorderBrush="Gray">
+                <TextBlock x:Name="TimeEnd" Style="{StaticResource TextLike}"  Text="00:00:00"/>
+            </Border>
+        </Grid>
+		<controls:SMListView x:Name="ShowOrderView" Grid.Row="2"/>
 	</Grid>
 </Window>
