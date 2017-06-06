@@ -310,7 +310,7 @@ namespace ShowManager
 					SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, selectedPanelName);
 					if (getGroup != null)
 					{
-						getGroup.Add(newArtist.ID);
+						getGroup.Add(newArtist.ID, -1);
 						ArtistView.Add(
 							newArtist.ID,
 							gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, 0),
@@ -400,6 +400,11 @@ namespace ShowManager
 					else if (lView.GetHashCode() == wndOrdersShow.ShowOrderView.GetHashCode())
 					{
 						// Удаление из порядка выступлений
+						SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Show, wndOrdersShow.selectedPanelName);
+						if (getGroup != null)
+						{
+							getGroup.Remove(lvi.ItemID);
+						}
 					}
 					else if (lView.GetHashCode() == wndOrdersPrep.PrepOrderView.GetHashCode())
 					{
@@ -408,6 +413,11 @@ namespace ShowManager
 					items.Remove(lvi);
 				}
 
+				// Обновление хронометражей
+				if (lView.GetHashCode() == wndOrdersShow.ShowOrderView.GetHashCode())
+				{
+					wndOrdersShow.UpdateTimeLine();
+				}
 			}
 			// Перемещение внутри контрола
 			else if (draggedTo.GetHashCode() == lView.GetHashCode())
@@ -461,7 +471,7 @@ namespace ShowManager
 					}
 					if (newGroup != null)
 					{
-						newGroup.Add(lvi.ItemID);
+						newGroup.Add(lvi.ItemID, -1);
 					}
 					items.Remove(lvi);
 

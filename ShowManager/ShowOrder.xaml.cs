@@ -21,7 +21,7 @@ namespace ShowManager
 		private SMGentresBase gentres = null;
 
 		// Имя текущей группы (в панели групп выступлений)
-		private string selectedPanelName;
+		public string selectedPanelName;
 
 		private CultureInfo ci = new CultureInfo("en-US");
 
@@ -60,18 +60,34 @@ namespace ShowManager
 			if (group == null)
 				return;
 			UpdateTimeStart(group.TimeStart);
+			RefreshView();
 		}
 
 		public void PanelGroupAdd(string groupName) {
 			currentProject.GroupsShow.Add(new SMGroup(groupName));
 		}
 
-		public void PanelGroupRename(string groupNameOld, string groupNameNew) { }
-		public void PanelGroupDelete(string groupName) { }
+		public void PanelGroupRename(string groupNameOld, string groupNameNew)
+		{
+			SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Show, groupNameOld);
+			if (getGroup != null)
+				getGroup.Name = groupNameNew;
+		}
+		public void PanelGroupDelete(string groupName)
+		{
+			SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Show, groupName);
+			if (getGroup != null)
+			{
+				getGroup.Clear();
+				currentProject.GroupsShow.Remove(getGroup);
+			}
+		}
+
 		public void DropItems(int insertIndex, SMListViewItem draggedItem, Object draggedTo, Object draggedToSubItem)
 		{
 			var lView = draggedItem.dragFromControl as SMListView;
 			var items = lView.Items as ObservableCollection<SMListViewItem>;
+			SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Show, selectedPanelName);
 
 			// Обработка переноса внутри контрола
 			if (lView.GetHashCode() == draggedTo.GetHashCode())
@@ -84,7 +100,6 @@ namespace ShowManager
 					items.Remove(lvi);
 				}
 
-				SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Show, selectedPanelName);
 				foreach (SMListViewItem lvi in helpList1)
 				{
 					if (getGroup != null)
@@ -107,6 +122,7 @@ namespace ShowManager
 			if (lView.GetHashCode() == parentWindow.ArtistView.GetHashCode())
 			{
 				SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
+
 				foreach (SMListViewItem lvi in helpList2)
 				{
 					var getArtist = currentProject.GetArtistByID(lvi.ItemID);
@@ -114,6 +130,11 @@ namespace ShowManager
 					{
 						foreach(SMTrack track in getArtist.Tracks)
 						{
+							if (getGroup != null)
+							{
+								getGroup.Add(track.ID, insertIndex);
+							}
+
 							ShowOrderView.Add(
 								track.ID,
 								gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, getArtist.GentreGroup),
@@ -124,6 +145,7 @@ namespace ShowManager
 								ico2: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Content, getArtist.GentreContent),
 								insIndex: insertIndex
 								);
+
 						}
 					}
 				}
@@ -137,6 +159,11 @@ namespace ShowManager
 					var getTrack = currentProject.GetTrackByID(lvi.ItemID);
 					if (getTrack != null)
 					{
+						if (getGroup != null)
+						{
+							getGroup.Add(getTrack.ID, insertIndex);
+						}
+
 						var getArtist = getTrack.ParentArtist;
 						ShowOrderView.Add(
 							getTrack.ID,
@@ -151,6 +178,38 @@ namespace ShowManager
 					}
 				}
 			}
+
+			// Перенос в панель заголовка
+			if (draggedTo.GetHashCode() == ShowOrderPanel.GetHashCode())
+			{
+				var dropPanel = draggedToSubItem as SMGroupsItem;
+
+				// Создаем помощников
+				SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
+
+				SMGroup newGroup = currentProject.GetGroup(SMProject.GroupType.Show, dropPanel.Text);
+
+				// Удаляем из текущей панели и группы и добавляем в новую
+				foreach (SMListViewItem lvi in helpList2)
+				{
+					if (getGroup != null)
+					{
+						getGroup.Remove(lvi.ItemID);
+					}
+					if (newGroup != null)
+					{
+						newGroup.Add(lvi.ItemID, -1);
+					}
+					items.Remove(lvi);
+
+					// Если та же группа - вставляем для отображения
+					if (getGroup.GetHashCode() == newGroup.GetHashCode())
+					{
+						items.Add(lvi);
+					}
+				}
+			}
+			UpdateTimeLine();
 		}
 		public void ToolBarAdd(SMToolbar tb) { }
 		public void ToolBarEdit(SMToolbar tb) { }
@@ -172,6 +231,7 @@ namespace ShowManager
 			{
 				group.TimeStart = tDlg.TimeValue;
 				UpdateTimeStart(tDlg.TimeValue);
+				UpdateTimeLine();
 			}
 		}
 
@@ -179,6 +239,64 @@ namespace ShowManager
 		private void UpdateTimeStart(TimeSpan value)
 		{
 			TimeStart.Text = value.ToString(@"hh\:mm\:ss", ci);
+		}
+
+		// Обновление хронометража
+		public void UpdateTimeLine()
+		{
+			var group = currentProject.GetGroup(SMProject.GroupType.Show, selectedPanelName);
+			if (group == null)
+				return;
+			var timeCursor = group.TimeStart;
+			foreach (long id in group.IDList)
+			{
+				var track = currentProject.GetTrackByID(id);
+				if (track != null)
+				{
+					var getArtist = track.ParentArtist;
+					ShowOrderView.Edit(
+						track.ID,
+						gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, getArtist.GentreGroup),
+						timeCursor.ToString(@"hh\:mm\:ss", ci),
+						track.TrackLength.ToString(@"hh\:mm\:ss", ci),
+						labelText1: track.Name,
+						labelText2: getArtist.Name,
+						ico0: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Age, getArtist.GentreAge),
+						ico1: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Category, getArtist.GentreCategory),
+						ico2: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Content, getArtist.GentreContent));
+					timeCursor += track.TrackLength;
+				}
+			}
+			TimeEnd.Text = timeCursor.ToString(@"hh\:mm\:ss", ci);
+			TimeLength.Text = (timeCursor - group.TimeStart).ToString(@"hh\:mm\:ss", ci);
+		}
+
+		// Обновление отображения вьюшки
+		private void RefreshView()
+		{
+			ShowOrderView.Clear();
+			var group = currentProject.GetGroup(SMProject.GroupType.Show, selectedPanelName);
+			if (group == null)
+				return;
+
+			foreach (long id in group.IDList)
+			{
+				var track = currentProject.GetTrackByID(id);
+				if (track != null)
+				{
+					var getArtist = track.ParentArtist;
+					ShowOrderView.Add(
+						track.ID,
+						gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, getArtist.GentreGroup),
+						labelText1: track.Name,
+						labelText2: getArtist.Name,
+						ico0: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Age, getArtist.GentreAge),
+						ico1: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Category, getArtist.GentreCategory),
+						ico2: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Content, getArtist.GentreContent));
+				}
+			}
+
+			UpdateTimeLine();
 		}
 	}
 }

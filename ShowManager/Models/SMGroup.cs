@@ -38,14 +38,21 @@ namespace ShowManager.Models
 		}
 
 		// Добавление идентификатора
-		public bool Add(long id)
+		public bool Add(long id, int insIndex)
 		{
 			// Проверим наличие
 			if (idList.Contains(id))
 			{
 				return false;
 			}
-			idList.Add(id);
+			if (insIndex >= 0)
+			{
+				idList.Insert(insIndex, id);
+			}
+			else
+			{
+				idList.Add(id);
+			}
 			return true;
 		}
 
