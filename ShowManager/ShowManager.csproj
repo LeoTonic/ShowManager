@@ -58,9 +58,6 @@
     <Compile Include="Controls\TimeDialog.xaml.cs">
       <DependentUpon>TimeDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PrepOrder.xaml.cs">
-      <DependentUpon>PrepOrder.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ShowOrder.xaml.cs">
       <DependentUpon>ShowOrder.xaml</DependentUpon>
     </Compile>
@@ -165,10 +162,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="PrepOrder.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="ShowOrder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

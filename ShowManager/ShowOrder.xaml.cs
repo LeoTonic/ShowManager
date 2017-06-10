@@ -29,17 +29,23 @@ namespace ShowManager
 		private List<SMListViewItem> helpList1 = new List<SMListViewItem>();
 		private List<SMListViewItem> helpList2 = new List<SMListViewItem>();
 
-		public ShowOrder(DragDropWindow wndDD, SMProject project, MainWindow parent, SMGentresBase gnt)
+		private SMListView.ViewMode viewMode;
+
+		public ShowOrder(DragDropWindow wndDD, SMProject project, MainWindow parent, SMGentresBase gnt, SMListView.ViewMode mode)
 		{
 			currentProject = project;
 			parentWindow = parent;
 			gentres = gnt;
+			viewMode = mode;
 
 			InitializeComponent();
 
 			ShowOrderView.SetDragDropWindow(wndDD);
-			ShowOrderView.SetViewMode(SMListView.ViewMode.OrderTrack, this);
-			ShowOrderPanel.Initialize(null, this, false, currentProject.GroupsShow);
+			ShowOrderView.SetViewMode(viewMode, this);
+			if (viewMode == SMListView.ViewMode.OrderTrack)
+				ShowOrderPanel.Initialize(null, this, false, currentProject.GroupsShow);
+			else
+				ShowOrderPanel.Initialize(null, this, false, currentProject.GroupsPrepare);
 
 			this.Closed += ShowOrder_Closed;
 		}
@@ -47,8 +53,16 @@ namespace ShowManager
 		{
 			if (parentWindow != null)
 			{
-				parentWindow.isOrderShowActive = false;
-				parentWindow.MenuWindowShow.IsChecked = false;
+				if (viewMode == SMListView.ViewMode.OrderTrack)
+				{
+					parentWindow.isOrderShowActive = false;
+					parentWindow.MenuWindowShow.IsChecked = false;
+				}
+				else
+				{
+					parentWindow.isOrderPrepActive = false;
+					parentWindow.MenuWindowPrep.IsChecked = false;
+				}
 			}
 		}
 
@@ -56,30 +70,39 @@ namespace ShowManager
 		public void ItemDoubleClick(Object parentControl, SMListViewItem selectedItem) { }
 		public void PanelGroupClick(string groupName) {
 			selectedPanelName = groupName;
-			var group = currentProject.GetGroup(SMProject.GroupType.Show, selectedPanelName);
+			SMGroup group = GetGroup(selectedPanelName);
+
 			if (group == null)
 				return;
+
 			UpdateTimeStart(group.TimeStart);
 			RefreshView();
 		}
 
 		public void PanelGroupAdd(string groupName) {
-			currentProject.GroupsShow.Add(new SMGroup(groupName));
+			if (viewMode == SMListView.ViewMode.OrderTrack)
+				currentProject.GroupsShow.Add(new SMGroup(groupName));
+			else
+				currentProject.GroupsPrepare.Add(new SMGroup(groupName));
 		}
 
 		public void PanelGroupRename(string groupNameOld, string groupNameNew)
 		{
-			SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Show, groupNameOld);
+			SMGroup getGroup = GetGroup(groupNameOld);
+
 			if (getGroup != null)
 				getGroup.Name = groupNameNew;
 		}
 		public void PanelGroupDelete(string groupName)
 		{
-			SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Show, groupName);
+			SMGroup getGroup = GetGroup(groupName);
 			if (getGroup != null)
 			{
 				getGroup.Clear();
-				currentProject.GroupsShow.Remove(getGroup);
+				if (viewMode == SMListView.ViewMode.OrderTrack)
+					currentProject.GroupsShow.Remove(getGroup);
+				else
+					currentProject.GroupsPrepare.Remove(getGroup);
 			}
 		}
 
@@ -87,7 +110,7 @@ namespace ShowManager
 		{
 			var lView = draggedItem.dragFromControl as SMListView;
 			var items = lView.Items as ObservableCollection<SMListViewItem>;
-			SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Show, selectedPanelName);
+			SMGroup getGroup = GetGroup(selectedPanelName);
 
 			// Обработка переноса внутри контрола
 			if (lView.GetHashCode() == draggedTo.GetHashCode())
@@ -118,66 +141,101 @@ namespace ShowManager
 				}
 			}
 
-			// Перенос из вьюшки с артистом - будем вставлять все треки артиста
-			if (lView.GetHashCode() == parentWindow.ArtistView.GetHashCode())
+			// Работаем в зависимости от режима
+			if (viewMode == SMListView.ViewMode.OrderTrack)
 			{
-				SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
-
-				foreach (SMListViewItem lvi in helpList2)
+				// Перенос из вьюшки с артистом - будем вставлять все треки артиста
+				if (lView.GetHashCode() == parentWindow.ArtistView.GetHashCode())
 				{
-					var getArtist = currentProject.GetArtistByID(lvi.ItemID);
-					if (getArtist != null)
+					SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
+
+					foreach (SMListViewItem lvi in helpList2)
 					{
-						foreach(SMTrack track in getArtist.Tracks)
+						var getArtist = currentProject.GetArtistByID(lvi.ItemID);
+						if (getArtist != null)
+						{
+							foreach (SMTrack track in getArtist.Tracks)
+							{
+								if (getGroup != null)
+								{
+									getGroup.Add(track.ID, insertIndex);
+								}
+
+								if (ShowOrderView.Add(track, gentres, insertIndex, true) == false)
+								{
+									MessageBox.Show("Нельзя добавить дважды один и тот же трек в одну группу!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Information);
+								}
+							}
+						}
+					}
+				}
+				// Перенос из вьюшки с треками - вставляем то что тащим
+				if (lView.GetHashCode() == parentWindow.TrackView.GetHashCode())
+				{
+					SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
+					foreach (SMListViewItem lvi in helpList2)
+					{
+						var getTrack = currentProject.GetTrackByID(lvi.ItemID);
+						if (getTrack != null)
 						{
 							if (getGroup != null)
 							{
-								getGroup.Add(track.ID, insertIndex);
+								getGroup.Add(getTrack.ID, insertIndex);
 							}
 
-							ShowOrderView.Add(
-								track.ID,
-								gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, getArtist.GentreGroup),
-								labelText1: track.Name,
-								labelText2: getArtist.Name,
-								ico0: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Age, getArtist.GentreAge),
-								ico1: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Category, getArtist.GentreCategory),
-								ico2: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Content, getArtist.GentreContent),
-								insIndex: insertIndex
-								);
-
+							if (ShowOrderView.Add(getTrack, gentres, insertIndex, true) == false)
+							{
+								MessageBox.Show("Нельзя добавить дважды один и тот же трек в одну группу!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Information);
+							}
 						}
 					}
 				}
 			}
-			// Перенос из вьюшки с треками - вставляем то что тащим
-			if (lView.GetHashCode() == parentWindow.TrackView.GetHashCode())
+			else
 			{
-				SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
-				foreach (SMListViewItem lvi in helpList2)
+				// Перенос из вьюшки с артистом - вставляем в репетицию
+				if (lView.GetHashCode() == parentWindow.ArtistView.GetHashCode())
 				{
-					var getTrack = currentProject.GetTrackByID(lvi.ItemID);
-					if (getTrack != null)
-					{
-						if (getGroup != null)
-						{
-							getGroup.Add(getTrack.ID, insertIndex);
-						}
+					SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
 
-						var getArtist = getTrack.ParentArtist;
-						ShowOrderView.Add(
-							getTrack.ID,
-							gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, getArtist.GentreGroup),
-							labelText1: getTrack.Name,
-							labelText2: getArtist.Name,
-							ico0: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Age, getArtist.GentreAge),
-							ico1: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Category, getArtist.GentreCategory),
-							ico2: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Content, getArtist.GentreContent),
-							insIndex: insertIndex
-							);
+					foreach (SMListViewItem lvi in helpList2)
+					{
+						var getArtist = currentProject.GetArtistByID(lvi.ItemID);
+						if (getArtist != null)
+						{
+							if (getGroup != null)
+							{
+								getGroup.Add(getArtist.ID, insertIndex);
+							}
+
+							if (ShowOrderView.Add(getArtist, gentres, insertIndex, true) == false)
+							{
+								MessageBox.Show("Нельзя добавить дважды одного и того же исполнителя в одну группу!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Information);
+							}
+						}
 					}
 				}
+				// Перенос из вьюшки с треками - вставляем артиста в репетицию
+				if (lView.GetHashCode() == parentWindow.TrackView.GetHashCode())
+				{
+					SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
+					foreach (SMListViewItem lvi in helpList2)
+					{
+						var getTrack = currentProject.GetTrackByID(lvi.ItemID);
+						if (getTrack != null)
+						{
+							var getArtist = getTrack.ParentArtist;
+							if (getGroup != null)
+							{
+								getGroup.Add(getArtist.ID, insertIndex);
+							}
+							ShowOrderView.Add(getArtist, gentres, insertIndex, true);
+						}
+					}
+
+				}
 			}
+
 
 			// Перенос в панель заголовка
 			if (draggedTo.GetHashCode() == ShowOrderPanel.GetHashCode())
@@ -187,7 +245,7 @@ namespace ShowManager
 				// Создаем помощников
 				SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
 
-				SMGroup newGroup = currentProject.GetGroup(SMProject.GroupType.Show, dropPanel.Text);
+				SMGroup newGroup = GetGroup(dropPanel.Text);
 
 				// Удаляем из текущей панели и группы и добавляем в новую
 				foreach (SMListViewItem lvi in helpList2)
@@ -209,7 +267,10 @@ namespace ShowManager
 					}
 				}
 			}
-			UpdateTimeLine();
+			if (getGroup != null)
+			{
+				UpdateTimeLine(getGroup);
+			}
 		}
 		public void ToolBarAdd(SMToolbar tb) { }
 		public void ToolBarEdit(SMToolbar tb) { }
@@ -217,7 +278,7 @@ namespace ShowManager
 
 		private void TimeStart_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
-			var group = currentProject.GetGroup(SMProject.GroupType.Show, selectedPanelName);
+			var group = GetGroup(selectedPanelName);
 			if (group == null)
 				return;
 
@@ -231,7 +292,7 @@ namespace ShowManager
 			{
 				group.TimeStart = tDlg.TimeValue;
 				UpdateTimeStart(tDlg.TimeValue);
-				UpdateTimeLine();
+				UpdateTimeLine(group);
 			}
 		}
 
@@ -242,61 +303,73 @@ namespace ShowManager
 		}
 
 		// Обновление хронометража
-		public void UpdateTimeLine()
+		public void UpdateTimeLine(SMGroup group)
 		{
-			var group = currentProject.GetGroup(SMProject.GroupType.Show, selectedPanelName);
-			if (group == null)
-				return;
 			var timeCursor = group.TimeStart;
 			foreach (long id in group.IDList)
 			{
-				var track = currentProject.GetTrackByID(id);
-				if (track != null)
+				if (viewMode == SMListView.ViewMode.OrderTrack)
 				{
-					var getArtist = track.ParentArtist;
-					ShowOrderView.Edit(
-						track.ID,
-						gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, getArtist.GentreGroup),
-						timeCursor.ToString(@"hh\:mm\:ss", ci),
-						track.TrackLength.ToString(@"hh\:mm\:ss", ci),
-						labelText1: track.Name,
-						labelText2: getArtist.Name,
-						ico0: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Age, getArtist.GentreAge),
-						ico1: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Category, getArtist.GentreCategory),
-						ico2: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Content, getArtist.GentreContent));
-					timeCursor += track.TrackLength;
+					var track = currentProject.GetTrackByID(id);
+					if (track != null)
+					{
+						ShowOrderView.EditMainTime(track.ID, timeCursor);
+						timeCursor += track.TrackLength;
+					}
 				}
+				else
+				{
+					var artist = currentProject.GetArtistByID(id);
+					if (artist != null)
+					{
+						ShowOrderView.EditMainTime(artist.ID, timeCursor);
+						timeCursor += (artist.PrepareTimeStart + artist.PrepareTimeLength + artist.PrepareTimeFinish);
+					}
+				}
+
 			}
 			TimeEnd.Text = timeCursor.ToString(@"hh\:mm\:ss", ci);
 			TimeLength.Text = (timeCursor - group.TimeStart).ToString(@"hh\:mm\:ss", ci);
 		}
 
 		// Обновление отображения вьюшки
-		private void RefreshView()
+		public void RefreshView()
 		{
 			ShowOrderView.Clear();
-			var group = currentProject.GetGroup(SMProject.GroupType.Show, selectedPanelName);
+			var group = GetGroup(selectedPanelName);
 			if (group == null)
 				return;
 
 			foreach (long id in group.IDList)
 			{
-				var track = currentProject.GetTrackByID(id);
-				if (track != null)
+				if (viewMode == SMListView.ViewMode.OrderTrack)
 				{
-					var getArtist = track.ParentArtist;
-					ShowOrderView.Add(
-						track.ID,
-						gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, getArtist.GentreGroup),
-						labelText1: track.Name,
-						labelText2: getArtist.Name,
-						ico0: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Age, getArtist.GentreAge),
-						ico1: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Category, getArtist.GentreCategory),
-						ico2: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Content, getArtist.GentreContent));
+					var track = currentProject.GetTrackByID(id);
+					if (track != null)
+					{
+						ShowOrderView.Add(track, gentres);
+					}
+				}
+				else
+				{
+					var artist = currentProject.GetArtistByID(id);
+					if (artist != null)
+					{
+						ShowOrderView.Add(artist, gentres);
+					}
 				}
 			}
 
-			UpdateTimeLine();
+			UpdateTimeLine(group);
+		}
+
+		// Получение ссылки на группу
+		private SMGroup GetGroup(string groupName)
+		{
+			if (viewMode == SMListView.ViewMode.OrderTrack)
+				return currentProject.GetGroup(SMProject.GroupType.Show, groupName);
+			else
+				return currentProject.GetGroup(SMProject.GroupType.Prepare, groupName);
 		}
 	}
 }

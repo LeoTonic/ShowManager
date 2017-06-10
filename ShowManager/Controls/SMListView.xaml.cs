@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ShowManager.Models;
+using System.Globalization;
 
 namespace ShowManager.Controls
 {
@@ -57,6 +58,8 @@ namespace ShowManager.Controls
 		private Point itemPoint;
 		private Point nullPoint = new Point();
 		private Rect itemRect = new Rect();
+
+		private CultureInfo ci = new CultureInfo("en-US");
 
 		public SMListView()
 		{
@@ -326,46 +329,167 @@ namespace ShowManager.Controls
 			Items.Clear();
 		}
 
-		// Добавить новый элемент
-		public void Add(long itemID, int mainImgKey, string mainTimeText="", string subTimeText="", string labelText1="", string labelText2="", int ico0=101, int ico1=101, int ico2=101, int ico3=101, int insIndex=-1)
+		// Добавить новый элемент - режим для списка артистов и репетиций
+		public bool Add(SMArtist artist, SMGentresBase gentres, int insertIndex = -1, bool checkExist = false)
 		{
-			SMListViewItem newItem = new SMListViewItem(viewMode, itemID)
+			if (checkExist && GetItemIndexByID(artist.ID) >= 0)
 			{
-				MainImageKey = mainImgKey,
-				MainTimeText = mainTimeText,
-				SubTimeText = subTimeText,
-				OneLineText = labelText1,
-				TwoLineTopText = labelText1,
-				TwoLineBotText = labelText2,
-				Ico0Key = ico0,
-				Ico1Key = ico1,
-				Ico2Key = ico2,
-				Ico3Key = ico3
+				return false;
+			}
+
+			var timeLen = artist.PrepareTimeStart + artist.PrepareTimeLength + artist.PrepareTimeFinish;
+			SMListViewItem newItem = new SMListViewItem(viewMode, artist.ID)
+			{
+				MainImageKey = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, artist.GentreGroup),
+				MainTimeText = "",
+				SubTimeText = timeLen.ToString(@"hh\:mm\:ss", ci),
+				OneLineText = "",
+				TwoLineTopText = artist.Name,
+				TwoLineBotText = artist.CompanyName,
+				Ico0Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Age, artist.GentreAge),
+				Ico1Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Category, artist.GentreCategory),
+				Ico2Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Content, artist.GentreContent),
+				Ico3Key = 101
 			};
 
-			if (insIndex == -1)
-				Items.Add(newItem);
-			else
-				Items.Insert(insIndex, newItem);
+			AddItem(newItem, insertIndex);
+			return true;
 		}
 
-		// Редактирование данных элемента
-		public void Edit(long itemID, int mainImgKey, string mainTimeText = "", string subTimeText = "", string labelText1 = "", string labelText2 = "", int ico0=101, int ico1 = 101, int ico2 = 101, int ico3=101)
+		// Добавить новый элемент - режим для списка выступлений и списка треков
+		public bool Add(SMTrack track, SMGentresBase gentres, int insertIndex =-1, bool checkExist = false)
+		{
+			if (checkExist && GetItemIndexByID(track.ID) >= 0)
+			{
+				return false;
+			}
+
+			SMArtist artist = track.ParentArtist;
+			SMListViewItem newItem = new SMListViewItem(viewMode, track.ID)
+			{
+				MainImageKey = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, artist.GentreGroup),
+				MainTimeText = "",
+				SubTimeText = track.TrackLength.ToString(@"hh\:mm\:ss", ci),
+				OneLineText = "",
+				TwoLineTopText = track.Name,
+				TwoLineBotText = artist.Name,
+				Ico0Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Age, artist.GentreAge),
+				Ico1Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Category, artist.GentreCategory),
+				Ico2Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Content, artist.GentreContent),
+				Ico3Key = 101
+			};
+
+			AddItem(newItem, insertIndex);
+			return true;
+		}
+
+		// Добавить новый элемент
+		public bool Add(SMElement element, int insertIndex = -1, bool checkExist = false)
+		{
+			if (checkExist && GetItemIndexByID(element.ID) >= 0)
+			{
+				return false;
+			}
+
+			SMListViewItem newItem = new SMListViewItem(viewMode, element.ID)
+			{
+				MainImageKey = element.ImageKey,
+				MainTimeText = "",
+				SubTimeText = "",
+				OneLineText = element.Name,
+				TwoLineTopText = "",
+				TwoLineBotText = "",
+				Ico0Key = 101,
+				Ico1Key = 101,
+				Ico2Key = 101,
+				Ico3Key = 101
+			};
+
+			AddItem(newItem, insertIndex);
+			return true;
+		}
+
+		// Добавление элемента
+		private void AddItem(SMListViewItem item, int insertIndex)
+		{
+			if (insertIndex == -1)
+				Items.Add(item);
+			else
+				Items.Insert(insertIndex, item);
+		}
+
+		// Редактирование артиста
+		public void Edit(long itemID, SMArtist artist, SMGentresBase gentres)
+		{
+			int itemIndex = GetItemIndexByID(itemID);
+			if (itemIndex >= 0)
+			{
+				var timeLen = artist.PrepareTimeStart + artist.PrepareTimeLength + artist.PrepareTimeFinish;
+
+				SMListViewItem item = Items[itemIndex];
+				item.MainImageKey = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, artist.GentreGroup);
+				item.MainTimeText = "";
+				item.SubTimeText = timeLen.ToString(@"hh\:mm\:ss", ci);
+				item.OneLineText = "";
+				item.TwoLineTopText = artist.Name;
+				item.TwoLineBotText = artist.CompanyName;
+				item.Ico0Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Age, artist.GentreAge);
+				item.Ico1Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Category, artist.GentreCategory);
+				item.Ico2Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Content, artist.GentreContent);
+				item.Ico3Key = 101;
+			}
+		}
+
+		// Редактирование трека
+		public void Edit(long itemID, SMTrack track, SMGentresBase gentres)
+		{
+			int itemIndex = GetItemIndexByID(itemID);
+			if (itemIndex >= 0)
+			{
+				SMArtist artist = track.ParentArtist;
+				SMListViewItem item = Items[itemIndex];
+				item.MainImageKey = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, artist.GentreGroup);
+				item.MainTimeText = "";
+				item.SubTimeText = track.TrackLength.ToString(@"hh\:mm\:ss", ci);
+				item.OneLineText = "";
+				item.TwoLineTopText = track.Name;
+				item.TwoLineBotText = artist.Name;
+				item.Ico0Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Age, artist.GentreAge);
+				item.Ico1Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Category, artist.GentreCategory);
+				item.Ico2Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Content, artist.GentreContent);
+				item.Ico3Key = 101;
+			}
+
+		}
+
+		// Редактирование элемента
+		public void Edit(long itemID, SMElement element)
 		{
 			int itemIndex = GetItemIndexByID(itemID);
 			if (itemIndex >= 0)
 			{
 				SMListViewItem item = Items[itemIndex];
-				item.MainImageKey = mainImgKey;
-				item.MainTimeText = mainTimeText;
-				item.SubTimeText = subTimeText;
-				item.OneLineText = labelText1;
-				item.TwoLineTopText = labelText1;
-				item.TwoLineBotText = labelText2;
-				item.Ico0Key = ico0;
-				item.Ico1Key = ico1;
-				item.Ico2Key = ico2;
-				item.Ico3Key = ico3;
+				item.MainImageKey = element.ImageKey;
+				item.MainTimeText = "";
+				item.SubTimeText = "";
+				item.OneLineText = element.Name;
+				item.TwoLineTopText = "";
+				item.TwoLineBotText = "";
+				item.Ico0Key = 101;
+				item.Ico1Key = 101;
+				item.Ico2Key = 101;
+				item.Ico3Key = 101;
+			}
+		}
+
+		// Редактирование главного времени
+		public void EditMainTime(long itemID, TimeSpan time)
+		{
+			int itemIndex = GetItemIndexByID(itemID);
+			if (itemIndex >= 0)
+			{
+				SMListViewItem item = Items[itemIndex];
+				item.MainTimeText = time.ToString(@"hh\:mm\:ss", ci);
 			}
 		}
 

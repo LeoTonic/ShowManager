@@ -29,7 +29,7 @@ namespace ShowManager
 		public bool isOrderShowActive = false;
 
 		// Окно порядка репетиций
-		PrepOrder wndOrdersPrep;
+		ShowOrder wndOrdersPrep;
 		public bool isOrderPrepActive = false;
 
 		// Списки для помощи при переносе итемов
@@ -73,7 +73,7 @@ namespace ShowManager
 		{
 			if (!isOrderShowActive && mode)
 			{
-				wndOrdersShow = new ShowOrder(wndDragDrop, currentProject, this, gentres);
+				wndOrdersShow = new ShowOrder(wndDragDrop, currentProject, this, gentres, SMListView.ViewMode.OrderTrack);
 				wndOrdersShow.Show();
 				isOrderShowActive = true;
 				MenuWindowShow.IsChecked = true;
@@ -92,7 +92,7 @@ namespace ShowManager
 		{
 			if (!isOrderPrepActive && mode)
 			{
-				wndOrdersPrep = new PrepOrder(wndDragDrop, currentProject, this);
+				wndOrdersPrep = new ShowOrder(wndDragDrop, currentProject, this, gentres, SMListView.ViewMode.OrderArtist);
 				wndOrdersPrep.Show();
 				isOrderPrepActive = true;
 				MenuWindowPrep.IsChecked = true;
@@ -228,17 +228,18 @@ namespace ShowManager
 					// Добавляем треки
 					foreach (SMTrack track in getArtist.Tracks)
 					{
-						TrackView.Add(
-							track.ID,
-							gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, getArtist.GentreGroup),
-							subTimeText: track.TrackLength.ToString(),
-							labelText1: track.Name,
-							labelText2: getArtist.Name,
-							ico0: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Age, getArtist.GentreAge),
-							ico1: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Category, getArtist.GentreCategory),
-							ico2: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Content, getArtist.GentreContent)
-							);
+						TrackView.Add(track, gentres, -1, true);
 					}
+				}
+
+				// Обновление данных в порядках репетиций и выступлений
+				if (wndOrdersShow != null)
+				{
+					wndOrdersShow.RefreshView();
+				}
+				if (wndOrdersPrep != null)
+				{
+					wndOrdersPrep.RefreshView();
 				}
 			}
 		}
@@ -311,30 +312,14 @@ namespace ShowManager
 					if (getGroup != null)
 					{
 						getGroup.Add(newArtist.ID, -1);
-						ArtistView.Add(
-							newArtist.ID,
-							gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, 0),
-							labelText1: newArtist.Name,
-							labelText2: newArtist.CompanyName,
-							ico0: gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.Age, newArtist.GentreAge),
-							ico1: gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.Category, newArtist.GentreCategory),
-							ico2: gentres.GetImageKey(newArtist.GentreGroup, SMGentresBase.GentreClassType.Content, newArtist.GentreContent)
-							);
+						ArtistView.Add(newArtist, gentres);
 					}
 				}
 				else
 				{
 					// Редактируем элемент
 					artist.Assign(artistWindow.ArtistObj);
-					ArtistView.Edit(
-						artist.ID,
-						gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, 0),
-						labelText1: artist.Name,
-						labelText2: artist.CompanyName,
-						ico0: gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Age, artist.GentreAge),
-						ico1: gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Category, artist.GentreCategory),
-						ico2: gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Content, artist.GentreContent)
-						);
+					ArtistView.Edit(artist.ID, artist, gentres);
 					ItemSelectionChange(ArtistView);
 				}
 			}
@@ -406,7 +391,7 @@ namespace ShowManager
 							getGroup.Remove(lvi.ItemID);
 						}
 					}
-					else if (lView.GetHashCode() == wndOrdersPrep.PrepOrderView.GetHashCode())
+					else if (lView.GetHashCode() == wndOrdersPrep.ShowOrderView.GetHashCode())
 					{
 						// Удаление из порядка репетиций
 					}
@@ -416,7 +401,8 @@ namespace ShowManager
 				// Обновление хронометражей
 				if (lView.GetHashCode() == wndOrdersShow.ShowOrderView.GetHashCode())
 				{
-					wndOrdersShow.UpdateTimeLine();
+					SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Show, wndOrdersShow.selectedPanelName);
+					wndOrdersShow.UpdateTimeLine(getGroup);
 				}
 			}
 			// Перемещение внутри контрола
@@ -497,15 +483,7 @@ namespace ShowManager
 			foreach (long artistID in getGroup.IDList)
 			{
 				SMArtist getArtist = currentProject.GetArtistByID(artistID);
-				ArtistView.Add(
-					getArtist.ID,
-					gentres.GetImageKey(getArtist.GentreGroup,SMGentresBase.GentreClassType.GentreGroup, 0),
-					labelText1: getArtist.Name,
-					labelText2: getArtist.CompanyName,
-					ico0: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Age, getArtist.GentreAge),
-					ico1: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Category, getArtist.GentreCategory),
-					ico2: gentres.GetImageKey(getArtist.GentreGroup, SMGentresBase.GentreClassType.Content, getArtist.GentreContent)
-					);
+				ArtistView.Add(getArtist, gentres);
 			}
 		}
 

@@ -11,6 +11,8 @@ namespace ShowManager.Models
 	// Базовый элемент во всех массивах моделей данных
 	public class SMElement
 	{
+		static long lastID; // последний идентификатор
+
 		private long id; // Идентификатор элемента (для поиска)
 		private string name; // Имя элемента
 
@@ -81,7 +83,16 @@ namespace ShowManager.Models
 		// Генерация идентификатора
 		private void GenerateID()
 		{
-			this.id = DateTime.Now.Ticks;
+			long curID;
+
+			while (true)
+			{
+				curID = DateTime.Now.Ticks;
+				if (curID == lastID) continue;
+				this.id = curID;
+				lastID = curID;
+				break;
+			}
 		}
 
 		public virtual void Save(BinaryWriter bw)

@@ -67,7 +67,7 @@ namespace ShowManager
 
 			foreach (SMElement sme in gentreBase.GentreGroups)
 			{
-				gentresView.Add(sme.ID, sme.ImageKey, labelText1: sme.Name);
+				gentresView.Add(sme);
 			}
 		}
 
@@ -83,7 +83,7 @@ namespace ShowManager
 
 			foreach (SMElement sme in elemList)
 			{
-				classesView.Add(itemID: sme.ID, mainImgKey: sme.ImageKey, labelText1: sme.Name);
+				classesView.Add(sme);
 			}
 		}
 
@@ -123,7 +123,8 @@ namespace ShowManager
 				{
 					// Добавляем новую группу
 					long itemID = gentreBase.Add(elemDlg.ElementName, elemDlg.ImageKey);
-					gentresView.Add(itemID, elemDlg.ImageKey, labelText1: elemDlg.ElementName);
+					SMElement element = gentreBase.GetGentreItem(itemID);
+					gentresView.Add(element);
 				}
 				else if (tb.GetHashCode() == classesToolbar.GetHashCode())
 				{
@@ -132,7 +133,7 @@ namespace ShowManager
 					// Добавляем новый элемент в классе жанровой группы
 					var newItem = new SMElement(elemDlg.ElementName, elemDlg.ImageKey);
 					classesList.Add(newItem);
-					classesView.Add(newItem.ID, newItem.ImageKey, labelText1: newItem.Name);
+					classesView.Add(newItem);
 				}
 			}
 		}
@@ -158,7 +159,7 @@ namespace ShowManager
 				if (elemDlg.IsSet)
 				{
 					gentreBase.Edit(itemID, elemDlg.ElementName, elemDlg.ImageKey);
-					gentresView.Edit(itemID, elemDlg.ImageKey, labelText1: elemDlg.ElementName);
+					gentresView.Edit(itemID, gentre);
 				}
 			}
 			else if (tb.GetHashCode() == classesToolbar.GetHashCode() && classesList != null)
@@ -179,7 +180,7 @@ namespace ShowManager
 					if (elemDlg.IsSet)
 					{
 						gentreBase.EditClassItem(classesList, id, elemDlg.ElementName, elemDlg.ImageKey);
-						classesView.Edit(id, elemDlg.ImageKey, labelText1: elemDlg.ElementName);
+						classesView.Edit(id, sme);
 					}
 				}
 			}
