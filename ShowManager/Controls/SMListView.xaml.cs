@@ -344,7 +344,7 @@ namespace ShowManager.Controls
 				MainTimeText = "",
 				SubTimeText = timeLen.ToString(@"hh\:mm\:ss", ci),
 				OneLineText = "",
-				TwoLineTopText = artist.Name,
+				TwoLineTopText = artist.ArtistName,
 				TwoLineBotText = artist.CompanyName,
 				Ico0Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Age, artist.GentreAge),
 				Ico1Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Category, artist.GentreCategory),
@@ -372,7 +372,7 @@ namespace ShowManager.Controls
 				SubTimeText = track.TrackLength.ToString(@"hh\:mm\:ss", ci),
 				OneLineText = "",
 				TwoLineTopText = track.Name,
-				TwoLineBotText = artist.Name,
+				TwoLineBotText = artist.ArtistName,
 				Ico0Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Age, artist.GentreAge),
 				Ico1Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Category, artist.GentreCategory),
 				Ico2Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Content, artist.GentreContent),
@@ -431,7 +431,7 @@ namespace ShowManager.Controls
 				item.MainTimeText = "";
 				item.SubTimeText = timeLen.ToString(@"hh\:mm\:ss", ci);
 				item.OneLineText = "";
-				item.TwoLineTopText = artist.Name;
+				item.TwoLineTopText = artist.ArtistName;
 				item.TwoLineBotText = artist.CompanyName;
 				item.Ico0Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Age, artist.GentreAge);
 				item.Ico1Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Category, artist.GentreCategory);
@@ -453,7 +453,7 @@ namespace ShowManager.Controls
 				item.SubTimeText = track.TrackLength.ToString(@"hh\:mm\:ss", ci);
 				item.OneLineText = "";
 				item.TwoLineTopText = track.Name;
-				item.TwoLineBotText = artist.Name;
+				item.TwoLineBotText = artist.ArtistName;
 				item.Ico0Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Age, artist.GentreAge);
 				item.Ico1Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Category, artist.GentreCategory);
 				item.Ico2Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Content, artist.GentreContent);

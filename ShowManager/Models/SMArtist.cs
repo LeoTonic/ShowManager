@@ -400,7 +400,7 @@ namespace ShowManager.Models
 			this.Tracks.Clear();
 			foreach(SMTrack getTrack in from.Tracks)
 			{
-				var newTrack = new SMTrack(getTrack.ParentArtist);
+				var newTrack = new SMTrack(this);
 				newTrack.Assign(getTrack);
 				this.Tracks.Add(newTrack);
 			}

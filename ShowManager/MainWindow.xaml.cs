@@ -211,6 +211,7 @@ namespace ShowManager
 		#endregion
 
 		#region CommandCather definitions
+
 		public void ItemSelectionChange(object sender)
 		{
 			if (sender.GetHashCode() == ArtistView.GetHashCode())
@@ -228,6 +229,10 @@ namespace ShowManager
 					// Добавляем треки
 					foreach (SMTrack track in getArtist.Tracks)
 					{
+						if (getArtist.GetHashCode() == track.ParentArtist.GetHashCode())
+						{
+							Console.WriteLine("eq");
+						}
 						TrackView.Add(track, gentres, -1, true);
 					}
 				}
