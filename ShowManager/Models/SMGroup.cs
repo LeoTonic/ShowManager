@@ -91,5 +91,15 @@ namespace ShowManager.Models
 		{
 			idList.Clear();
 		}
+
+		// Клонируем список
+		public void CloneList(List<long> cloneTo)
+		{
+			cloneTo.Clear();
+			foreach(long id in idList)
+			{
+				cloneTo.Add(id);
+			}
+		}
 	}
 }

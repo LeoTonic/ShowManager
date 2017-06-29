@@ -139,5 +139,41 @@ namespace ShowManager.Models
 			}
 			return null;
 		}
+
+		// Проверка наличия трека в группах выступлений
+		public bool IsTrackAppliedInShow(long ID)
+		{
+			foreach(SMGroup showGroup in groupsShow)
+			{
+				foreach(long itemID in showGroup.IDList)
+				{
+					if (itemID == ID)
+						return true;
+				}
+			}
+			return false;
+		}
+
+		// Удаление артиста во всех группах репетиций и выступлений
+		public void RemoveArtist(long id)
+		{
+			// Почистим выступления
+			SMArtist artist = GetArtistByID(id);
+			if (artist != null)
+			{
+				foreach(SMTrack track in artist.Tracks)
+				{
+					foreach(SMGroup sGroup in groupsShow)
+					{
+						sGroup.Remove(track.ID);
+					}
+				}
+			}
+			// Почистим репетиции
+			foreach(SMGroup pGroup in groupsPrepare)
+			{
+				pGroup.Remove(id);
+			}
+		}
 	}
 }

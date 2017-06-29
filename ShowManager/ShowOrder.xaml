@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:ShowManager.Controls"
         mc:Ignorable="d"
-        Title="Порядок выступлений" Height="300" Width="500" ShowInTaskbar="False" WindowStyle="ToolWindow">
+        Title="" Height="300" Width="500" ShowInTaskbar="False" WindowStyle="ToolWindow">
     <Window.Resources>
         <Style TargetType="TextBlock" x:Key="TextLabel">
             <Setter Property="FontFamily" Value="Arial"/>

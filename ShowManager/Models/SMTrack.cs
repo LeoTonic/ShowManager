@@ -29,6 +29,31 @@ namespace ShowManager.Models
 		private string minusTrack; // Имя трека в минусовке (для экспорта)
 		private string minusExtention; // Расширение файла (для экспорта)
 
+		private bool isApplied; // Трек добавлен хотя бы один раз на выступление
+		public bool IsApplied
+		{
+			get
+			{
+				return this.isApplied;
+			}
+			set
+			{
+				this.isApplied = value;
+			}
+		}
+
+		// Возвращение индекса изображения в зависимости от статуса трека
+		public int AppliedTrackImage
+		{
+			get
+			{
+				if (IsApplied)
+					return 223;
+				else
+					return 221;
+			}
+		}
+
 		public string TrackName
 		{
 			get
@@ -124,6 +149,7 @@ namespace ShowManager.Models
 			this.minusTrack = "";
 			this.minusArtist = "";
 			this.minusExtention = "";
+			this.isApplied = false;
 		}
 
 		// Копия свойств из другого объекта
@@ -136,6 +162,7 @@ namespace ShowManager.Models
 			this.minusTrack = from.minusTrack;
 			this.minusArtist = from.minusArtist;
 			this.minusExtention = from.minusExtention;
+			this.isApplied = from.isApplied;
 		}
 	}
 }

@@ -25,6 +25,49 @@ namespace ShowManager.Models
 		// Массив композиций
 		public ObservableCollection<SMTrack> Tracks { get; set; }
 
+		// Индекс изображения в зависимости от добавления треков на выступление
+		public int AppliedTracksImage
+		{
+			get
+			{
+				if (IsAppliedAll)
+					return 223;
+				else if (IsAppliedNull)
+					return 221;
+				else
+					return 222;
+			}
+		}
+
+		// Все треки исполнителя использованы на выступлении
+		public bool IsAppliedAll
+		{
+			get
+			{
+				var isApplied = true;
+				foreach (SMTrack track in Tracks)
+				{
+					if (!track.IsApplied)
+						isApplied = false;
+				}
+				return isApplied;
+			}
+		}
+		// Ни один из треков исполнителя не добавлены в выступление
+		public bool IsAppliedNull
+		{
+			get
+			{
+				var isApplied = false;
+				foreach (SMTrack track in Tracks)
+				{
+					if (track.IsApplied)
+						isApplied = true;
+				}
+				return !isApplied;
+			}
+		}
+
 		#region Artist_Props
 		public string ArtistName
 		{

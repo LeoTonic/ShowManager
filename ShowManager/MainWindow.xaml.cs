@@ -229,10 +229,6 @@ namespace ShowManager
 					// Добавляем треки
 					foreach (SMTrack track in getArtist.Tracks)
 					{
-						if (getArtist.GetHashCode() == track.ParentArtist.GetHashCode())
-						{
-							Console.WriteLine("eq");
-						}
 						TrackView.Add(track, gentres, -1, true);
 					}
 				}
@@ -354,8 +350,18 @@ namespace ShowManager
 			SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, panelName);
 			if (getGroup != null)
 			{
-				getGroup.Clear();
+				// Очистим группы выступлений репетиций
+
+				// Создаем вспомогательный список идентификаторов
+				List<long> idList = new List<long>();
+				getGroup.CloneList(idList);
+				foreach (long artistID in idList)
+				{
+					currentProject.RemoveArtist(artistID);
+				}
 				currentProject.GroupsArtist.Remove(getGroup);
+				wndOrdersShow.RefreshView();
+				wndOrdersPrep.RefreshView();
 			}
 		}
 
@@ -393,12 +399,30 @@ namespace ShowManager
 						SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Show, wndOrdersShow.selectedPanelName);
 						if (getGroup != null)
 						{
-							getGroup.Remove(lvi.ItemID);
+							var trackID = lvi.ItemID;
+							getGroup.Remove(trackID);
+							// Проверяем на наличие во всех группах
+							if (!currentProject.IsTrackAppliedInShow(trackID))
+							{
+								// Если не обнаружен - убираем свойство наличия на выступлении
+								SMTrack track = currentProject.GetTrackByID(trackID);
+								if (track != null)
+								{
+									track.IsApplied = false;
+									UpdateTrackStatus(track, track.ParentArtist);
+								}
+							}
 						}
 					}
 					else if (lView.GetHashCode() == wndOrdersPrep.ShowOrderView.GetHashCode())
 					{
 						// Удаление из порядка репетиций
+						SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Prepare, wndOrdersPrep.selectedPanelName);
+						if (getGroup != null)
+						{
+							var artistID = lvi.ItemID;
+							getGroup.Remove(artistID);
+						}
 					}
 					items.Remove(lvi);
 				}
@@ -408,6 +432,11 @@ namespace ShowManager
 				{
 					SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Show, wndOrdersShow.selectedPanelName);
 					wndOrdersShow.UpdateTimeLine(getGroup);
+				}
+				else if (lView.GetHashCode() == wndOrdersPrep.ShowOrderView.GetHashCode())
+				{
+					SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Prepare, wndOrdersPrep.selectedPanelName);
+					wndOrdersPrep.UpdateTimeLine(getGroup);
 				}
 			}
 			// Перемещение внутри контрола
@@ -490,6 +519,13 @@ namespace ShowManager
 				SMArtist getArtist = currentProject.GetArtistByID(artistID);
 				ArtistView.Add(getArtist, gentres);
 			}
+		}
+
+		// Обновление статуса треков в контролах
+		public void UpdateTrackStatus(SMTrack track, SMArtist artist)
+		{
+			ArtistView.Edit(artist.ID, artist, gentres);
+			TrackView.Edit(track.ID, track, gentres);
 		}
 
 		// Инициализация библиотеки изображений

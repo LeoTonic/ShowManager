@@ -349,7 +349,7 @@ namespace ShowManager.Controls
 				Ico0Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Age, artist.GentreAge),
 				Ico1Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Category, artist.GentreCategory),
 				Ico2Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Content, artist.GentreContent),
-				Ico3Key = 101
+				Ico3Key = artist.AppliedTracksImage
 			};
 
 			AddItem(newItem, insertIndex);
@@ -376,7 +376,7 @@ namespace ShowManager.Controls
 				Ico0Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Age, artist.GentreAge),
 				Ico1Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Category, artist.GentreCategory),
 				Ico2Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Content, artist.GentreContent),
-				Ico3Key = 101
+				Ico3Key = track.AppliedTrackImage
 			};
 
 			AddItem(newItem, insertIndex);
@@ -436,7 +436,7 @@ namespace ShowManager.Controls
 				item.Ico0Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Age, artist.GentreAge);
 				item.Ico1Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Category, artist.GentreCategory);
 				item.Ico2Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Content, artist.GentreContent);
-				item.Ico3Key = 101;
+				item.Ico3Key = artist.AppliedTracksImage;
 			}
 		}
 
@@ -457,7 +457,7 @@ namespace ShowManager.Controls
 				item.Ico0Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Age, artist.GentreAge);
 				item.Ico1Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Category, artist.GentreCategory);
 				item.Ico2Key = gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Content, artist.GentreContent);
-				item.Ico3Key = 101;
+				item.Ico3Key = track.AppliedTrackImage;
 			}
 
 		}

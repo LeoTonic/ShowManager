@@ -47,6 +47,15 @@ namespace ShowManager
 			else
 				ShowOrderPanel.Initialize(null, this, false, currentProject.GroupsPrepare);
 
+			if (viewMode == SMListView.ViewMode.OrderTrack)
+			{
+				this.Title = "Порядок выступлений";
+			}
+			else if (viewMode == SMListView.ViewMode.OrderArtist)
+			{
+				this.Title = "Порядок репетиций";
+			}
+
 			this.Closed += ShowOrder_Closed;
 		}
 		private void ShowOrder_Closed(object sender, EventArgs e)
@@ -98,31 +107,172 @@ namespace ShowManager
 			SMGroup getGroup = GetGroup(groupName);
 			if (getGroup != null)
 			{
-				getGroup.Clear();
 				if (viewMode == SMListView.ViewMode.OrderTrack)
+				{
+					// Не забываем обновить статусы
+					// Формируем вспомогательный список
+					List<long> idList = new List<long>();
+					getGroup.CloneList(idList);
 					currentProject.GroupsShow.Remove(getGroup);
-				else
+					foreach(long id in idList)
+					{
+						// Проверяем на наличие во всех группах
+						if (!currentProject.IsTrackAppliedInShow(id))
+						{
+							// Если не обнаружен - убираем свойство наличия на выступлении
+							SMTrack track = currentProject.GetTrackByID(id);
+							if (track != null)
+							{
+								track.IsApplied = false;
+								parentWindow.UpdateTrackStatus(track, track.ParentArtist);
+							}
+						}
+					}
+				}
+				else if (viewMode == SMListView.ViewMode.OrderArtist)
 					currentProject.GroupsPrepare.Remove(getGroup);
 			}
+		}
+
+		// Добавление в группу
+		// dragFromMode, dragToMode - OrderTrack,OrderArtist
+		// если режимы равны - простой перенос
+		private bool AddItemToGroup(SMGroup group, long itemID, int insertIndex, SMListView.ViewMode dragFromMode, SMListView.ViewMode dragToMode)
+		{
+			if (group == null)
+				return false;
+			if (dragToMode == dragFromMode)
+			{
+				// Добавляем переносом из соседней группы
+				if (!group.IDList.Contains(itemID))
+					group.Add(itemID, insertIndex);
+			}
+			else if (dragFromMode == SMListView.ViewMode.OrderArtist && dragToMode == SMListView.ViewMode.OrderTrack)
+			{
+				// Добавляем все треки артиста
+				SMArtist getArtist = currentProject.GetArtistByID(itemID);
+				if (getArtist == null)
+					return false;
+				foreach (SMTrack track in getArtist.Tracks)
+				{
+					if (!group.IDList.Contains(track.ID))
+						group.Add(track.ID, insertIndex);
+				}
+			}
+			else if (dragFromMode == SMListView.ViewMode.OrderTrack && dragToMode == SMListView.ViewMode.OrderArtist)
+			{
+				// Добавляем артиста
+				SMTrack getTrack = currentProject.GetTrackByID(itemID);
+				if (getTrack == null)
+					return false;
+
+				if (!group.IDList.Contains(getTrack.ParentArtist.ID))
+					group.Add(getTrack.ParentArtist.ID, insertIndex);
+			}
+
+			return true;
+		}
+
+		// Добавление во вьюшку
+		// dragFromMode, dragToMode - OrderTrack,OrderArtist
+		// если режимы равны - простой перенос
+		private bool AddItemToView(long itemID, int insertIndex, SMListView.ViewMode dragFromMode, SMListView.ViewMode dragToMode)
+		{
+			SMArtist artist = null;
+			SMTrack track = null;
+
+			if (dragFromMode == SMListView.ViewMode.OrderArtist)
+				artist = currentProject.GetArtistByID(itemID);
+			else if (dragFromMode == SMListView.ViewMode.OrderTrack)
+				track = currentProject.GetTrackByID(itemID);
+
+			if (dragToMode == dragFromMode)
+			{
+				if (dragFromMode == SMListView.ViewMode.OrderArtist)
+				{
+					// Добавляем как артиста
+					if (artist != null)
+						return ShowOrderView.Add(artist, gentres, insertIndex, true);
+				}
+				else if (dragFromMode == SMListView.ViewMode.OrderTrack)
+				{
+					// Добавляем как трек
+					if (track != null)
+						return ShowOrderView.Add(track, gentres, insertIndex, true);
+				}
+			}
+			else if (dragFromMode == SMListView.ViewMode.OrderArtist && dragToMode == SMListView.ViewMode.OrderTrack)
+			{
+				// Добавляем все треки артиста
+				if (artist != null)
+				{
+					foreach (SMTrack getTrack in artist.Tracks)
+					{
+						ShowOrderView.Add(getTrack, gentres, insertIndex, true);
+					}
+				}
+			}
+			else if (dragFromMode == SMListView.ViewMode.OrderTrack && dragToMode == SMListView.ViewMode.OrderArtist)
+			{
+				// Добавляем артиста
+				if (track != null)
+				{
+					SMArtist getArtist = track.ParentArtist;
+					return ShowOrderView.Add(getArtist, gentres, insertIndex, true);
+				}
+			}
+			return false;
+		}
+
+		// Добавление статуса применения трека - в режиме добавки в выступление
+		// dragFromMode
+		// OrderTrack - обновляем трек
+		// OrderArtist - обновляем все треки артиста
+		private void UpdateAppliedStatusTracks(long itemID, SMListView.ViewMode dragFromMode)
+		{
+			if (viewMode != SMListView.ViewMode.OrderTrack)
+				return;
+
+			if (dragFromMode == SMListView.ViewMode.OrderArtist)
+			{
+				// Помечаем все треки артиста
+				SMArtist getArtist = currentProject.GetArtistByID(itemID);
+				if (getArtist == null)
+					return;
+				foreach(SMTrack track in getArtist.Tracks)
+				{
+					track.IsApplied = true;
+					parentWindow.UpdateTrackStatus(track, getArtist);
+				}
+			}
+			else if (dragFromMode == SMListView.ViewMode.OrderTrack)
+			{
+				// Помечаем трек
+				SMTrack getTrack = currentProject.GetTrackByID(itemID);
+				if (getTrack == null)
+					return;
+				getTrack.IsApplied = true;
+				parentWindow.UpdateTrackStatus(getTrack, getTrack.ParentArtist);
+			}
+			return;
 		}
 
 		public void DropItems(int insertIndex, SMListViewItem draggedItem, Object draggedTo, Object draggedToSubItem)
 		{
 			var lView = draggedItem.dragFromControl as SMListView;
 			var items = lView.Items as ObservableCollection<SMListViewItem>;
-			SMGroup getGroup = GetGroup(selectedPanelName);
+			SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
 
 			// Обработка переноса внутри контрола
 			if (lView.GetHashCode() == draggedTo.GetHashCode())
 			{
 				// Перемещение внутри контрола
 				SMListView.CreateHelperList(draggedItem.selectedItems, helpList1, true);
-				SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
 				foreach (SMListViewItem lvi in helpList2)
 				{
 					items.Remove(lvi);
 				}
-
+				var getGroup = GetGroup(selectedPanelName);
 				foreach (SMListViewItem lvi in helpList1)
 				{
 					if (getGroup != null)
@@ -139,136 +289,96 @@ namespace ShowManager
 						items.Add(lvi);
 					}
 				}
+				UpdateTimeLine(getGroup);
 			}
-
-			// Работаем в зависимости от режима
-			if (viewMode == SMListView.ViewMode.OrderTrack)
+			// Обработка сброса в панель заголовка из вьюшек другого окна
+			else if (draggedTo.GetHashCode() == ShowOrderPanel.GetHashCode() && lView.GetHashCode() != ShowOrderView.GetHashCode())
 			{
-				// Перенос из вьюшки с артистом - будем вставлять все треки артиста
-				if (lView.GetHashCode() == parentWindow.ArtistView.GetHashCode())
+				SMListView.ViewMode dragFromMode;
+				if (lView.GetHashCode() == parentWindow.TrackView.GetHashCode())
+					dragFromMode = SMListView.ViewMode.OrderTrack;
+				else if (lView.GetHashCode() == parentWindow.ArtistView.GetHashCode())
+					dragFromMode = SMListView.ViewMode.OrderArtist;
+				else
+					return;
+
+				foreach(SMListViewItem lvi in helpList2)
 				{
-					SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
-
-					foreach (SMListViewItem lvi in helpList2)
+					var panelItem = draggedToSubItem as SMGroupsItem;
+					if (panelItem.Text != selectedPanelName)
 					{
-						var getArtist = currentProject.GetArtistByID(lvi.ItemID);
-						if (getArtist != null)
-						{
-							foreach (SMTrack track in getArtist.Tracks)
-							{
-								if (getGroup != null)
-								{
-									getGroup.Add(track.ID, insertIndex);
-								}
+						// Кидаем в скрытую панель
 
-								if (ShowOrderView.Add(track, gentres, insertIndex, true) == false)
-								{
-									MessageBox.Show("Нельзя добавить дважды один и тот же трек в одну группу!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Information);
-								}
-							}
+						// Отправляем в группу
+						SMGroup getGroup = GetGroup(panelItem.Text);
+						if (AddItemToGroup(getGroup, lvi.ItemID, insertIndex, dragFromMode, viewMode))
+						{
+							UpdateAppliedStatusTracks(lvi.ItemID, dragFromMode);
 						}
 					}
-				}
-				// Перенос из вьюшки с треками - вставляем то что тащим
-				if (lView.GetHashCode() == parentWindow.TrackView.GetHashCode())
-				{
-					SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
-					foreach (SMListViewItem lvi in helpList2)
+					else
 					{
-						var getTrack = currentProject.GetTrackByID(lvi.ItemID);
-						if (getTrack != null)
-						{
-							if (getGroup != null)
-							{
-								getGroup.Add(getTrack.ID, insertIndex);
-							}
+						// Кидаем в открытую панель
 
-							if (ShowOrderView.Add(getTrack, gentres, insertIndex, true) == false)
-							{
-								MessageBox.Show("Нельзя добавить дважды один и тот же трек в одну группу!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Information);
-							}
+						// Отправляем в группу и во вьюшку
+						SMGroup getGroup = GetGroup(selectedPanelName);
+						if (AddItemToGroup(getGroup, lvi.ItemID, insertIndex, dragFromMode, viewMode))
+						{
+							UpdateAppliedStatusTracks(lvi.ItemID, dragFromMode);
+							// Во вьюшку
+							AddItemToView(lvi.ItemID, insertIndex, dragFromMode, viewMode);
+							UpdateTimeLine(getGroup);
 						}
 					}
 				}
 			}
-			else
-			{
-				// Перенос из вьюшки с артистом - вставляем в репетицию
-				if (lView.GetHashCode() == parentWindow.ArtistView.GetHashCode())
-				{
-					SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
-
-					foreach (SMListViewItem lvi in helpList2)
-					{
-						var getArtist = currentProject.GetArtistByID(lvi.ItemID);
-						if (getArtist != null)
-						{
-							if (getGroup != null)
-							{
-								getGroup.Add(getArtist.ID, insertIndex);
-							}
-
-							if (ShowOrderView.Add(getArtist, gentres, insertIndex, true) == false)
-							{
-								MessageBox.Show("Нельзя добавить дважды одного и того же исполнителя в одну группу!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Information);
-							}
-						}
-					}
-				}
-				// Перенос из вьюшки с треками - вставляем артиста в репетицию
-				if (lView.GetHashCode() == parentWindow.TrackView.GetHashCode())
-				{
-					SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
-					foreach (SMListViewItem lvi in helpList2)
-					{
-						var getTrack = currentProject.GetTrackByID(lvi.ItemID);
-						if (getTrack != null)
-						{
-							var getArtist = getTrack.ParentArtist;
-							if (getGroup != null)
-							{
-								getGroup.Add(getArtist.ID, insertIndex);
-							}
-							ShowOrderView.Add(getArtist, gentres, insertIndex, true);
-						}
-					}
-
-				}
-			}
-
-
-			// Перенос в панель заголовка
-			if (draggedTo.GetHashCode() == ShowOrderPanel.GetHashCode())
+			// Сброс из текущей вьюшки в другую группу
+			else if (draggedTo.GetHashCode() == ShowOrderPanel.GetHashCode() && lView.GetHashCode() == ShowOrderView.GetHashCode())
 			{
 				var dropPanel = draggedToSubItem as SMGroupsItem;
-
-				// Создаем помощников
-				SMListView.CreateHelperList(draggedItem.selectedItems, helpList2, false);
-
 				SMGroup newGroup = GetGroup(dropPanel.Text);
+				SMGroup getGroup = GetGroup(selectedPanelName);
+
+				if (dropPanel.Text == selectedPanelName)
+					return;
 
 				// Удаляем из текущей панели и группы и добавляем в новую
 				foreach (SMListViewItem lvi in helpList2)
 				{
 					if (getGroup != null)
-					{
 						getGroup.Remove(lvi.ItemID);
-					}
-					if (newGroup != null)
-					{
-						newGroup.Add(lvi.ItemID, -1);
-					}
-					items.Remove(lvi);
 
-					// Если та же группа - вставляем для отображения
-					if (getGroup.GetHashCode() == newGroup.GetHashCode())
-					{
-						items.Add(lvi);
-					}
+					if (newGroup != null)
+						AddItemToGroup(newGroup, lvi.ItemID, -1, viewMode, viewMode);
+
+					items.Remove(lvi);
 				}
 			}
-			if (getGroup != null)
+			// Кидаем из другого окна во вьюшку и в группу
+			else
 			{
+				SMListView.ViewMode dragFromMode;
+				if (lView.GetHashCode() == parentWindow.TrackView.GetHashCode())
+					dragFromMode = SMListView.ViewMode.OrderTrack;
+				else if (lView.GetHashCode() == parentWindow.ArtistView.GetHashCode())
+					dragFromMode = SMListView.ViewMode.OrderArtist;
+				else
+					return;
+
+				SMGroup getGroup = GetGroup(selectedPanelName);
+				if (getGroup == null)
+					return;
+
+				foreach (SMListViewItem lvi in helpList2)
+				{
+
+					if (AddItemToGroup(getGroup, lvi.ItemID, insertIndex, dragFromMode, viewMode))
+					{
+						UpdateAppliedStatusTracks(lvi.ItemID, dragFromMode);
+						// Во вьюшку
+						AddItemToView(lvi.ItemID, insertIndex, dragFromMode, viewMode);
+					}
+				}
 				UpdateTimeLine(getGroup);
 			}
 		}
@@ -305,6 +415,9 @@ namespace ShowManager
 		// Обновление хронометража
 		public void UpdateTimeLine(SMGroup group)
 		{
+			if (group == null)
+				return;
+
 			var timeCursor = group.TimeStart;
 			foreach (long id in group.IDList)
 			{
