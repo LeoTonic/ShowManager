@@ -197,7 +197,8 @@ namespace ShowManager.Controls
 		// Контекстное меню переименование группы
 		private void Rename_Click(object sender, RoutedEventArgs e)
 		{
-			EditName(false);
+			if (this.parentPanel != null)
+				this.parentPanel.EditGroupName(this, false);
 		}
 
 		// Контекстное меню удаление группы

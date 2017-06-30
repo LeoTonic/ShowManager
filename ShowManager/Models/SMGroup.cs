@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -99,6 +100,46 @@ namespace ShowManager.Models
 			foreach(long id in idList)
 			{
 				cloneTo.Add(id);
+			}
+		}
+
+		// Файловые операции
+		public override void Save(BinaryWriter bw)
+		{
+			base.Save(bw);
+
+			try
+			{
+				bw.Write(IDList.Count);
+				foreach(long id in IDList)
+				{
+					bw.Write(id);
+				}
+				bw.Write(TimeString(TimeStart));
+			}
+			catch (IOException ioex)
+			{
+				System.Console.WriteLine(ioex.Message);
+			}
+		}
+		public override void Load(BinaryReader br)
+		{
+			base.Load(br);
+
+			try
+			{
+				IDList.Clear();
+				var idCount = br.ReadInt32();
+				for (var n = 0; n < idCount; n++)
+				{
+					long id = br.ReadInt64();
+					IDList.Add(id);
+				}
+				TimeStart = StringTime(br.ReadString());
+			}
+			catch (IOException ioex)
+			{
+				System.Console.WriteLine(ioex.Message);
 			}
 		}
 	}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace ShowManager.Models
 {
@@ -65,9 +66,29 @@ namespace ShowManager.Models
 				this.trackFolder = value;
 			}
 		}
-		// Конструктор
-		public SMProject()
+
+		private SMGentresBase gentres;
+
+		private string name;
+		public string Name
 		{
+			get
+			{
+				return name;
+			}
+			set
+			{
+				name = value;
+			}
+		}
+
+		// Конструктор
+		public SMProject(SMGentresBase gbase)
+		{
+			Name = "Новый фестиваль";
+
+			gentres = gbase;
+
 			artists = new List<SMArtist>();
 			groupsArtist = new List<SMGroup>();
 			groupsShow = new List<SMGroup>();
@@ -173,6 +194,98 @@ namespace ShowManager.Models
 			foreach(SMGroup pGroup in groupsPrepare)
 			{
 				pGroup.Remove(id);
+			}
+		}
+
+		// Удаление трека во всех группах выступлений
+		public void RemoveTrack(long id)
+		{
+			foreach(SMGroup sGroup in groupsShow)
+			{
+				sGroup.Remove(id);
+			}
+		}
+		// Файловые операции
+		public void Save(BinaryWriter bw)
+		{
+			try
+			{
+				bw.Write(Artists.Count);
+				foreach(SMArtist artist in Artists)
+				{
+					artist.Save(bw);
+				}
+
+				SaveList(bw, GroupsArtist);
+				SaveList(bw, GroupsShow);
+				SaveList(bw, GroupsPrepare);
+
+				bw.Write(TrackFolderPath);
+				bw.Write(Name);
+			}
+			catch (IOException ioex)
+			{
+				System.Console.WriteLine(ioex.Message);
+			}
+		}
+
+		public void Load(BinaryReader br)
+		{
+			try
+			{
+				Artists.Clear();
+				var aCount = br.ReadInt32();
+				for (var n = 0; n < aCount; n++)
+				{
+					var newArtist = new SMArtist(this, gentres, null);
+					newArtist.Load(br);
+					Artists.Add(newArtist);
+				}
+
+				LoadList(br, GroupsArtist);
+				LoadList(br, GroupsShow);
+				LoadList(br, GroupsPrepare);
+
+				TrackFolderPath = br.ReadString();
+				Name = br.ReadString();
+			}
+			catch (IOException ioex)
+			{
+				System.Console.WriteLine(ioex.Message);
+			}
+		}
+
+		private void SaveList(BinaryWriter bw, List<SMGroup> list)
+		{
+			try
+			{
+				bw.Write(list.Count);
+				foreach(SMGroup group in list)
+				{
+					group.Save(bw);
+				}
+			}
+			catch (IOException ioex)
+			{
+				System.Console.WriteLine(ioex.Message);
+			}
+		}
+		private void LoadList(BinaryReader br, List<SMGroup> list)
+		{
+			try
+			{
+				list.Clear();
+				var iCount = br.ReadInt32();
+				for (var n = 0; n < iCount; n++)
+				{
+					var newItem = new SMGroup("");
+					newItem.Load(br);
+					list.Add(newItem);
+				}
+			}
+			catch (IOException ioex)
+			{
+				System.Console.WriteLine(ioex.Message);
 			}
 		}
 	}

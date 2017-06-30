@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using ShowManager.Controls;
 using ShowManager.Models;
+using Microsoft.Win32;
+using System.IO;
 
 namespace ShowManager
 {
@@ -45,7 +47,7 @@ namespace ShowManager
 			gentres = new SMGentresBase();
 
 			// Инициализация проекта
-			currentProject = new SMProject()
+			currentProject = new SMProject(gentres)
 			{
 				TrackFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
 			};
@@ -122,6 +124,85 @@ namespace ShowManager
 		//
 		// Фестиваль
 		//
+
+		// Открытие проекта
+		private void Menu_File_Open(object sender, RoutedEventArgs e)
+		{
+			var ofd = new OpenFileDialog()
+			{
+				Filter = "Файлы фестивалей (*.smp)|*.smp",
+				Title = "Открыть проект фестиваля"
+			};
+			if (ofd.ShowDialog() == true)
+			{
+				var filePath = ofd.FileName;
+
+				try
+				{
+					using (var br = new BinaryReader(File.Open(filePath, FileMode.Open)))
+					{
+						currentProject.Load(br);
+					}
+				}
+				catch (IOException ioex)
+				{
+					System.Console.WriteLine(ioex.Message);
+				}
+				finally
+				{
+					// Инициализация окон
+					ArtistPanel.SetGroupTabs(currentProject.GroupsArtist, false);
+					ArtistPanel.SelectFirstGroup();
+
+					wndOrdersShow.ShowOrderPanel.SetGroupTabs(currentProject.GroupsShow, false);
+					wndOrdersShow.ShowOrderPanel.SelectFirstGroup();
+
+					wndOrdersPrep.ShowOrderPanel.SetGroupTabs(currentProject.GroupsPrepare, false);
+					wndOrdersPrep.ShowOrderPanel.SelectFirstGroup();
+				}
+			}
+		}
+
+		// Сохранение проекта
+		private void Menu_File_Save(object sender, RoutedEventArgs e)
+		{
+			var sfd = new SaveFileDialog()
+			{
+				Filter = "Файлы фестивалей (*.smp)|*.smp",
+				FileName = currentProject.Name,
+				Title = "Сохранить проект фестиваля"
+			};
+			if (sfd.ShowDialog() == true)
+			{
+				var filePath = sfd.FileName;
+				BinaryWriter bw;
+				try
+				{
+					bw = new BinaryWriter(new FileStream(filePath, FileMode.Create));
+				}
+				catch (IOException ex)
+				{
+					System.Console.WriteLine(ex.Message);
+					return;
+				}
+
+				try
+				{
+					currentProject.Save(bw);
+				}
+				catch (IOException ex)
+				{
+					System.Console.WriteLine(ex.Message);
+					return;
+				}
+				finally
+				{
+					bw.Flush();
+					bw.Close();
+				}
+
+			}
+		}
 
 		// Выход из приложения
 		public void Menu_Show_Exit(object sender, RoutedEventArgs e)
@@ -342,7 +423,14 @@ namespace ShowManager
 			// Ищем группу
 			SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, oldName);
 			if (getGroup != null)
+			{
 				getGroup.Name = newName;
+
+				// Если текущая панель была выделена
+				if (selectedPanelName == oldName)
+					selectedPanelName = newName;
+
+			}
 		}
 
 		public void PanelGroupDelete(string panelName)
@@ -380,7 +468,7 @@ namespace ShowManager
 				{
 					if (lView.GetHashCode() == ArtistView.GetHashCode())
 					{
-						// Жанровые группы
+						// Удаление из списка артистов
 						long artistID = lvi.ItemID;
 						SMArtist getArtist = currentProject.GetArtistByID(artistID);
 						if (getArtist != null)
@@ -391,6 +479,24 @@ namespace ShowManager
 						{
 							getGroup.Remove(artistID);
 							TrackView.Clear();
+						}
+					}
+					else if (lView.GetHashCode() == TrackView.GetHashCode())
+					{
+						// Удаление трека у артиста
+						long trackID = lvi.ItemID;
+						SMTrack getTrack = currentProject.GetTrackByID(trackID);
+						if (getTrack != null)
+						{
+							currentProject.RemoveTrack(trackID);
+
+							// Удаляем трек у артиста
+							SMArtist getArtist = getTrack.ParentArtist;
+							getArtist.Tracks.Remove(getTrack);
+							// Обновляем вид
+							ArtistView.Edit(getArtist.ID, getArtist, gentres);
+							wndOrdersShow.RefreshView();
+							wndOrdersPrep.RefreshView();
 						}
 					}
 					else if (lView.GetHashCode() == wndOrdersShow.ShowOrderView.GetHashCode())
@@ -625,6 +731,5 @@ namespace ShowManager
 			curApp.ImgDesc.Add(223, "Выступление да");
 
 		}
-
 	}
 }

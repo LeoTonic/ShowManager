@@ -51,15 +51,7 @@ namespace ShowManager.Controls
 
 				if (connectList != null)
 				{
-					foreach(SMGroup grp in connectList)
-					{
-						var newItem = new SMGroupsItem { Text = grp.Name, FolderImage = SMGroupsItem.GroupImageType.Closed };
-						newItem.AssignParent(this, readOnly);
-						// Добавляем возможность дропа элементов
-						newItem.AllowDrop = true;
-						newItem.Drop += PanelItemDrop;
-						Items.Add(newItem);
-					}
+					SetGroupTabs(connectList, readOnly);
 				}
 				else
 				{
@@ -82,6 +74,21 @@ namespace ShowManager.Controls
 			}
 
 			SelectGroup(Items[0]);
+		}
+
+		// Формирование вкладок по списку
+		public void SetGroupTabs(List<SMGroup> connectList, bool readOnly)
+		{
+			Items.Clear();
+			foreach (SMGroup grp in connectList)
+			{
+				var newItem = new SMGroupsItem { Text = grp.Name, FolderImage = SMGroupsItem.GroupImageType.Closed };
+				newItem.AssignParent(this, readOnly);
+				// Добавляем возможность дропа элементов
+				newItem.AllowDrop = true;
+				newItem.Drop += PanelItemDrop;
+				Items.Add(newItem);
+			}
 		}
 
 		// Сброс элементов в заголовок панели
@@ -128,7 +135,7 @@ namespace ShowManager.Controls
 		}
 
 		// Редактируем имя
-		private void EditGroupName(object sender, bool newGroup)
+		public void EditGroupName(object sender, bool newGroup)
 		{
 			if (sender == null)
 				return;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace ShowManager.Models
 {
@@ -12,6 +13,21 @@ namespace ShowManager.Models
 	public class SMElement
 	{
 		static long lastID; // последний идентификатор
+
+		private CultureInfo ci = new CultureInfo("en-US");
+
+		protected string TimeString(TimeSpan from)
+		{
+			return from.ToString(@"hh\:mm\:ss", ci);
+		}
+		protected TimeSpan StringTime(string from)
+		{
+			if (!TimeSpan.TryParse(from, out TimeSpan tsVal))
+			{
+				tsVal = TimeSpan.Zero;
+			}
+			return tsVal;
+		}
 
 		private long id; // Идентификатор элемента (для поиска)
 		private string name; // Имя элемента

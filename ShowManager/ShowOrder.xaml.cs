@@ -58,6 +58,7 @@ namespace ShowManager
 
 			this.Closed += ShowOrder_Closed;
 		}
+
 		private void ShowOrder_Closed(object sender, EventArgs e)
 		{
 			if (parentWindow != null)
@@ -100,7 +101,12 @@ namespace ShowManager
 			SMGroup getGroup = GetGroup(groupNameOld);
 
 			if (getGroup != null)
+			{
 				getGroup.Name = groupNameNew;
+				// Если текущая панель была выделена
+				if (selectedPanelName == groupNameOld)
+					selectedPanelName = groupNameNew;
+			}
 		}
 		public void PanelGroupDelete(string groupName)
 		{

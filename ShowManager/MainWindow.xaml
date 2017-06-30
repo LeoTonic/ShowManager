@@ -18,9 +18,9 @@
 		<Menu Grid.Row="0" Focusable="False">
 			<MenuItem Header="Фестиваль">
 				<MenuItem Header="Создать"/>
-				<MenuItem Header="Открыть"/>
+				<MenuItem Header="Открыть" Click="Menu_File_Open"/>
 				<Separator/>
-				<MenuItem Header="Сохранить"/>
+				<MenuItem Header="Сохранить" Click="Menu_File_Save"/>
 				<MenuItem Header="Сохранить как..."/>
 				<Separator/>
 				<MenuItem Header="Выход" Click="Menu_Show_Exit"/>

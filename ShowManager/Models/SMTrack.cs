@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
-using System.Globalization;
+using System.IO;
 
 namespace ShowManager.Models
 {
@@ -12,7 +12,6 @@ namespace ShowManager.Models
 	public class SMTrack : SMElement, INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
-		private CultureInfo ci = new CultureInfo("en-US");
 
 		private SMArtist artist; // Ссылка на класс родитель исполнителя композиции
 		public SMArtist ParentArtist
@@ -163,6 +162,44 @@ namespace ShowManager.Models
 			this.minusArtist = from.minusArtist;
 			this.minusExtention = from.minusExtention;
 			this.isApplied = from.isApplied;
+		}
+
+		// Файловые процессы
+		public override void Save(BinaryWriter bw)
+		{
+			base.Save(bw);
+
+			try
+			{
+				bw.Write(TimeString(TrackLength));
+				bw.Write(MinusID);
+				bw.Write(MinusTrackName);
+				bw.Write(MinusArtistName);
+				bw.Write(MinusExtention);
+				bw.Write(IsApplied);
+			}
+			catch (IOException ioex)
+			{
+				System.Console.WriteLine(ioex.Message);
+			}
+		}
+		public override void Load(BinaryReader br)
+		{
+
+			base.Load(br);
+			try
+			{
+				TrackLength = StringTime(br.ReadString());
+				MinusID = br.ReadInt64();
+				MinusTrackName = br.ReadString();
+				MinusArtistName = br.ReadString();
+				MinusExtention = br.ReadString();
+				IsApplied = br.ReadBoolean();
+			}
+			catch (IOException ioex)
+			{
+				System.Console.WriteLine(ioex.Message);
+			}
 		}
 	}
 }
