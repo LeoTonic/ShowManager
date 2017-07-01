@@ -243,34 +243,35 @@ namespace ShowManager.Models
 			dio.WriteString(DataIO.OUT_PROJECT);
 		}
 
-		public void Load(BinaryReader br)
+		public bool IOLoad(DataIO dio)
 		{
-			try
+			if (dio.SeekTo(DataIO.IN_PROJECT) == 1)
 			{
-				Version = br.ReadInt32();
-				Name = br.ReadString();
-
-				Artists.Clear();
-				var aCount = br.ReadInt32();
-				for (var n = 0; n < aCount; n++)
+				Version = dio.ReadInt();
+				Name = dio.ReadString();
+				if (dio.SeekTo(DataIO.IN_ARRAY) == 1)
 				{
-					var newArtist = new SMArtist(this, gentres, null);
-					newArtist.Load(br);
-					Artists.Add(newArtist);
+					Artists.Clear();
+
+					while (dio.SeekTo(DataIO.IN_ARTIST, DataIO.OUT_ARRAY) == 1)
+					{
+						var newArtist = new SMArtist(this, gentres, null);
+						if (newArtist.IOLoad(dio))
+						{
+							Artists.Add(newArtist);
+						}
+					}
 				}
-
-				LoadList(br, GroupsArtist);
-				LoadList(br, GroupsShow);
-				LoadList(br, GroupsPrepare);
-
-				TrackFolderPath = br.ReadString();
+				if (dio.SeekTo(DataIO.IN_ARRAY) == 1)
+					LoadList(dio, GroupsArtist);
+				if (dio.SeekTo(DataIO.IN_ARRAY) == 1)
+					LoadList(dio, GroupsShow);
+				if (dio.SeekTo(DataIO.IN_ARRAY) == 1)
+					LoadList(dio, GroupsPrepare);
+				TrackFolderPath = dio.ReadString();
 			}
-			catch (IOException ioex)
-			{
-				System.Console.WriteLine(ioex.Message);
-			}
+			return (dio.SeekTo(DataIO.OUT_PROJECT) == 1);
 		}
-
 		private void SaveList(DataIO dio, List<SMGroup> list)
 		{
 			dio.WriteString(DataIO.IN_ARRAY);
@@ -280,22 +281,16 @@ namespace ShowManager.Models
 			}
 			dio.WriteString(DataIO.OUT_ARRAY);
 		}
-		private void LoadList(BinaryReader br, List<SMGroup> list)
+		private void LoadList(DataIO dio, List<SMGroup> list)
 		{
-			try
+			list.Clear();
+			while (dio.SeekTo(DataIO.IN_GROUP, DataIO.OUT_ARRAY) == 1)
 			{
-				list.Clear();
-				var iCount = br.ReadInt32();
-				for (var n = 0; n < iCount; n++)
+				var newGroup = new SMGroup("");
+				if (newGroup.IOLoad(dio))
 				{
-					var newItem = new SMGroup("");
-					newItem.Load(br);
-					list.Add(newItem);
+					list.Add(newGroup);
 				}
-			}
-			catch (IOException ioex)
-			{
-				System.Console.WriteLine(ioex.Message);
 			}
 		}
 	}

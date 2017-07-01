@@ -121,20 +121,6 @@ namespace ShowManager.Models
 			}
 		}
 
-		public virtual void Load(BinaryReader br)
-		{
-			try
-			{
-				ID = br.ReadInt64();
-				Name = br.ReadString();
-				ImageKey = br.ReadInt32();
-			}
-			catch (IOException ioex)
-			{
-				System.Console.WriteLine(ioex.Message);
-			}
-		}
-
 		public virtual void IOSave(DataIO dio)
 		{
 			dio.WriteString(DataIO.IN_ELEMENT);

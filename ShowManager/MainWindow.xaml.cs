@@ -137,28 +137,24 @@ namespace ShowManager
 			{
 				var filePath = ofd.FileName;
 
-				try
+				var dio = new Tools.DataIO();
+				if (dio.OpenRead(filePath))
 				{
-					using (var br = new BinaryReader(File.Open(filePath, FileMode.Open)))
+					if (currentProject.IOLoad(dio))
 					{
-						currentProject.Load(br);
+						ArtistPanel.SetGroupTabs(currentProject.GroupsArtist, false);
+						ArtistPanel.SelectFirstGroup();
+
+						wndOrdersShow.ShowOrderPanel.SetGroupTabs(currentProject.GroupsShow, false);
+						wndOrdersShow.ShowOrderPanel.SelectFirstGroup();
+
+						wndOrdersPrep.ShowOrderPanel.SetGroupTabs(currentProject.GroupsPrepare, false);
+						wndOrdersPrep.ShowOrderPanel.SelectFirstGroup();
 					}
 				}
-				catch (IOException ioex)
+				else
 				{
-					System.Console.WriteLine(ioex.Message);
-				}
-				finally
-				{
-					// Инициализация окон
-					ArtistPanel.SetGroupTabs(currentProject.GroupsArtist, false);
-					ArtistPanel.SelectFirstGroup();
-
-					wndOrdersShow.ShowOrderPanel.SetGroupTabs(currentProject.GroupsShow, false);
-					wndOrdersShow.ShowOrderPanel.SelectFirstGroup();
-
-					wndOrdersPrep.ShowOrderPanel.SetGroupTabs(currentProject.GroupsPrepare, false);
-					wndOrdersPrep.ShowOrderPanel.SelectFirstGroup();
+					MessageBox.Show("System Error!");
 				}
 			}
 		}

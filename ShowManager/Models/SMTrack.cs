@@ -178,23 +178,21 @@ namespace ShowManager.Models
 			dio.WriteBool(IsApplied);
 			dio.WriteString(DataIO.OUT_TRACK);
 		}
-		public override void Load(BinaryReader br)
+		public override bool IOLoad(DataIO dio)
 		{
+			if (dio.SeekTo(DataIO.IN_ELEMENT) == 1)
+			{
+				if (!base.IOLoad(dio))
+					return false;
+			}
+			TrackLength = dio.ReadTime();
+			MinusID = dio.ReadLong();
+			MinusTrackName = dio.ReadString();
+			MinusArtistName = dio.ReadString();
+			MinusExtention = dio.ReadString();
+			IsApplied = dio.ReadBool();
 
-			base.Load(br);
-			try
-			{
-				TrackLength = StringTime(br.ReadString());
-				MinusID = br.ReadInt64();
-				MinusTrackName = br.ReadString();
-				MinusArtistName = br.ReadString();
-				MinusExtention = br.ReadString();
-				IsApplied = br.ReadBoolean();
-			}
-			catch (IOException ioex)
-			{
-				System.Console.WriteLine(ioex.Message);
-			}
+			return (dio.SeekTo(DataIO.OUT_TRACK) == 1);
 		}
 	}
 }

@@ -118,25 +118,32 @@ namespace ShowManager.Models
 			dio.WriteTime(TimeStart);
 			dio.WriteString(DataIO.OUT_GROUP);
 		}
-		public override void Load(BinaryReader br)
+		public override bool IOLoad(DataIO dio)
 		{
-			base.Load(br);
-
-			try
+			if (dio.SeekTo(DataIO.IN_ELEMENT) == 1)
+			{
+				if (!base.IOLoad(dio))
+					return false;
+			}
+			if (dio.SeekTo(DataIO.IN_ARRAY) == 1)
 			{
 				IDList.Clear();
-				var idCount = br.ReadInt32();
-				for (var n = 0; n < idCount; n++)
+				var sVal = dio.ReadString();
+				while (sVal != DataIO.OUT_ARRAY)
 				{
-					long id = br.ReadInt64();
-					IDList.Add(id);
+					if (long.TryParse(sVal, out long id))
+					{
+						IDList.Add(id);
+					}
+					else
+					{
+						IDList.Add(0);
+					}
+					sVal = dio.ReadString();
 				}
-				TimeStart = StringTime(br.ReadString());
 			}
-			catch (IOException ioex)
-			{
-				System.Console.WriteLine(ioex.Message);
-			}
+			TimeStart = dio.ReadTime();
+			return (dio.SeekTo(DataIO.OUT_GROUP) == 1);
 		}
 	}
 }

@@ -89,6 +89,10 @@ namespace ShowManager.Controls
 				newItem.Drop += PanelItemDrop;
 				Items.Add(newItem);
 			}
+			if (!readOnly)
+			{
+				AddNewGroupMarker();
+			}
 		}
 
 		// Сброс элементов в заголовок панели

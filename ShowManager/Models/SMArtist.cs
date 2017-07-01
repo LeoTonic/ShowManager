@@ -557,54 +557,57 @@ namespace ShowManager.Models
 			dio.WriteString(DataIO.OUT_ARTIST);
 		}
 
-		public override void Load(BinaryReader br)
+		public override bool IOLoad(DataIO dio)
 		{
-			base.Load(br);
-			try
+			if (dio.SeekTo(DataIO.IN_ELEMENT) == 1)
+			{
+				if (!base.IOLoad(dio))
+					return false;
+			}
+
+			if (dio.SeekTo(DataIO.IN_ARRAY) == 1)
 			{
 				Tracks.Clear();
-				var tCount = br.ReadInt32();
-				for (var n = 0; n < tCount; n++)
+				while (dio.SeekTo(DataIO.IN_TRACK, DataIO.OUT_ARRAY) == 1)
 				{
 					var newTrack = new SMTrack(this);
-					newTrack.Load(br);
-					Tracks.Add(newTrack);
+					if (newTrack.IOLoad(dio))
+					{
+						Tracks.Add(newTrack);
+					}
 				}
-
-				GentreGroup = br.ReadInt64();
-				GentreClass = br.ReadInt64();
-				GentreDirection = br.ReadInt64();
-				GentreContent = br.ReadInt64();
-				GentreAge = br.ReadInt64();
-				GentreCategory = br.ReadInt64();
-
-				CompanyName = br.ReadString();
-				TeamDirector = br.ReadString();
-				TeamConcertMaster = br.ReadString();
-				TeamSoundDirector = br.ReadString();
-				TeamDanceMaster = br.ReadString();
-				TeamVocalMaster = br.ReadString();
-
-				ContactCity = br.ReadString();
-				ContactPhone = br.ReadString();
-				ContactEmail = br.ReadString();
-				ContactRegion = br.ReadString();
-				ContactAddress = br.ReadString();
-
-				TeamCount = br.ReadString();
-				TeamRider = br.ReadString();
-				TeamTool = br.ReadString();
-
-				PrepareTimeStart = StringTime(br.ReadString());
-				PrepareTimeFinish = StringTime(br.ReadString());
-				PrepareTimeLength = StringTime(br.ReadString());
-
-				PrepareInfo = br.ReadString();
 			}
-			catch (IOException ioex)
-			{
-				System.Console.WriteLine(ioex.Message);
-			}
+			GentreGroup = dio.ReadLong();
+			GentreClass = dio.ReadLong();
+			GentreDirection = dio.ReadLong();
+			GentreContent = dio.ReadLong();
+			GentreAge = dio.ReadLong();
+			GentreCategory = dio.ReadLong();
+
+			CompanyName = dio.ReadString();
+			TeamDirector = dio.ReadString();
+			TeamConcertMaster = dio.ReadString();
+			TeamSoundDirector = dio.ReadString();
+			TeamDanceMaster = dio.ReadString();
+			TeamVocalMaster = dio.ReadString();
+
+			ContactCity = dio.ReadString();
+			ContactPhone = dio.ReadString();
+			ContactEmail = dio.ReadString();
+			ContactRegion = dio.ReadString();
+			ContactAddress = dio.ReadString();
+
+			TeamCount = dio.ReadString();
+			TeamRider = dio.ReadString();
+			TeamTool = dio.ReadString();
+
+			PrepareTimeStart = dio.ReadTime();
+			PrepareTimeFinish = dio.ReadTime();
+			PrepareTimeLength = dio.ReadTime();
+
+			PrepareInfo = dio.ReadString();
+
+			return (dio.SeekTo(DataIO.OUT_ARTIST) == 1);
 		}
 	}
 }
