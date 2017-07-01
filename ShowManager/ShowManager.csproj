@@ -61,6 +61,7 @@
     <Compile Include="ShowOrder.xaml.cs">
       <DependentUpon>ShowOrder.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tools\DataIO.cs" />
     <Page Include="Artist.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

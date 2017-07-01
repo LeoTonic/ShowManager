@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using ShowManager.Tools;
 
 namespace ShowManager.Models
 {
@@ -67,8 +68,10 @@ namespace ShowManager.Models
 			}
 		}
 
+		// Ссылка на список жанров
 		private SMGentresBase gentres;
 
+		// Имя фестиваля
 		private string name;
 		public string Name
 		{
@@ -82,11 +85,25 @@ namespace ShowManager.Models
 			}
 		}
 
+		// Версия проекта - нужна для правильного сохранения в файл
+		private int version;
+		public int Version
+		{
+			get
+			{
+				return version;
+			}
+			set
+			{
+				version = value;
+			}
+		}
+
 		// Конструктор
 		public SMProject(SMGentresBase gbase)
 		{
 			Name = "Новый фестиваль";
-
+			Version = 1;
 			gentres = gbase;
 
 			artists = new List<SMArtist>();
@@ -206,33 +223,33 @@ namespace ShowManager.Models
 			}
 		}
 		// Файловые операции
-		public void Save(BinaryWriter bw)
+		public void IOSave(DataIO dio)
 		{
-			try
+			dio.WriteString(DataIO.IN_PROJECT);
+			dio.WriteInt(Version);
+			dio.WriteString(Name);
+			dio.WriteString(DataIO.IN_ARRAY);
+			foreach (SMArtist artist in Artists)
 			{
-				bw.Write(Artists.Count);
-				foreach(SMArtist artist in Artists)
-				{
-					artist.Save(bw);
-				}
-
-				SaveList(bw, GroupsArtist);
-				SaveList(bw, GroupsShow);
-				SaveList(bw, GroupsPrepare);
-
-				bw.Write(TrackFolderPath);
-				bw.Write(Name);
+				artist.IOSave(dio);
 			}
-			catch (IOException ioex)
-			{
-				System.Console.WriteLine(ioex.Message);
-			}
+			dio.WriteString(DataIO.OUT_ARRAY);
+
+			SaveList(dio, GroupsArtist);
+			SaveList(dio, GroupsShow);
+			SaveList(dio, GroupsPrepare);
+
+			dio.WriteString(TrackFolderPath);
+			dio.WriteString(DataIO.OUT_PROJECT);
 		}
 
 		public void Load(BinaryReader br)
 		{
 			try
 			{
+				Version = br.ReadInt32();
+				Name = br.ReadString();
+
 				Artists.Clear();
 				var aCount = br.ReadInt32();
 				for (var n = 0; n < aCount; n++)
@@ -247,7 +264,6 @@ namespace ShowManager.Models
 				LoadList(br, GroupsPrepare);
 
 				TrackFolderPath = br.ReadString();
-				Name = br.ReadString();
 			}
 			catch (IOException ioex)
 			{
@@ -255,20 +271,14 @@ namespace ShowManager.Models
 			}
 		}
 
-		private void SaveList(BinaryWriter bw, List<SMGroup> list)
+		private void SaveList(DataIO dio, List<SMGroup> list)
 		{
-			try
+			dio.WriteString(DataIO.IN_ARRAY);
+			foreach(SMGroup group in list)
 			{
-				bw.Write(list.Count);
-				foreach(SMGroup group in list)
-				{
-					group.Save(bw);
-				}
+				group.IOSave(dio);
 			}
-			catch (IOException ioex)
-			{
-				System.Console.WriteLine(ioex.Message);
-			}
+			dio.WriteString(DataIO.OUT_ARRAY);
 		}
 		private void LoadList(BinaryReader br, List<SMGroup> list)
 		{

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.IO;
+using ShowManager.Tools;
 
 namespace ShowManager.Models
 {
@@ -512,51 +513,48 @@ namespace ShowManager.Models
 			this.PrepareInfo = from.PrepareInfo;
 		}
 
-		public override void Save(BinaryWriter bw)
+		public override void IOSave(DataIO dio)
 		{
-			base.Save(bw);
-			try
+			dio.WriteString(DataIO.IN_ARTIST);
+			base.IOSave(dio);
+			dio.WriteString(DataIO.IN_ARRAY);
+			foreach (SMTrack track in Tracks)
 			{
-				bw.Write(Tracks.Count);
-				foreach(SMTrack track in Tracks)
-				{
-					track.Save(bw);
-				}
-
-				bw.Write(GentreGroup);
-				bw.Write(GentreClass);
-				bw.Write(GentreDirection);
-				bw.Write(GentreContent);
-				bw.Write(GentreAge);
-				bw.Write(GentreCategory);
-
-				bw.Write(CompanyName);
-				bw.Write(TeamDirector);
-				bw.Write(TeamConcertMaster);
-				bw.Write(TeamSoundDirector);
-				bw.Write(TeamDanceMaster);
-				bw.Write(TeamVocalMaster);
-
-				bw.Write(ContactCity);
-				bw.Write(ContactPhone);
-				bw.Write(ContactEmail);
-				bw.Write(ContactRegion);
-				bw.Write(ContactAddress);
-
-				bw.Write(TeamCount);
-				bw.Write(TeamRider);
-				bw.Write(TeamTool);
-
-				bw.Write(TimeString(PrepareTimeStart));
-				bw.Write(TimeString(PrepareTimeFinish));
-				bw.Write(TimeString(PrepareTimeLength));
-
-				bw.Write(PrepareInfo);
+				track.IOSave(dio);
 			}
-			catch (IOException ioex)
-			{
-				System.Console.WriteLine(ioex.Message);
-			}
+			dio.WriteString(DataIO.OUT_ARRAY);
+
+			dio.WriteLong(GentreGroup);
+			dio.WriteLong(GentreClass);
+			dio.WriteLong(GentreDirection);
+			dio.WriteLong(GentreContent);
+			dio.WriteLong(GentreAge);
+			dio.WriteLong(GentreCategory);
+
+			dio.WriteString(CompanyName);
+			dio.WriteString(TeamDirector);
+			dio.WriteString(TeamConcertMaster);
+			dio.WriteString(TeamSoundDirector);
+			dio.WriteString(TeamDanceMaster);
+			dio.WriteString(TeamVocalMaster);
+
+			dio.WriteString(ContactCity);
+			dio.WriteString(ContactPhone);
+			dio.WriteString(ContactEmail);
+			dio.WriteString(ContactRegion);
+			dio.WriteString(ContactAddress);
+
+			dio.WriteString(TeamCount);
+			dio.WriteString(TeamRider);
+			dio.WriteString(TeamTool);
+
+			dio.WriteTime(PrepareTimeStart);
+			dio.WriteTime(PrepareTimeFinish);
+			dio.WriteTime(PrepareTimeLength);
+
+			dio.WriteString(PrepareInfo);
+
+			dio.WriteString(DataIO.OUT_ARTIST);
 		}
 
 		public override void Load(BinaryReader br)

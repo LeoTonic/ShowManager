@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Globalization;
+using ShowManager.Tools;
 
 namespace ShowManager.Models
 {
@@ -89,6 +90,15 @@ namespace ShowManager.Models
 			this.name = "";
 		}
 
+		public SMElement(DataIO dio)
+		{
+			ID = dio.ReadLong();
+			Name = dio.ReadString();
+			ImageKey = dio.ReadInt();
+
+			dio.SeekTo(DataIO.OUT_ELEMENT);
+		}
+
 		public SMElement(string sName, int nKey)
 		{
 			GenerateID();
@@ -111,20 +121,6 @@ namespace ShowManager.Models
 			}
 		}
 
-		public virtual void Save(BinaryWriter bw)
-		{
-			try
-			{
-				bw.Write(ID);
-				bw.Write(Name);
-				bw.Write(ImageKey);
-			}
-			catch (IOException ioex)
-			{
-				System.Console.WriteLine(ioex.Message);
-			}
-		}
-
 		public virtual void Load(BinaryReader br)
 		{
 			try
@@ -137,6 +133,26 @@ namespace ShowManager.Models
 			{
 				System.Console.WriteLine(ioex.Message);
 			}
+		}
+
+		public virtual void IOSave(DataIO dio)
+		{
+			dio.WriteString(DataIO.IN_ELEMENT);
+			dio.WriteLong(ID);
+			dio.WriteString(Name);
+			dio.WriteInt(ImageKey);
+			dio.WriteString(DataIO.OUT_ELEMENT);
+		}
+		public virtual bool IOLoad(DataIO dio)
+		{
+			ID = dio.ReadLong();
+			Name = dio.ReadString();
+			ImageKey = dio.ReadInt();
+
+			if (dio.SeekTo(DataIO.OUT_ELEMENT) == 1)
+				return true;
+			else
+				return false;
 		}
 	}
 }

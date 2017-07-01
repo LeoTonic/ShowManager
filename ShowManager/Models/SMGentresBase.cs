@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ShowManager.Tools;
 
 namespace ShowManager.Models
 {
@@ -23,28 +24,35 @@ namespace ShowManager.Models
 
 		private string filePath;
 
+		private int version;
+
 		// Конструктор
 		public SMGentresBase()
 		{
 			gentreGroups = new List<SMGentre>();
 			App curApp = (App)Application.Current;
 			filePath = string.Concat(AppDomain.CurrentDomain.BaseDirectory, (string)curApp.FindResource("gentresFilePath"));
-
-			try
+			version = 1;
+			
+			var dio = new DataIO();
+			if (dio.OpenRead(filePath))
 			{
-				using (var br = new BinaryReader(File.Open(filePath, FileMode.Open)))
+				if (dio.SeekTo(DataIO.IN_GENTREBASE) == 1)
 				{
-					int gCount = br.ReadInt32();
-					for (int n = 0; n < gCount; n++)
+					// Читаем версию
+					version = dio.ReadInt();
+
+					// Читаем массив жанров
+					if (dio.SeekTo(DataIO.IN_ARRAY) == 1)
 					{
-						var ng = new SMGentre(br);
-						gentreGroups.Add(ng);
+						while (dio.SeekTo(DataIO.IN_GENTRE, DataIO.OUT_ARRAY) == 1)
+						{
+							// Читаем элемент жанра
+							gentreGroups.Add(new SMGentre(dio));
+						}
 					}
 				}
-			}
-			catch (IOException ioex)
-			{
-                System.Console.WriteLine(ioex.Message);
+				dio.CloseRead();
 			}
 		}
 
@@ -239,34 +247,19 @@ namespace ShowManager.Models
 		// Сохранение
 		public void Save()
 		{
-			BinaryWriter bw;
-			try
+			DataIO dio = new DataIO();
+			if (dio.OpenWrite(filePath))
 			{
-				bw = new BinaryWriter(new FileStream(filePath, FileMode.Create));
-			}
-			catch (IOException ex)
-			{
-                System.Console.WriteLine(ex.Message);
-    			return;
-			}
-
-			try
-			{
-				bw.Write(gentreGroups.Count);
-				foreach (SMGentre g in gentreGroups)
+				dio.WriteString(DataIO.IN_GENTREBASE);
+				dio.WriteInt(version);
+				dio.WriteString(DataIO.IN_ARRAY);
+				foreach(SMGentre g in gentreGroups)
 				{
-					g.Save(bw);
+					g.IOSave(dio);
 				}
-			}
-			catch (IOException ex)
-			{
-                System.Console.WriteLine(ex.Message);
-                return;
-			}
-			finally
-			{
-				bw.Flush();
-				bw.Close();
+				dio.WriteString(DataIO.OUT_ARRAY);
+				dio.WriteString(DataIO.OUT_GENTREBASE);
+				dio.CloseWrite();
 			}
 		}
 	}

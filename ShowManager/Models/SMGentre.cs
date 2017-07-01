@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ShowManager.Tools;
 
 namespace ShowManager.Models
 {
@@ -73,63 +74,52 @@ namespace ShowManager.Models
 		}
 
 		// Конструктор для загрузки
-		public SMGentre(BinaryReader br)
+		public SMGentre(DataIO dio)
 		{
-			Load(br);
-			LoadList(gentres, br);
-			LoadList(directions, br);
-			LoadList(contents, br);
-			LoadList(ages, br);
-			LoadList(categories, br);
-			LoadList(evaluateTypes, br);
+			if (dio.SeekTo(DataIO.IN_ELEMENT) == 1)
+			{
+				IOLoad(dio);
+			}
+			LoadList(gentres, dio);
+			LoadList(directions, dio);
+			LoadList(contents, dio);
+			LoadList(ages, dio);
+			LoadList(categories, dio);
+			LoadList(evaluateTypes, dio);
 		}
 
 		// Сохранение объекта
-		public override void Save(BinaryWriter bw)
+		public override void IOSave(DataIO dio)
 		{
-			base.Save(bw);
-			SaveList(gentres, bw);
-			SaveList(directions, bw);
-			SaveList(contents, bw);
-			SaveList(ages, bw);
-			SaveList(categories, bw);
-			SaveList(evaluateTypes, bw);
+			dio.WriteString(DataIO.IN_GENTRE);
+			base.IOSave(dio);
+			SaveList(gentres, dio);
+			SaveList(directions, dio);
+			SaveList(contents, dio);
+			SaveList(ages, dio);
+			SaveList(categories, dio);
+			SaveList(evaluateTypes, dio);
+			dio.WriteString(DataIO.OUT_GENTRE);
 		}
 
 		// Сохранение списка в файл
-		private void SaveList(List<SMElement> saveList, BinaryWriter bw)
+		private void SaveList(List<SMElement> saveList, DataIO dio)
 		{
-			try
+			dio.WriteString(DataIO.IN_ARRAY);
+			foreach(SMElement sme in saveList)
 			{
-				bw.Write(saveList.Count);
-				foreach(SMElement sme in saveList)
-				{
-					sme.Save(bw);
-				}
+				sme.IOSave(dio);
 			}
-			catch (IOException ioex)
-			{
-                System.Console.WriteLine(ioex.Message);
-			}
+			dio.WriteString(DataIO.OUT_ARRAY);
 		}
 
 		// Загрузка списка из файла
-		private void LoadList(List<SMElement> loadList, BinaryReader br)
+		private void LoadList(List<SMElement> loadList, DataIO dio)
 		{
 			loadList.Clear();
-			try
+			while (dio.SeekTo(DataIO.IN_ELEMENT, DataIO.OUT_ARRAY) == 1)
 			{
-				int lCount = br.ReadInt32();
-				for (int n = 0; n < lCount; n++)
-				{
-					var newItem = new SMElement();
-					newItem.Load(br);
-					loadList.Add(newItem);
-				}
-			}
-			catch (IOException ioex)
-			{
-                System.Console.WriteLine(ioex.Message);
+				loadList.Add(new SMElement(dio));
 			}
 		}
 	}

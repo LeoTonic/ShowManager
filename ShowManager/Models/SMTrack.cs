@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.IO;
+using ShowManager.Tools;
 
 namespace ShowManager.Models
 {
@@ -165,23 +166,17 @@ namespace ShowManager.Models
 		}
 
 		// Файловые процессы
-		public override void Save(BinaryWriter bw)
+		public override void IOSave(DataIO dio)
 		{
-			base.Save(bw);
-
-			try
-			{
-				bw.Write(TimeString(TrackLength));
-				bw.Write(MinusID);
-				bw.Write(MinusTrackName);
-				bw.Write(MinusArtistName);
-				bw.Write(MinusExtention);
-				bw.Write(IsApplied);
-			}
-			catch (IOException ioex)
-			{
-				System.Console.WriteLine(ioex.Message);
-			}
+			dio.WriteString(DataIO.IN_TRACK);
+			base.IOSave(dio);
+			dio.WriteTime(TrackLength);
+			dio.WriteLong(MinusID);
+			dio.WriteString(MinusTrackName);
+			dio.WriteString(MinusArtistName);
+			dio.WriteString(MinusExtention);
+			dio.WriteBool(IsApplied);
+			dio.WriteString(DataIO.OUT_TRACK);
 		}
 		public override void Load(BinaryReader br)
 		{

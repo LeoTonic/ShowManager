@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ShowManager.Tools;
 
 namespace ShowManager.Models
 {
@@ -104,23 +105,18 @@ namespace ShowManager.Models
 		}
 
 		// Файловые операции
-		public override void Save(BinaryWriter bw)
+		public override void IOSave(DataIO dio)
 		{
-			base.Save(bw);
-
-			try
+			dio.WriteString(DataIO.IN_GROUP);
+			base.IOSave(dio);
+			dio.WriteString(DataIO.IN_ARRAY);
+			foreach(long id in IDList)
 			{
-				bw.Write(IDList.Count);
-				foreach(long id in IDList)
-				{
-					bw.Write(id);
-				}
-				bw.Write(TimeString(TimeStart));
+				dio.WriteLong(id);
 			}
-			catch (IOException ioex)
-			{
-				System.Console.WriteLine(ioex.Message);
-			}
+			dio.WriteString(DataIO.OUT_ARRAY);
+			dio.WriteTime(TimeStart);
+			dio.WriteString(DataIO.OUT_GROUP);
 		}
 		public override void Load(BinaryReader br)
 		{

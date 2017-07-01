@@ -175,32 +175,12 @@ namespace ShowManager
 			if (sfd.ShowDialog() == true)
 			{
 				var filePath = sfd.FileName;
-				BinaryWriter bw;
-				try
+				var dio = new Tools.DataIO();
+				if (dio.OpenWrite(filePath))
 				{
-					bw = new BinaryWriter(new FileStream(filePath, FileMode.Create));
+					currentProject.IOSave(dio);
+					dio.CloseWrite();
 				}
-				catch (IOException ex)
-				{
-					System.Console.WriteLine(ex.Message);
-					return;
-				}
-
-				try
-				{
-					currentProject.Save(bw);
-				}
-				catch (IOException ex)
-				{
-					System.Console.WriteLine(ex.Message);
-					return;
-				}
-				finally
-				{
-					bw.Flush();
-					bw.Close();
-				}
-
 			}
 		}
 
