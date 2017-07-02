@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:ShowManager.Controls"
         mc:Ignorable="d"
-        Title="Время" Height="70" Width="160" ScrollViewer.VerticalScrollBarVisibility="Disabled" ResizeMode="NoResize" SizeToContent="WidthAndHeight" Icon="/ShowManager;component/Images/Gentres/art.png">
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="4">
-        <controls:TimePicker x:Name="TimeControl" Width="72" KeyDown="TimeControl_KeyDown"/>
-        <Button x:Name="OKButton" Content="ОК" Width="40" Height="24" Margin="8,0,0,0" Click="Button_Click"/>
+        Title="Время" Height="Auto" Width="160" ScrollViewer.VerticalScrollBarVisibility="Disabled" ResizeMode="NoResize" SizeToContent="WidthAndHeight" Icon="/ShowManager;component/Images/Gentres/art.png">
+    <StackPanel Orientation="Horizontal" Style="{StaticResource DialogStack}">
+        <controls:TimePicker x:Name="TimeControl" Width="72" Height="24" KeyDown="TimeControl_KeyDown"/>
+        <Button x:Name="OKButton" Content="ОК" Style="{StaticResource SaveSmallButton}" Click="Button_Click"/>
     </StackPanel>
 </Window>

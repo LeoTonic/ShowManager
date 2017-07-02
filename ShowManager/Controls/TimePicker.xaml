@@ -4,12 +4,5 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             >
-	<UserControl.Resources>
-		<Style TargetType="TextBox">
-			<Setter Property="FontFamily" Value="Arial"/>
-			<Setter Property="FontSize" Value="14"/>
-			<Setter Property="Padding" Value="4"/>
-		</Style>
-	</UserControl.Resources>
-	<TextBox x:Name="TextBoxControl" Text="{Binding StringTime}" TextAlignment="Center" TextChanged="TextBox_TextChanged"/>
+	<TextBox x:Name="TextBoxControl" Text="{Binding StringTime}" TextAlignment="Center" Style="{StaticResource DialogText}" TextChanged="TextBox_TextChanged"/>
 </UserControl>

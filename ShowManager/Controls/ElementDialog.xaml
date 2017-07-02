@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:ShowManager.Controls"
         mc:Ignorable="d"
         Title="Значок и название" Height="Auto" Width="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" ResizeMode="NoResize" SizeToContent="WidthAndHeight" Icon="/ShowManager;component/Images/Gentres/art.png">
-	<StackPanel Orientation="Horizontal">
+	<StackPanel Orientation="Horizontal" Style="{StaticResource DialogStack}">
 		<Image Source="{Binding ImagePath}" Width="32" Height="32" Stretch="Fill" Margin="4" MouseLeftButtonDown="Image_MouseLeftButtonDown"/>
-		<TextBox Text="{Binding ElementName}" Width="190" Height="24" FontFamily="Arial" FontSize="14" Margin="4" KeyUp="TextBox_KeyUp"/>
+		<TextBox Text="{Binding ElementName}" Width="190" Style="{StaticResource DialogText}" KeyUp="TextBox_KeyUp"/>
 		<Button Content="ОК" Style="{StaticResource SaveSmallButton}" Click="Button_Click"/>
 	</StackPanel>
 </Window>

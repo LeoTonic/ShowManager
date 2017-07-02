@@ -4,73 +4,50 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:ShowManager.Controls"
-        Title="Произведение исполнителя" Width="480" Height="312" ResizeMode="NoResize" ShowInTaskbar="False" SizeToContent="Height" Icon="/ShowManager;component/Images/View/music.png">
-	<Window.Resources>
-		<Style TargetType="TextBlock">
-			<Setter Property="FontFamily" Value="Arial"/>
-			<Setter Property="FontSize" Value="12"/>
-			<Setter Property="FontWeight" Value="Bold"/>
-			<Setter Property="Margin" Value="4,0,0,2"/>
-		</Style>
-		<Style TargetType="TextBox">
-			<Setter Property="FontFamily" Value="Arial"/>
-			<Setter Property="FontSize" Value="14"/>
-			<Setter Property="Padding" Value="4"/>
-		</Style>
-		<Style TargetType="StackPanel">
-			<Setter Property="Margin" Value="8,4,8,8"/>
-		</Style>
-		<Style TargetType="Button">
-			<Setter Property="FontFamily" Value="Arial"/>
-			<Setter Property="FontSize" Value="12"/>
-			<Setter Property="Padding" Value="8"/>
-			<Setter Property="Margin" Value="0,4,16,4"/>
-			<Setter Property="Width" Value="96"/>
-		</Style>
-	</Window.Resources>
+        Title="Произведение исполнителя" Width="480" Height="Auto" ResizeMode="NoResize" ShowInTaskbar="False" SizeToContent="Height" Icon="/ShowManager;component/Images/View/music.png">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
-			<RowDefinition/>
+			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 		<Grid Grid.Row="0">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition/>
 				<ColumnDefinition Width="112"/>
 			</Grid.ColumnDefinitions>
-			<StackPanel Grid.Row="0" Grid.Column="0">
-				<TextBlock Text="Название:"/>
-				<TextBox x:Name="TrackName"/>
+			<StackPanel Grid.Row="0" Grid.Column="0" Style="{StaticResource DialogStack}">
+				<TextBlock Text="Название:" Style="{StaticResource DialogLabel}"/>
+				<TextBox x:Name="TrackName" Style="{StaticResource DialogText}"/>
 			</StackPanel>
-			<StackPanel Grid.Row="0" Grid.Column="1">
-				<TextBlock Text="Время:"/>
+			<StackPanel Grid.Row="0" Grid.Column="1" Style="{StaticResource DialogStack}">
+				<TextBlock Text="Время:" Style="{StaticResource DialogLabel}"/>
 				<controls:TimePicker x:Name="TrackLength"/>
 			</StackPanel>
 		</Grid>
-		<StackPanel Grid.Row="1">
-			<TextBlock Text="Фонограмма:"/>
+        <StackPanel Grid.Row="1" Style="{StaticResource DialogStack}">
+            <TextBlock Text="Фонограмма:" Style="{StaticResource DialogLabel}"/>
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition Width="Auto"/>
           <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-				<Button Grid.Column="0" Content="Добавить..." x:Name="AddMinus" Click="AddMinus_Click"/>
-				<Button Grid.Column="1" Content="Убрать" x:Name="RemoveMinus" Click="RemoveMinus_Click"/>
-        <TextBlock Grid.Column="2" x:Name="TrackMinusID" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+				<Button Grid.Column="0" Content="Добавить..." x:Name="AddMinus" Click="AddMinus_Click" Style="{StaticResource StdButton}"/>
+                <Button Grid.Column="1" Content="Убрать" x:Name="RemoveMinus" Click="RemoveMinus_Click" Style="{StaticResource StdButton}"/>
+                <TextBlock Grid.Column="2" x:Name="TrackMinusID" VerticalAlignment="Center" HorizontalAlignment="Center"  Style="{StaticResource DialogLabel}"/>
        </Grid>
 		</StackPanel>
-		<StackPanel Grid.Row="2">
-			<TextBlock Text="Имя файла для звукорежиссера [артист]:"/>
-			<TextBox x:Name="TrackMinusArtist"/>
+        <StackPanel Grid.Row="2" Style="{StaticResource DialogStack}">
+            <TextBlock Text="Имя файла для звукорежиссера [артист]:" Style="{StaticResource DialogLabel}"/>
+            <TextBox x:Name="TrackMinusArtist" Style="{StaticResource DialogText}"/>
 		</StackPanel>
-		<StackPanel Grid.Row="3">
-			<TextBlock Text="Имя файла для звукорежисера [песня]:"/>
-			<TextBox x:Name="TrackMinusTrack"/>
+        <StackPanel Grid.Row="3" Style="{StaticResource DialogStack}">
+            <TextBlock Text="Имя файла для звукорежисера [песня]:" Style="{StaticResource DialogLabel}"/>
+            <TextBox x:Name="TrackMinusTrack" Style="{StaticResource DialogText}"/>
 		</StackPanel>
-		<Button Grid.Row="4" x:Name="SaveData" Content="Сохранить" HorizontalAlignment="Right" Margin="0,8,8,16" Click="SaveData_Click"/>
+		<Button Grid.Row="4" x:Name="SaveData" Content="Сохранить" Style="{StaticResource SaveButton}" Click="SaveData_Click"/>
 	</Grid>
 </Window>
