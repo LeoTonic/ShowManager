@@ -89,10 +89,12 @@ namespace ShowManager.Controls
 				newItem.Drop += PanelItemDrop;
 				Items.Add(newItem);
 			}
+
 			if (!readOnly)
 			{
 				AddNewGroupMarker();
 			}
+
 		}
 
 		// Сброс элементов в заголовок панели
@@ -175,10 +177,20 @@ namespace ShowManager.Controls
 		// Добавляем маркер новой группы AddNew
 		private void AddNewGroupMarker()
 		{
-			SMGroupsItem newItem = new SMGroupsItem { Text = "", FolderImage = SMGroupsItem.GroupImageType.AddNew };
-			newItem.AssignParent(this, true);
-			newItem.AllowDrop = false;
-			Items.Add(newItem);
+			// Проверка на наличие маркера новой группы
+			var existFlag = false;
+			foreach(SMGroupsItem item in Items)
+			{
+				if (item.FolderImage == SMGroupsItem.GroupImageType.AddNew)
+					existFlag = true;
+			}
+			if (!existFlag)
+			{
+				SMGroupsItem newItem = new SMGroupsItem { Text = "", FolderImage = SMGroupsItem.GroupImageType.AddNew };
+				newItem.AssignParent(this, true);
+				newItem.AllowDrop = false;
+				Items.Add(newItem);
+			}
 		}
 
 		// Удаление имени элемента

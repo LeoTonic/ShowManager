@@ -51,6 +51,7 @@ namespace ShowManager
 			{
 				TrackFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
 			};
+			Title = currentProject.Name;
 
 			// Инициализация окон
 			wndDragDrop = new DragDropWindow();
@@ -108,7 +109,6 @@ namespace ShowManager
 			}
 		}
 
-
 		private void MainWindow_Closed(object sender, EventArgs e)
 		{
 			OpenWindowShow(false);
@@ -117,13 +117,7 @@ namespace ShowManager
 			wndDragDrop.Close();
 		}
 
-		//
-		// Обработка команд меню
-		//
 		#region Menu Calls
-		//
-		// Фестиваль
-		//
 
 		// Открытие проекта
 		private void Menu_File_Open(object sender, RoutedEventArgs e)
@@ -150,6 +144,7 @@ namespace ShowManager
 
 						wndOrdersPrep.ShowOrderPanel.SetGroupTabs(currentProject.GroupsPrepare, false);
 						wndOrdersPrep.ShowOrderPanel.SelectFirstGroup();
+						Title = currentProject.Name;
 					}
 				}
 				else
@@ -180,12 +175,22 @@ namespace ShowManager
 			}
 		}
 
+		// Запуск окна свойств фестиваля
+		private void Menu_File_Properties(object sender, RoutedEventArgs e)
+		{
+			var propsWindow = new ShowProperties(currentProject);
+			if (propsWindow.ShowDialog() == true)
+			{
+				;
+			}
+		}
+
 		// Выход из приложения
 		public void Menu_Show_Exit(object sender, RoutedEventArgs e)
 		{
 			this.Close();
 		}
-
+		
 		//
 		// Каталоги
 		//

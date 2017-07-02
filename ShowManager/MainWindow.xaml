@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 				xmlns:controls="clr-namespace:ShowManager.Controls"
         mc:Ignorable="d"
-        Title="Участники фестиваля" Height="350" Width="525" Icon="Images/View/user.png">
+        Title="" Height="350" Width="525" Icon="Images/View/user.png">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
@@ -22,6 +22,8 @@
 				<Separator/>
 				<MenuItem Header="Сохранить" Click="Menu_File_Save"/>
 				<MenuItem Header="Сохранить как..."/>
+				<Separator/>
+				<MenuItem Header="Свойства..." Click="Menu_File_Properties"/>
 				<Separator/>
 				<MenuItem Header="Выход" Click="Menu_Show_Exit"/>
 			</MenuItem>

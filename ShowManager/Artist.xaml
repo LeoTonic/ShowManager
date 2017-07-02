@@ -5,50 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 				xmlns:controls="clr-namespace:ShowManager.Controls"
         mc:Ignorable="d"
-        Title="Исполнитель" Height="408" Width="600" Icon="Images/Tools/user-edit.png">
-	<Window.Resources>
-		<Style TargetType="TextBlock">
-			<Setter Property="FontFamily" Value="Arial"/>
-			<Setter Property="FontSize" Value="12"/>
-			<Setter Property="FontWeight" Value="Bold"/>
-			<Setter Property="Margin" Value="4,0,0,2"/>
-		</Style>
-		<Style TargetType="TextBox">
-			<Setter Property="FontFamily" Value="Arial"/>
-			<Setter Property="FontSize" Value="14"/>
-			<Setter Property="Padding" Value="4"/>
-		</Style>
-		<Style TargetType="ComboBox">
-			<Setter Property="FontFamily" Value="Arial"/>
-			<Setter Property="FontSize" Value="14"/>
-			<Setter Property="Padding" Value="4"/>
-		</Style>
-		<Style TargetType="StackPanel">
-			<Setter Property="Margin" Value="8,4,8,8"/>
-		</Style>
-		<Style TargetType="ListView">
-			<Setter Property="FontFamily" Value="Arial"/>
-			<Setter Property="FontSize" Value="10"/>
-			<Setter Property="FontWeight" Value="Normal"/>
-		</Style>
-		<Style TargetType="ListViewItem">
-			<Setter Property="Foreground" Value="Black"/>
-			<Setter Property="BorderBrush" Value="LightGray" />
-			<Setter Property="BorderThickness" Value="0,0,0,1" />
-			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-		</Style>
-		<Style TargetType="Button" x:Key="StdButton">
-			<Setter Property="FontFamily" Value="Arial"/>
-			<Setter Property="FontSize" Value="12"/>
-			<Setter Property="Padding" Value="8"/>
-			<Setter Property="Margin" Value="8"/>
-			<Setter Property="Width" Value="96"/>
-		</Style>
-	</Window.Resources>
+        Title="Исполнитель" Height="408" Width="600" Icon="Images/Tools/user-edit.png" WindowStartupLocation="CenterOwner">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition></RowDefinition>
-			<RowDefinition Height="48"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
 		</Grid.RowDefinitions>
 		<TabControl Grid.Row="0">
 			<TabItem Header="Персона/Коллектив" x:Name="ArtistTab">
@@ -60,17 +21,17 @@
 							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
-						<StackPanel Grid.Row="0">
-							<TextBlock Text="ФИО/Название:"/>
-							<TextBox Text="{Binding ArtistName}" x:Name="TBArtistName"/>
+						<StackPanel Grid.Row="0" Style="{StaticResource DialogStack}">
+							<TextBlock Text="ФИО/Название:" Style="{StaticResource DialogLabel}"/>
+							<TextBox Text="{Binding ArtistName}" x:Name="TBArtistName" Style="{StaticResource DialogText}"/>
 						</StackPanel>
-						<StackPanel Grid.Row="1">
-							<TextBlock Text="Общий жанр:"/>
-							<ComboBox Name="GentreGroup" SelectionChanged="GentreGroup_SelectionChanged"/>
+						<StackPanel Grid.Row="1" Style="{StaticResource DialogStack}">
+							<TextBlock Text="Общий жанр:" Style="{StaticResource DialogLabel}"/>
+							<ComboBox Name="GentreGroup" SelectionChanged="GentreGroup_SelectionChanged" Style="{StaticResource DialogCombo}"/>
 						</StackPanel>
-						<StackPanel Grid.Row="2">
-							<TextBlock Text="Подробный жанр:"/>
-							<ComboBox Name="GentreClass" SelectionChanged="GentreClass_SelectionChanged"/>
+						<StackPanel Grid.Row="2" Style="{StaticResource DialogStack}">
+							<TextBlock Text="Подробный жанр:" Style="{StaticResource DialogLabel}"/>
+							<ComboBox Name="GentreClass" SelectionChanged="GentreClass_SelectionChanged" Style="{StaticResource DialogCombo}"/>
 						</StackPanel>
 						<Grid Grid.Row="3">
 							<Grid.RowDefinitions>
@@ -81,21 +42,21 @@
 								<ColumnDefinition/>
 								<ColumnDefinition/>
 							</Grid.ColumnDefinitions>
-							<StackPanel Grid.Row="0" Grid.Column="0">
-								<TextBlock Text="Направление:"/>
-								<ComboBox Name="GentreDirection" SelectionChanged="GentreDirection_SelectionChanged"/>
+							<StackPanel Grid.Row="0" Grid.Column="0" Style="{StaticResource DialogStack}">
+								<TextBlock Text="Направление:" Style="{StaticResource DialogLabel}"/>
+								<ComboBox Name="GentreDirection" SelectionChanged="GentreDirection_SelectionChanged" Style="{StaticResource DialogCombo}"/>
 							</StackPanel>
-							<StackPanel Grid.Row="0" Grid.Column="1">
-								<TextBlock Text="Состав:"/>
-								<ComboBox Name="GentreContent" SelectionChanged="GentreContent_SelectionChanged"/>
+							<StackPanel Grid.Row="0" Grid.Column="1" Style="{StaticResource DialogStack}">
+								<TextBlock Text="Состав:" Style="{StaticResource DialogLabel}"/>
+								<ComboBox Name="GentreContent" SelectionChanged="GentreContent_SelectionChanged" Style="{StaticResource DialogCombo}"/>
 							</StackPanel>
-							<StackPanel Grid.Row="1" Grid.Column="0">
-								<TextBlock Text="Возрастная группа:"/>
-								<ComboBox Name="GentreAge" SelectionChanged="GentreAge_SelectionChanged"/>
+							<StackPanel Grid.Row="1" Grid.Column="0" Style="{StaticResource DialogStack}">
+								<TextBlock Text="Возрастная группа:" Style="{StaticResource DialogLabel}"/>
+								<ComboBox Name="GentreAge" SelectionChanged="GentreAge_SelectionChanged" Style="{StaticResource DialogCombo}"/>
 							</StackPanel>
-							<StackPanel Grid.Row="1" Grid.Column="1">
-								<TextBlock Text="Категория:"/>
-								<ComboBox Name="GentreCategory" SelectionChanged="GentreCategory_SelectionChanged"/>
+							<StackPanel Grid.Row="1" Grid.Column="1" Style="{StaticResource DialogStack}">
+								<TextBlock Text="Категория:" Style="{StaticResource DialogLabel}"/>
+								<ComboBox Name="GentreCategory" SelectionChanged="GentreCategory_SelectionChanged" Style="{StaticResource DialogCombo}"/>
 							</StackPanel>
 						</Grid>
 					</Grid>
@@ -109,13 +70,13 @@
 							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
-						<StackPanel Grid.Row="0">
-							<TextBlock Text="Название:"/>
-							<TextBox Text="{Binding CompanyName}"/>
+						<StackPanel Grid.Row="0" Style="{StaticResource DialogStack}">
+							<TextBlock Text="Название:" Style="{StaticResource DialogLabel}"/>
+							<TextBox Text="{Binding CompanyName}" Style="{StaticResource DialogText}"/>
 						</StackPanel>
-						<StackPanel Grid.Row="1">
-							<TextBlock Text="Руководитель:"/>
-							<TextBox Text="{Binding TeamDirector}"/>
+						<StackPanel Grid.Row="1" Style="{StaticResource DialogStack}">
+							<TextBlock Text="Руководитель:" Style="{StaticResource DialogLabel}"/>
+							<TextBox Text="{Binding TeamDirector}" Style="{StaticResource DialogText}"/>
 						</StackPanel>
 						<Grid Grid.Row="2">
 							<Grid.RowDefinitions>
@@ -126,21 +87,21 @@
 								<ColumnDefinition/>
 								<ColumnDefinition/>
 							</Grid.ColumnDefinitions>
-							<StackPanel Grid.Row="0" Grid.Column="0">
-								<TextBlock Text="Концертмейстер:"/>
-								<TextBox Text="{Binding TeamConcertMaster}"/>
+							<StackPanel Grid.Row="0" Grid.Column="0" Style="{StaticResource DialogStack}">
+								<TextBlock Text="Концертмейстер:" Style="{StaticResource DialogLabel}"/>
+								<TextBox Text="{Binding TeamConcertMaster}" Style="{StaticResource DialogText}"/>
 							</StackPanel>
-							<StackPanel Grid.Row="0" Grid.Column="1">
-								<TextBlock Text="Звукорежиссер:"/>
-								<TextBox Text="{Binding TeamSoundDirector}"/>
+							<StackPanel Grid.Row="0" Grid.Column="1" Style="{StaticResource DialogStack}">
+								<TextBlock Text="Звукорежиссер:" Style="{StaticResource DialogLabel}"/>
+								<TextBox Text="{Binding TeamSoundDirector}" Style="{StaticResource DialogText}"/>
 							</StackPanel>
-							<StackPanel Grid.Row="1" Grid.Column="0">
-								<TextBlock Text="Педагог по вокалу:"/>
-								<TextBox Text="{Binding TeamVocalMaster}"/>
+							<StackPanel Grid.Row="1" Grid.Column="0" Style="{StaticResource DialogStack}">
+								<TextBlock Text="Педагог по вокалу:" Style="{StaticResource DialogLabel}"/>
+								<TextBox Text="{Binding TeamVocalMaster}" Style="{StaticResource DialogText}"/>
 							</StackPanel>
-							<StackPanel Grid.Row="1" Grid.Column="1">
-								<TextBlock Text="Хореограф:"/>
-								<TextBox Text="{Binding TeamDanceMaster}"/>
+							<StackPanel Grid.Row="1" Grid.Column="1" Style="{StaticResource DialogStack}">
+								<TextBlock Text="Хореограф:" Style="{StaticResource DialogLabel}"/>
+								<TextBox Text="{Binding TeamDanceMaster}" Style="{StaticResource DialogText}"/>
 							</StackPanel>
 						</Grid>
 					</Grid>
@@ -158,25 +119,25 @@
 							<ColumnDefinition/>
 							<ColumnDefinition/>
 						</Grid.ColumnDefinitions>
-						<StackPanel Grid.Row="0" Grid.Column="0">
-							<TextBlock Text="Телефон:"/>
-							<TextBox Text="{Binding ContactPhone}"/>
+						<StackPanel Grid.Row="0" Grid.Column="0" Style="{StaticResource DialogStack}">
+							<TextBlock Text="Телефон:" Style="{StaticResource DialogLabel}"/>
+							<TextBox Text="{Binding ContactPhone}" Style="{StaticResource DialogText}"/>
 						</StackPanel>
-						<StackPanel Grid.Row="0" Grid.Column="1">
-							<TextBlock Text="Электронная почта:"/>
-							<TextBox Text="{Binding ContactEmail}"/>
+						<StackPanel Grid.Row="0" Grid.Column="1" Style="{StaticResource DialogStack}">
+							<TextBlock Text="Электронная почта:" Style="{StaticResource DialogLabel}"/>
+							<TextBox Text="{Binding ContactEmail}" Style="{StaticResource DialogText}"/>
 						</StackPanel>
-						<StackPanel Grid.Row="1" Grid.Column="0">
-							<TextBlock Text="Населенный пункт:"/>
-							<TextBox Text="{Binding ContactCity}"/>
+						<StackPanel Grid.Row="1" Grid.Column="0" Style="{StaticResource DialogStack}">
+							<TextBlock Text="Населенный пункт:" Style="{StaticResource DialogLabel}"/>
+							<TextBox Text="{Binding ContactCity}" Style="{StaticResource DialogText}"/>
 						</StackPanel>
-						<StackPanel Grid.Row="1" Grid.Column="1">
-							<TextBlock Text="Регион/Область:"/>
-							<TextBox Text="{Binding ContactRegion}"/>
+						<StackPanel Grid.Row="1" Grid.Column="1" Style="{StaticResource DialogStack}">
+							<TextBlock Text="Регион/Область:" Style="{StaticResource DialogLabel}"/>
+							<TextBox Text="{Binding ContactRegion}" Style="{StaticResource DialogText}"/>
 						</StackPanel>
-						<StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
-							<TextBlock Text="Почтовый адрес:"/>
-							<TextBox Text="{Binding ContactAddress}"/>
+						<StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource DialogStack}">
+							<TextBlock Text="Почтовый адрес:" Style="{StaticResource DialogLabel}"/>
+							<TextBox Text="{Binding ContactAddress}" Style="{StaticResource DialogText}"/>
 						</StackPanel>
 					</Grid>
 				</ScrollViewer>
@@ -187,7 +148,7 @@
 						<RowDefinition/>
 						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
-					<ListView Grid.Row="0" x:Name="tracksView">
+					<ListView Grid.Row="0" x:Name="tracksView" Style="{StaticResource TrackView}" ItemContainerStyle="{StaticResource TrackViewItem}">
 						<ListView.View>
 							<GridView>
 								<GridViewColumn Header="Произведение" Width="200" DisplayMemberBinding="{Binding TrackName}"/>
@@ -216,17 +177,17 @@
 								<ColumnDefinition/>
 								<ColumnDefinition/>
 							</Grid.ColumnDefinitions>
-							<StackPanel Grid.Row="0" Grid.Column="0">
-								<TextBlock Text="Численность коллектива:"/>
-								<TextBox Text="{Binding TeamCount}"/>
+							<StackPanel Grid.Row="0" Grid.Column="0" Style="{StaticResource DialogStack}">
+								<TextBlock Text="Численность коллектива:" Style="{StaticResource DialogLabel}"/>
+								<TextBox Text="{Binding TeamCount}" Style="{StaticResource DialogText}"/>
 							</StackPanel>
-							<StackPanel Grid.Row="0" Grid.Column="1">
-								<TextBlock Text="Инструмент:"/>
-								<TextBox Text="{Binding TeamTool}"/>
+							<StackPanel Grid.Row="0" Grid.Column="1" Style="{StaticResource DialogStack}">
+								<TextBlock Text="Инструмент:" Style="{StaticResource DialogLabel}"/>
+								<TextBox Text="{Binding TeamTool}" Style="{StaticResource DialogText}"/>
 							</StackPanel>
 						</Grid>
-						<StackPanel Grid.Row="1">
-							<TextBlock Text="Техрайдер:"/>
+						<StackPanel Grid.Row="1" Style="{StaticResource DialogStack}">
+							<TextBlock Text="Техрайдер:" Style="{StaticResource DialogLabel}"/>
 							<TextBox Text="{Binding TeamRider}" Height="96" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" TextWrapping="Wrap" AcceptsReturn="True"/>
 						</StackPanel>
 						<Grid Grid.Row="2">
@@ -238,27 +199,27 @@
 								<ColumnDefinition/>
 								<ColumnDefinition/>
 							</Grid.ColumnDefinitions>
-							<StackPanel Grid.Row="0" Grid.Column="0">
-								<TextBlock Text="Время на сборку:"/>
+							<StackPanel Grid.Row="0" Grid.Column="0" Style="{StaticResource DialogStack}">
+								<TextBlock Text="Время на сборку:" Style="{StaticResource DialogLabel}"/>
 								<controls:TimePicker x:Name="PrepareTimeStart"/>
 							</StackPanel>
-							<StackPanel Grid.Row="0" Grid.Column="1">
-								<TextBlock Text="Время на разбор:"/>
+							<StackPanel Grid.Row="0" Grid.Column="1" Style="{StaticResource DialogStack}">
+								<TextBlock Text="Время на разбор:" Style="{StaticResource DialogLabel}"/>
 								<controls:TimePicker x:Name="PrepareTimeFinish"/>
 							</StackPanel>
-							<StackPanel Grid.Row="0" Grid.Column="2">
-								<TextBlock Text="Время репетиции:"/>
+							<StackPanel Grid.Row="0" Grid.Column="2" Style="{StaticResource DialogStack}">
+								<TextBlock Text="Время репетиции:" Style="{StaticResource DialogLabel}"/>
 								<controls:TimePicker x:Name="PrepareTimeLength"/>
 							</StackPanel>
 						</Grid>
-						<StackPanel Grid.Row="3">
-							<TextBlock Text="Информация для репетиции:"/>
-							<TextBox Text="{Binding PrepareInfo}"/>
+						<StackPanel Grid.Row="3" Style="{StaticResource DialogStack}">
+							<TextBlock Text="Информация для репетиции:" Style="{StaticResource DialogLabel}"/>
+							<TextBox Text="{Binding PrepareInfo}" Style="{StaticResource DialogText}"/>
 						</StackPanel>
 					</Grid>
 				</ScrollViewer>
 			</TabItem>
 		</TabControl>
-		<Button Grid.Row="1" x:Name="SaveArtist" Content="Сохранить" HorizontalAlignment="Right" Style="{StaticResource StdButton}" Click="SaveArtist_Click"/>
+		<Button Grid.Row="1" x:Name="SaveArtist" Content="Сохранить" HorizontalAlignment="Right" Style="{StaticResource SaveButton}" Click="SaveArtist_Click"/>
 	</Grid>
 </Window>
