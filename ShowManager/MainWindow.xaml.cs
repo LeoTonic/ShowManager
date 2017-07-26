@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using ShowManager.Controls;
 using ShowManager.Models;
+using ShowManager.Tools;
 using Microsoft.Win32;
-using System.IO;
 
 namespace ShowManager
 {
@@ -34,6 +34,12 @@ namespace ShowManager
 		ShowOrder wndOrdersPrep;
 		public bool isOrderPrepActive = false;
 
+		// Окно фильтрации
+		FilterSelector wndFilterSelector;
+		public bool isFilterSelectorActive = false;
+
+		FilterView filterView; // Настройки фильтра
+
 		// Списки для помощи при переносе итемов
 		private List<SMListViewItem> helpList1 = new List<SMListViewItem>();
 		private List<SMListViewItem> helpList2 = new List<SMListViewItem>();
@@ -53,6 +59,8 @@ namespace ShowManager
 			};
 			Title = currentProject.Name;
 
+			filterView = new FilterView(gentres);
+
 			// Инициализация окон
 			wndDragDrop = new DragDropWindow();
 			wndDragDrop.HideWindow();
@@ -69,6 +77,8 @@ namespace ShowManager
 			OpenWindowPrep(true);
 
 			Closed += MainWindow_Closed;
+
+			//MenuWindowArrange_Click(null, null);
 		}
 
 		// Отображение окна выступлений
@@ -83,7 +93,8 @@ namespace ShowManager
 			}
 			else if (isOrderShowActive && !mode)
 			{
-				wndOrdersShow.Close();
+				if (wndOrdersShow != null)
+					wndOrdersShow.Close();
 				wndOrdersShow = null;
 				isOrderShowActive = false;
 				MenuWindowShow.IsChecked = false;
@@ -102,11 +113,38 @@ namespace ShowManager
 			}
 			else if (isOrderPrepActive && !mode)
 			{
-				wndOrdersPrep.Close();
+				if (wndOrdersPrep != null)
+					wndOrdersPrep.Close();
 				wndOrdersPrep = null;
 				isOrderPrepActive = false;
 				MenuWindowPrep.IsChecked = false;
 			}
+		}
+
+		// Отображение окна фильтра
+		private void OpenFilterSelector(bool mode)
+		{
+			if (!isFilterSelectorActive && mode)
+			{
+				wndFilterSelector = new FilterSelector(this);
+				wndFilterSelector.SetFilter(filterView);
+
+				Point pnt = FilterButton.PointToScreen(new Point(0, 0));
+				wndFilterSelector.Left = pnt.X + FilterButton.Width - wndFilterSelector.Width;
+				wndFilterSelector.Top = pnt.Y + FilterButton.Height;
+				wndFilterSelector.Show();
+				isFilterSelectorActive = true;
+			}
+			else if (isFilterSelectorActive && !mode)
+			{
+				if (wndFilterSelector != null)
+				{
+					wndFilterSelector.Close();
+					wndFilterSelector = null;
+					isFilterSelectorActive = false;
+				}
+			}
+
 		}
 
 		private void MainWindow_Closed(object sender, EventArgs e)
@@ -115,6 +153,8 @@ namespace ShowManager
 			OpenWindowPrep(false);
 
 			wndDragDrop.Close();
+			if (wndFilterSelector != null)
+				wndFilterSelector.Close();
 		}
 
 		#region Menu Calls
@@ -191,10 +231,6 @@ namespace ShowManager
 			this.Close();
 		}
 		
-		//
-		// Каталоги
-		//
-
 		// Жанры
 		public void Menu_Catalogue_Gentres(object sender, RoutedEventArgs e)
 		{
@@ -268,7 +304,6 @@ namespace ShowManager
 			}
 
 		}
-
 
 		#endregion
 
@@ -591,6 +626,12 @@ namespace ShowManager
 			}
 		}
 		#endregion
+
+		// Нажатие кнопки настройки фильтра
+		private void Filter_Click(object sender, RoutedEventArgs e)
+		{
+			OpenFilterSelector(!isFilterSelectorActive);
+		}
 
 		// Отображение элементов при изменении группы
 		private void RefreshArtistView()

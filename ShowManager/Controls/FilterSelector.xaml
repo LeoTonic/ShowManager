@@ -1,0 +1,61 @@
+﻿<Window x:Class="ShowManager.Controls.FilterSelector"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ShowManager.Controls"
+        mc:Ignorable="d"
+        Title="FilterSelector" Height="Auto" Width="220" SizeToContent="Height" ResizeMode="NoResize" ShowInTaskbar="False" WindowStyle="None" Topmost="True">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+		<StackPanel Grid.Row="0" Orientation="Vertical" Margin="4">
+			<TextBlock Text="Сортировка" FontWeight="Bold" HorizontalAlignment="Right" Margin="2,4"/>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition/>
+					<RowDefinition/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="80"/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+				<TextBlock Grid.Row="0" Grid.Column="0" Text="Значение:" VerticalAlignment="Center"/>
+				<ComboBox Grid.Row="0" Grid.Column="1" Margin="0,0,0,8" Name="cboSortingTypes"/>
+				<TextBlock Grid.Row="1" Grid.Column="0" Text="Порядок:" VerticalAlignment="Center"/>
+				<ComboBox Grid.Row="1" Grid.Column="1" Name="cboSortingOrder">
+					<ComboBoxItem>По возрастанию</ComboBoxItem>
+					<ComboBoxItem>По убыванию</ComboBoxItem>
+				</ComboBox>
+			</Grid>
+		</StackPanel>
+		<StackPanel Grid.Row="1">
+			<TextBlock Text="Отображение" FontWeight="Bold" HorizontalAlignment="Right" Margin="2,4"/>
+			<TreeView Name="treeView" ItemsSource="{Binding}" Height="200">
+				<TreeView.ItemContainerStyle>
+					<Style TargetType="TreeViewItem">
+						<Setter Property="IsExpanded" Value="True"></Setter>
+					</Style>
+				</TreeView.ItemContainerStyle>
+				<TreeView.ItemTemplate>
+					<HierarchicalDataTemplate ItemsSource="{Binding Children}">
+						<CheckBox IsChecked="{Binding Checked}" Loaded="CheckBox_Loaded" Checked="CheckBox_Check" Unchecked="ChechBox_Uncheck">
+							<TextBlock Text="{Binding Name}"></TextBlock>
+						</CheckBox>
+					</HierarchicalDataTemplate>
+				</TreeView.ItemTemplate>
+			</TreeView>
+		</StackPanel>
+		<Grid Grid.Row="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<Button Name ="ButtonClear" Grid.Column="0" Height="28" Content="Очистить" Margin="2,8,8,2" Click="ButtonClear_Click"/>
+			<Button Name="ButtonApply" Grid.Column="1" Height="28" Content="Применить" Margin="8,8,2,2" Click="ButtonApply_Click"/>
+		</Grid>
+	</Grid>
+</Window>

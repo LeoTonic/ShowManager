@@ -55,6 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\FilterSelector.xaml.cs">
+      <DependentUpon>FilterSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TimeDialog.xaml.cs">
       <DependentUpon>TimeDialog.xaml</DependentUpon>
     </Compile>
@@ -65,6 +68,7 @@
       <DependentUpon>ShowProperties.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tools\DataIO.cs" />
+    <Compile Include="Tools\FilterView.cs" />
     <Page Include="Artist.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -74,6 +78,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ElementDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\FilterSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -318,6 +326,12 @@
     <Resource Include="Images\Gentres\age-40.png" />
     <Resource Include="Images\Gentres\age-6.png" />
     <Resource Include="Images\Gentres\age-mix.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Tools\filter-empty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Tools\filter-fill.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

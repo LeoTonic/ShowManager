@@ -41,7 +41,18 @@
 				<MenuItem Name="MenuWindowArrange" Header="Упорядочить" Click="MenuWindowArrange_Click"/>
 			</MenuItem>
 		</Menu>
-		<controls:SMGroupsPanel x:Name="ArtistPanel" Grid.Row="1" Focusable="False"/>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <controls:SMGroupsPanel x:Name="ArtistPanel" Grid.Column="0" Focusable="False"/>
+            <Button Grid.Column="1" BorderThickness="1" BorderBrush="#FFB0B0B0" Margin="2" Width="28" Height="28" Background="Transparent" Focusable="False" Click="Filter_Click" Name="FilterButton">
+                <Button.Content>
+                    <Image Source="/ShowManager;component/Images/Tools/filter-empty.png"/>
+                </Button.Content>
+            </Button>
+        </Grid>
 		<controls:SMListView x:Name="ArtistView" Grid.Row="2" ToolTip="Исполнители"/>
 		<GridSplitter Grid.Row="3" HorizontalAlignment="Stretch" Focusable="False"/>
 		<controls:SMListView x:Name="TrackView" Grid.Row="4" ToolTip="Композиции"/>
