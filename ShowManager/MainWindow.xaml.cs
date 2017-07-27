@@ -38,7 +38,7 @@ namespace ShowManager
 		FilterSelector wndFilterSelector;
 		public bool isFilterSelectorActive = false;
 
-		FilterView filterView; // Настройки фильтра
+		public FilterView filterView; // Настройки фильтра
 
 		// Списки для помощи при переносе итемов
 		private List<SMListViewItem> helpList1 = new List<SMListViewItem>();
@@ -127,7 +127,6 @@ namespace ShowManager
 			if (!isFilterSelectorActive && mode)
 			{
 				wndFilterSelector = new FilterSelector(this);
-				wndFilterSelector.SetFilter(filterView);
 
 				Point pnt = FilterButton.PointToScreen(new Point(0, 0));
 				wndFilterSelector.Left = pnt.X + FilterButton.Width - wndFilterSelector.Width;
@@ -634,7 +633,7 @@ namespace ShowManager
 		}
 
 		// Отображение элементов при изменении группы
-		private void RefreshArtistView()
+		public void RefreshArtistView()
 		{
 			ArtistView.Clear();
 			TrackView.Clear();

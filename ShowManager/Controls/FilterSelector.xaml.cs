@@ -26,6 +26,7 @@ namespace ShowManager.Controls
 		class FilterNodeItem: INotifyPropertyChanged
 		{
 			public event PropertyChangedEventHandler PropertyChanged;
+
 			private string name;
 			public string Name {
 				get {
@@ -51,10 +52,14 @@ namespace ShowManager.Controls
 			public ObservableCollection<FilterNodeItem> Children { get; set; }
 			public FilterNodeItem Parent { get; set; }
 			public long ID { get; set; }
+
+			public FilterView.FilterItem TwinItem { get; set; }
 		}
 
 		ObservableCollection<FilterNodeItem> Nodes;
 		private MainWindow parentWindow;
+		private bool skipCheckUpdate = false;
+		public FilterView filterView;
 
 		public FilterSelector(MainWindow parent)
 		{
@@ -62,18 +67,42 @@ namespace ShowManager.Controls
 			InitializeComponent();
 			parentWindow = parent;
 			DataContext = Nodes;
+
+			filterView = new FilterView(parent.filterView);
+			GetFilter();
 		}
 
 		private void ButtonApply_Click(object sender, RoutedEventArgs e)
 		{
 			// Применить фильтр
+			SetFilter();
+			parentWindow.filterView.Assign(filterView);
 			parentWindow.isFilterSelectorActive = false;
 			Close();
 		}
 
 		private void ButtonClear_Click(object sender, RoutedEventArgs e)
 		{
+			// Очистка фильтра
+			cboSortingTypes.SelectedIndex = 0;
+			cboSortingOrder.SelectedIndex = 0;
 
+			foreach(FilterNodeItem fi in Nodes)
+			{
+				ClearFilterNode(fi);
+			}
+		}
+
+		private void ClearFilterNode(FilterNodeItem node)
+		{
+			if (node.Children != null)
+			{
+				foreach(FilterNodeItem fi in node.Children)
+				{
+					ClearFilterNode(fi);
+				}
+			}
+			node.Checked = false;
 		}
 
 		// Обновление чекбокса родительского узла
@@ -104,6 +133,17 @@ namespace ShowManager.Controls
 			}
 		}
 
+		// Обновление чекбоксов дочерних узлов
+		private void UpdateChildrenCheckBox(FilterNodeItem node) {
+			if (node.Children == null) return;
+
+			foreach(FilterNodeItem ch in node.Children)
+			{
+				UpdateChildrenCheckBox(ch);
+				ch.Checked = node.Checked;
+			}
+		}
+
 		private void CheckBox_Check(object sender, RoutedEventArgs e) {
 			var dObject = e.OriginalSource;
 			while (dObject != null)
@@ -111,9 +151,12 @@ namespace ShowManager.Controls
 				dObject = VisualTreeHelper.GetParent(dObject as DependencyObject);
 				if (dObject is TreeViewItem)
 				{
-					if ((dObject as TreeViewItem).DataContext is FilterNodeItem dc)
+					if ((dObject as TreeViewItem).DataContext is FilterNodeItem dc && !skipCheckUpdate)
 					{
+						skipCheckUpdate = true;
+						UpdateChildrenCheckBox(dc);
 						UpdateParentCheckBox(dc);
+						skipCheckUpdate = false;
 					}
 					break;
 				}
@@ -127,26 +170,49 @@ namespace ShowManager.Controls
 				dObject = VisualTreeHelper.GetParent(dObject as DependencyObject);
 				if (dObject is TreeViewItem)
 				{
-					if ((dObject as TreeViewItem).DataContext is FilterNodeItem dc)
+					if ((dObject as TreeViewItem).DataContext is FilterNodeItem dc && !skipCheckUpdate)
 					{
+						skipCheckUpdate = true;
+						UpdateChildrenCheckBox(dc);
 						UpdateParentCheckBox(dc);
+						skipCheckUpdate = false;
 					}
 					break;
 				}
 			}
 		}
 
-		private void CheckBox_Loaded(object sender, RoutedEventArgs e) {
-			// work on loaded
-			//Console.WriteLine("Loaded");
+		// Установка фильтра
+		private void SetFilter()
+		{
+			var selected = cboSortingTypes.SelectedItem as ComboBoxItem;
+			filterView.SortingType = (int)selected.Tag;
+			filterView.sortAscend = (cboSortingOrder.SelectedIndex == 0);
+
+			foreach(FilterNodeItem fi in Nodes)
+			{
+				SetFilterValue(fi);
+			}
 		}
 
-		// Set filter
-		public void SetFilter(FilterView fv)
+		private void SetFilterValue(FilterNodeItem node)
+		{
+			if (node.Children != null)
+			{
+				foreach (FilterNodeItem fi in node.Children)
+				{
+					SetFilterValue(fi);
+				}
+			}
+			node.TwinItem.Checked = node.Checked;
+		}
+
+		// Получение фильтра
+		private void GetFilter()
 		{
 			// Сортировка
 			cboSortingTypes.Items.Clear();
-			foreach(KeyValuePair<int, string> kp in fv.sortTypes)
+			foreach(KeyValuePair<int, string> kp in filterView.sortTypes)
 			{
 				var newCI = new ComboBoxItem()
 				{
@@ -154,9 +220,10 @@ namespace ShowManager.Controls
 					Tag = kp.Key
 				};
 				cboSortingTypes.Items.Add(newCI);
-				cboSortingTypes.Text = fv.sortTypes[fv.SortingType];
 			}
-			if (fv.sortAscend)
+			cboSortingTypes.Text = filterView.sortTypes[filterView.SortingType];
+
+			if (filterView.sortAscend)
 			{
 				cboSortingOrder.SelectedIndex = 0;
 			}
@@ -167,7 +234,7 @@ namespace ShowManager.Controls
 
 			// Фильтрация
 			Nodes.Clear();
-			foreach(FilterView.FilterItem fi in fv.FilterItems)
+			foreach(FilterView.FilterItem fi in filterView.FilterItems)
 			{
 				var newNode = new FilterNodeItem();
 				Nodes.Add(newNode);
@@ -190,12 +257,7 @@ namespace ShowManager.Controls
 			node.Checked = filter.Checked;
 			node.ID = filter.ID;
 			node.Parent = parent;
-		}
-
-		private void TreeViewItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-		{
-			var tvi = sender as TreeViewItem;
-			Console.WriteLine(tvi.Name);
+			node.TwinItem = filter;
 		}
 	}
 

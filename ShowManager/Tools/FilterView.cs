@@ -31,22 +31,36 @@ namespace ShowManager.Tools
 						return;
 				}
 				// Вставляем
-				var fi = new FilterItem()
-				{
-					ID = id,
-					Name = name,
-					Checked = false,
-					Parent = this,
-					Children = null
-				};
+				var fi = new FilterItem(id, name, this);
 				Children.Add(fi);
 			} // Добавляем элемент в детей
+
+			public FilterItem(long id, string name, FilterItem parent) {
+				Checked = false;
+				Name = name;
+				Parent = parent;
+				Children = new List<FilterItem>();
+			}
+			// Копия через конструктор
+			public FilterItem(FilterItem from)
+			{
+				Checked = from.Checked;
+				ID = from.ID;
+				Name = from.Name;
+				Parent = from.Parent;
+				Children = new List<FilterItem>();
+				foreach(FilterItem fi in from.Children)
+				{
+					var newFI = new FilterItem(fi);
+					Children.Add(newFI);
+				}
+			}
 		}
 		public List<FilterItem> FilterItems; // Список значений для фильтра
 
-		public FilterView(SMGentresBase gentres)
+		// Инициализация SortingTypes
+		private void InitializeSortTypes()
 		{
-			// Инициализация SortingTypes
 			sortTypes = new Dictionary<int, string>()
 			{
 				{ 1000, "Нет" },
@@ -59,42 +73,39 @@ namespace ShowManager.Tools
 			};
 			SortingType = 1000;
 			sortAscend = true;
+		}
+
+		public FilterView(FilterView from)
+		{
+			InitializeSortTypes();
+			FilterItems = new List<FilterItem>();
+			Assign(from);
+		}
+
+		public void Assign(FilterView from)
+		{
+			SortingType = from.SortingType;
+			sortAscend = from.sortAscend;
+
+			FilterItems.Clear();
+			foreach (FilterItem fi in from.FilterItems)
+			{
+				var newFI = new FilterItem(fi);
+				FilterItems.Add(newFI);
+			}
+		}
+
+		public FilterView(SMGentresBase gentres)
+		{
+			InitializeSortTypes();
 
 			// Инициализация FilterItems
 			FilterItems = new List<FilterItem>();
 
-			var filterGentre = new FilterItem()
-			{
-				ID = newID++,
-				Name = "Жанр",
-				Checked = false,
-				Parent = null,
-				Children = new List<FilterItem>()
-			}; // Жанр
-			var filterContent = new FilterItem()
-			{
-				ID = newID++,
-				Name = "Состав участников",
-				Checked = false,
-				Parent = null,
-				Children = new List<FilterItem>()
-			}; // Состав участников
-			var filterAge = new FilterItem()
-			{
-				ID = newID++,
-				Name = "Возрастная группа",
-				Checked = false,
-				Parent = null,
-				Children = new List<FilterItem>()
-			}; // Возрастная группа
-			var filterCategory = new FilterItem()
-			{
-				ID = newID++,
-				Name = "Категория",
-				Checked = false,
-				Parent = null,
-				Children = new List<FilterItem>()
-			}; // Категория
+			var filterGentre = new FilterItem(newID++, "Жанр", null);
+			var filterContent = new FilterItem(newID++, "Состав участников", null);
+			var filterAge = new FilterItem(newID++, "Возрастная группа", null);
+			var filterCategory = new FilterItem(newID++, "Категория", null);
 
 			foreach (SMGentre gentre in gentres.GentreGroups)
 			{
@@ -118,14 +129,8 @@ namespace ShowManager.Tools
 			FilterItems.Add(filterAge);
 			FilterItems.Add(filterCategory);
 
-			var filterShow = new FilterItem()
-			{
-				ID = newID++,
-				Name = "Участник на выступлении",
-				Checked = false,
-				Parent = null,
-				Children = new List<FilterItem>()
-			}; // Выступления
+			var filterShow = new FilterItem(newID++, "Участник на выступлении", null);
+
 			filterShow.AddChildren(newID++, "Полностью");
 			filterShow.AddChildren(newID++, "Частично");
 			filterShow.AddChildren(newID++, "Отсутствует");
