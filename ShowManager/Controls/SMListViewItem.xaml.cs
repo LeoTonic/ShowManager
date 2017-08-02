@@ -196,10 +196,12 @@ namespace ShowManager.Controls
 
 		// Images
 
+    private int mainIK;
 		public int MainImageKey
 		{
 			set
 			{
+        mainIK = value;
 				App curApp = (App)Application.Current;
 				try
 				{
@@ -210,38 +212,68 @@ namespace ShowManager.Controls
 					MainImagePath = curApp.ImgPath[101];
 				}
 			}
+      get
+      {
+        return mainIK;
+      }
 		}
+    private int ico0IK;
 		public int Ico0Key
 		{
 			set
 			{
+        ico0IK = value;
 				App curApp = (App)Application.Current;
 				IconsPath0 = curApp.ImgPath[value];
 			}
+      get
+      {
+        return ico0IK;
+      }
 		}
+
+    private int ico1IK;
 		public int Ico1Key
 		{
 			set
 			{
+        ico1IK = value;
 				App curApp = (App)Application.Current;
 				IconsPath1 = curApp.ImgPath[value];
 			}
+      get
+      {
+        return ico1IK;
+      }
 		}
+
+    private int ico2IK;
 		public int Ico2Key
 		{
 			set
 			{
+        ico2IK = value;
 				App curApp = (App)Application.Current;
 				IconsPath2 = curApp.ImgPath[value];
 			}
+      get
+      {
+        return ico2IK;
+      }
 		}
+    private int ico3IK;
 		public int Ico3Key
 		{
 			set
 			{
+        ico3IK = value;
 				App curApp = (App)Application.Current;
 				IconsPath3 = curApp.ImgPath[value];
 			}
+      get
+      {
+        return ico3IK;
+      }
 		}
 
 		private string mainImgPath;

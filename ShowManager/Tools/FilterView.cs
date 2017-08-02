@@ -7,6 +7,17 @@ namespace ShowManager.Tools
 	{
 		static long newID = 1;
 
+    public enum SortType
+    {
+      None = 1000,
+      Artist = 1001,
+      Company = 1002,
+      Gentre = 1003,
+      Age = 1004,
+      Category = 1005,
+      Show = 1006
+    };
+
 		// Сортировка
 		public Dictionary<int, string> sortTypes; // Значения по каким можно сортировать
 		public bool sortAscend; // Сортировка по возрастанию 
@@ -38,6 +49,7 @@ namespace ShowManager.Tools
 			public FilterItem(long id, string name, FilterItem parent) {
 				Checked = false;
 				Name = name;
+        ID = id;
 				Parent = parent;
 				Children = new List<FilterItem>();
 			}
@@ -58,20 +70,22 @@ namespace ShowManager.Tools
 		}
 		public List<FilterItem> FilterItems; // Список значений для фильтра
 
+    private long applyShowIDAll, applyShowIDNone, applyShowIDMix;
+
 		// Инициализация SortingTypes
 		private void InitializeSortTypes()
 		{
 			sortTypes = new Dictionary<int, string>()
 			{
-				{ 1000, "Нет" },
-				{ 1001, "Исполнитель" },
-				{ 1002, "Организация" },
-				{ 1003, "Жанр" },
-				{ 1004, "Возраст" },
-				{ 1005, "Категория" },
-				{ 1006, "Выступление" }
+				{ (int)SortType.None, "Нет" },
+				{ (int)SortType.Artist, "Исполнитель" },
+				{ (int)SortType.Company, "Организация" },
+				{ (int)SortType.Gentre, "Жанр" },
+				{ (int)SortType.Age, "Возраст" },
+				{ (int)SortType.Category, "Категория" },
+				{ (int)SortType.Show, "Выступление" }
 			};
-			SortingType = 1000;
+			SortingType = (int)SortType.None;
 			sortAscend = true;
 		}
 
@@ -130,11 +144,63 @@ namespace ShowManager.Tools
 			FilterItems.Add(filterCategory);
 
 			var filterShow = new FilterItem(newID++, "Участник на выступлении", null);
-
-			filterShow.AddChildren(newID++, "Полностью");
-			filterShow.AddChildren(newID++, "Частично");
-			filterShow.AddChildren(newID++, "Отсутствует");
+      applyShowIDAll = newID++;
+      applyShowIDMix = newID++;
+      applyShowIDNone = newID++;
+			filterShow.AddChildren(applyShowIDAll, "Полностью");
+			filterShow.AddChildren(applyShowIDMix, "Частично");
+			filterShow.AddChildren(applyShowIDNone, "Отсутствует");
 			FilterItems.Add(filterShow);
 		}
+
+    // Возврат true если артист попадает по фильтрацию
+    public bool IsFiltered(SMArtist artist)
+    {
+      // Проверка на пустой фильтр
+      bool clear = true;
+      foreach(FilterItem item in FilterItems)
+      {
+        foreach(FilterItem child in item.Children)
+        {
+          if (child.Checked == true) clear = false;
+        }
+        if (item.Checked == true) clear = false;
+      }
+      if (clear) return true;
+
+      // Проверка на жанр
+      foreach(FilterItem child in FilterItems[0].Children)
+      {
+        if (child.ID == artist.GentreGroup && child.Checked == true) return true;
+      }
+      // Проверка на состав
+      foreach (FilterItem child in FilterItems[1].Children)
+      {
+        if (child.ID == artist.GentreContent && child.Checked == true) return true;
+      }
+      // Проверка на возраст
+      foreach (FilterItem child in FilterItems[2].Children)
+      {
+        if (child.ID == artist.GentreAge && child.Checked == true) return true;
+      }
+      // Проверка на категорию
+      foreach (FilterItem child in FilterItems[3].Children)
+      {
+        if (child.ID == artist.GentreCategory && child.Checked == true) return true;
+      }
+      // Проверка на наличие в выступлении
+      foreach (FilterItem child in FilterItems[4].Children)
+      {
+        bool applyAll = artist.IsAppliedAll;
+        bool applyNone = artist.IsAppliedNull;
+        if (child.Checked == true)
+        {
+          if (child.ID == applyShowIDAll && applyAll) return true;
+          else if (child.ID == applyShowIDNone && applyNone) return true;
+          else if (child.ID == applyShowIDMix && !applyAll && !applyNone) return true;
+        }
+      }
+      return false;
+    }
 	}
 }

@@ -633,7 +633,7 @@ namespace ShowManager
 		}
 
 		// Отображение элементов при изменении группы
-		public void RefreshArtistView()
+		public void RefreshArtistView(bool useFilter = false)
 		{
 			ArtistView.Clear();
 			TrackView.Clear();
@@ -641,15 +641,19 @@ namespace ShowManager
 			SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, selectedPanelName);
 			if (getGroup == null)
 				return;
+
 			foreach (long artistID in getGroup.IDList)
 			{
 				SMArtist getArtist = currentProject.GetArtistByID(artistID);
-				ArtistView.Add(getArtist, gentres);
+        if (useFilter)
+          ArtistView.Add(getArtist, gentres, filterView);
+        else
+  				ArtistView.Add(getArtist, gentres);
 			}
 		}
 
-		// Обновление статуса треков в контролах
-		public void UpdateTrackStatus(SMTrack track, SMArtist artist)
+    // Обновление статуса треков в контролах
+    public void UpdateTrackStatus(SMTrack track, SMArtist artist)
 		{
 			ArtistView.Edit(artist.ID, artist, gentres);
 			TrackView.Edit(track.ID, track, gentres);

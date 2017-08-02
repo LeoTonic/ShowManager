@@ -78,6 +78,7 @@ namespace ShowManager.Controls
 			SetFilter();
 			parentWindow.filterView.Assign(filterView);
 			parentWindow.isFilterSelectorActive = false;
+      parentWindow.RefreshArtistView(true);
 			Close();
 		}
 

@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ShowManager.Models;
+using ShowManager.Tools;
 using System.Globalization;
 
 namespace ShowManager.Controls
@@ -329,6 +330,50 @@ namespace ShowManager.Controls
 			Items.Clear();
 		}
 
+    // Добавить элемент для режима артиста с фильтрацией
+    public bool Add(SMArtist artist, SMGentresBase gentres, FilterView filterView)
+    {
+      // Фильтр на добавление
+      if (!filterView.IsFiltered(artist)) return false;
+
+      // Сортировка
+      Add(artist, gentres, GetFilterInsertIndex(artist, gentres, filterView));
+      return true;
+    }
+
+    // Получение индекса вставки элемента в зависимости от значения фильтра
+    private int GetFilterInsertIndex(SMArtist artist, SMGentresBase gentres, FilterView fv)
+    {
+      if (fv.SortingType != (int)FilterView.SortType.None)
+      {
+        for (int n = 0; n < Items.Count; n++)
+        {
+          if (fv.sortAscend)
+          {
+            if ((fv.SortingType == (int)FilterView.SortType.Artist && artist.ArtistName.CompareTo(Items[n].TwoLineTopText) < 0) ||
+                (fv.SortingType == (int)FilterView.SortType.Company && artist.CompanyName.CompareTo(Items[n].TwoLineBotText) < 0) ||
+                (fv.SortingType == (int)FilterView.SortType.Gentre && gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, artist.GentreGroup) < Items[n].MainImageKey) ||
+                (fv.SortingType == (int)FilterView.SortType.Age && gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Age, artist.GentreAge) < Items[n].Ico0Key) ||
+                (fv.SortingType == (int)FilterView.SortType.Category && gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Category, artist.GentreCategory) < Items[n].Ico1Key) ||
+                (fv.SortingType == (int)FilterView.SortType.Show && artist.AppliedTracksImage < Items[n].Ico3Key)
+              )
+              return n;
+          }
+          else
+          {
+            if ((fv.SortingType == (int)FilterView.SortType.Artist && artist.ArtistName.CompareTo(Items[n].TwoLineTopText) > 0) ||
+                (fv.SortingType == (int)FilterView.SortType.Company && artist.CompanyName.CompareTo(Items[n].TwoLineBotText) > 0) ||
+                (fv.SortingType == (int)FilterView.SortType.Gentre && gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.GentreGroup, artist.GentreGroup) > Items[n].MainImageKey) ||
+                (fv.SortingType == (int)FilterView.SortType.Age && gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Age, artist.GentreAge) > Items[n].Ico0Key) ||
+                (fv.SortingType == (int)FilterView.SortType.Category && gentres.GetImageKey(artist.GentreGroup, SMGentresBase.GentreClassType.Category, artist.GentreCategory) > Items[n].Ico1Key) ||
+                (fv.SortingType == (int)FilterView.SortType.Show && artist.AppliedTracksImage > Items[n].Ico3Key)
+              )
+              return n;
+          }
+        }
+      }
+      return -1;
+    }
 		// Добавить новый элемент - режим для списка артистов и репетиций
 		public bool Add(SMArtist artist, SMGentresBase gentres, int insertIndex = -1, bool checkExist = false)
 		{
