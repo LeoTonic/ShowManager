@@ -256,7 +256,7 @@ namespace ShowManager.Controls
 			}
 			node.Name = filter.Name;
 			node.Checked = filter.Checked;
-			node.ID = filter.ID;
+			node.ID = filter.ID[0];
 			node.Parent = parent;
 			node.TwinItem = filter;
 		}

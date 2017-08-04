@@ -27,7 +27,7 @@ namespace ShowManager.Tools
 		public class FilterItem
 		{
 			public bool? Checked { get; set; }
-			public long ID { get; set; }
+			public List<long> ID { get; set; }
 			public string Name { get; set; }
 
 			public List<FilterItem> Children { get; set; }
@@ -39,17 +39,29 @@ namespace ShowManager.Tools
 				foreach(FilterItem item in Children)
 				{
 					if (name == item.Name)
-						return;
+          {
+            item.ID.Add(id);
+            return;
+          }
 				}
 				// Вставляем
 				var fi = new FilterItem(id, name, this);
 				Children.Add(fi);
 			} // Добавляем элемент в детей
 
+      public bool IsExist(long id)
+      {
+        foreach(long lid in ID)
+        {
+          if (lid == id && Checked == true) return true;
+        }
+        return false;
+      } // Проверка на наличие ИД в массиве и установку фильтра
+
 			public FilterItem(long id, string name, FilterItem parent) {
 				Checked = false;
 				Name = name;
-        ID = id;
+        ID = new List<long>() { id };
 				Parent = parent;
 				Children = new List<FilterItem>();
 			}
@@ -57,7 +69,8 @@ namespace ShowManager.Tools
 			public FilterItem(FilterItem from)
 			{
 				Checked = from.Checked;
-				ID = from.ID;
+        ID = new List<long>();
+        foreach(long id in from.ID) { ID.Add(id); }
 				Name = from.Name;
 				Parent = from.Parent;
 				Children = new List<FilterItem>();
@@ -171,34 +184,31 @@ namespace ShowManager.Tools
       // Проверка на жанр
       foreach(FilterItem child in FilterItems[0].Children)
       {
-        if (child.ID == artist.GentreGroup && child.Checked == true) return true;
+        if (child.IsExist(artist.GentreGroup)) return true;
       }
       // Проверка на состав
       foreach (FilterItem child in FilterItems[1].Children)
       {
-        if (child.ID == artist.GentreContent && child.Checked == true) return true;
+        if (child.IsExist(artist.GentreContent)) return true;
       }
       // Проверка на возраст
       foreach (FilterItem child in FilterItems[2].Children)
       {
-        if (child.ID == artist.GentreAge && child.Checked == true) return true;
+        if (child.IsExist(artist.GentreAge)) return true;
       }
       // Проверка на категорию
       foreach (FilterItem child in FilterItems[3].Children)
       {
-        if (child.ID == artist.GentreCategory && child.Checked == true) return true;
+        if (child.IsExist(artist.GentreCategory)) return true;
       }
       // Проверка на наличие в выступлении
       foreach (FilterItem child in FilterItems[4].Children)
       {
         bool applyAll = artist.IsAppliedAll;
         bool applyNone = artist.IsAppliedNull;
-        if (child.Checked == true)
-        {
-          if (child.ID == applyShowIDAll && applyAll) return true;
-          else if (child.ID == applyShowIDNone && applyNone) return true;
-          else if (child.ID == applyShowIDMix && !applyAll && !applyNone) return true;
-        }
+        if (child.IsExist(applyShowIDAll) && applyAll) return true;
+        else if (child.IsExist(applyShowIDNone) && applyNone) return true;
+        else if (child.IsExist(applyShowIDMix) && !applyAll && !applyNone) return true;
       }
       return false;
     }
