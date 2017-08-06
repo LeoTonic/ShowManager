@@ -21,7 +21,7 @@
 				<MenuItem Header="Открыть" Click="Menu_File_Open"/>
 				<Separator/>
 				<MenuItem Header="Сохранить" Click="Menu_File_Save"/>
-				<MenuItem Header="Сохранить как..."/>
+				<MenuItem Header="Сохранить как..." Click="Menu_File_SaveAs"/>
 				<Separator/>
 				<MenuItem Header="Свойства..." Click="Menu_File_Properties"/>
 				<Separator/>

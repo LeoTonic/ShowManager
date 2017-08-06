@@ -99,6 +99,34 @@ namespace ShowManager.Models
 			}
 		}
 
+    // Внесены правки
+    private bool isdirty;
+    public bool IsDirty
+    {
+      get
+      {
+        return isdirty;
+      }
+    }
+    public void SetDirty(bool status = true)
+    {
+      isdirty = status;
+    }
+
+    // Путь к сохраненному проекту
+    private string filePath;
+    public string FilePath
+    {
+      get
+      {
+        return filePath;
+      }
+      set
+      {
+        filePath = value;
+      }
+    }
+
 		// Конструктор
 		public SMProject(SMGentresBase gbase)
 		{
@@ -119,6 +147,9 @@ namespace ShowManager.Models
 			groupsArtist.Add(artistGroup);
 			groupsShow.Add(showGroup);
 			groupsPrepare.Add(prepGroup);
+
+      SetDirty(false);
+      FilePath = "";
 		}
 
 		// Получение ссылки на группу по имени
@@ -269,6 +300,7 @@ namespace ShowManager.Models
 				if (dio.SeekTo(DataIO.IN_ARRAY) == 1)
 					LoadList(dio, GroupsPrepare);
 				TrackFolderPath = dio.ReadString();
+        SetDirty(false);
 			}
 			return (dio.SeekTo(DataIO.OUT_PROJECT) == 1);
 		}
