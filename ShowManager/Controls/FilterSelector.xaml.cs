@@ -79,7 +79,7 @@ namespace ShowManager.Controls
 			parentWindow.filterView.Assign(filterView);
 			parentWindow.isFilterSelectorActive = false;
       parentWindow.RefreshArtistView(true);
-			Close();
+      Close();
 		}
 
 		private void ButtonClear_Click(object sender, RoutedEventArgs e)

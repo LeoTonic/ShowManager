@@ -1,0 +1,30 @@
+﻿<Window x:Class="ShowManager.BaseArtists"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				xmlns:controls="clr-namespace:ShowManager.Controls"
+        mc:Ignorable="d"
+        Title="База исполнителей" Height="350" Width="525" Icon="Images/View/user.png">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+		<Grid Grid.Row="0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+			<controls:SMGroupsPanel x:Name="BaseArtistPanel" Grid.Column="0" Focusable="False"/>
+			<Button Grid.Column="1" BorderThickness="1" BorderBrush="#FFB0B0B0" Margin="2" Width="28" Height="28" Background="Transparent" Focusable="False" Click="Filter_Click" Name="FilterButton">
+				<Button.Content>
+					<Image Source="/ShowManager;component/Images/Tools/filter-empty.png"/>
+				</Button.Content>
+			</Button>
+		</Grid>
+		<controls:SMListView x:Name="BaseArtistView" Grid.Row="1" ToolTip="Исполнители"/>
+    <controls:SMToolbar x:Name="BaseArtistToolBar" Grid.Row="2" Focusable="False"/>
+  </Grid>
+</Window>

@@ -55,6 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BaseArtists.xaml.cs">
+      <DependentUpon>BaseArtists.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FilterSelector.xaml.cs">
       <DependentUpon>FilterSelector.xaml</DependentUpon>
     </Compile>
@@ -72,6 +75,10 @@
     <Page Include="Artist.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="BaseArtists.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\DragDropWindow.xaml">
       <SubType>Designer</SubType>
@@ -121,7 +128,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Gentres.xaml">
+    <Page Include="BaseGentres.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -167,8 +174,8 @@
     <Compile Include="Controls\TrackDialog.xaml.cs">
       <DependentUpon>TrackDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Gentres.xaml.cs">
-      <DependentUpon>Gentres.xaml</DependentUpon>
+    <Compile Include="BaseGentres.xaml.cs">
+      <DependentUpon>BaseGentres.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

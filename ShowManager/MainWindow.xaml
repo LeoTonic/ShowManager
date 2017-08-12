@@ -21,18 +21,16 @@
 				<MenuItem Header="Открыть" Click="Menu_File_Open"/>
 				<Separator/>
 				<MenuItem Header="Сохранить" Click="Menu_File_Save"/>
-				<MenuItem Header="Сохранить как..." Click="Menu_File_SaveAs"/>
+				<MenuItem Header="Сохранить как..."/>
 				<Separator/>
 				<MenuItem Header="Свойства..." Click="Menu_File_Properties"/>
 				<Separator/>
 				<MenuItem Header="Выход" Click="Menu_Show_Exit"/>
 			</MenuItem>
-			<MenuItem Header="Каталог">
+			<MenuItem Header="Каталоги">
+				<MenuItem Header="Исполнители..." Click="Menu_Catalogue_Artists"/>
+				<MenuItem Header="Жюри..."/>
 				<MenuItem Header="Жанры..." Click="Menu_Catalogue_Gentres"/>
-				<MenuItem Header="Жюри">
-					<MenuItem Header="Составы..."/>
-					<MenuItem Header="База..."/>
-				</MenuItem>
 			</MenuItem>
 			<MenuItem Header="Окна">
 				<MenuItem Name="MenuWindowShow"  Header="Порядок выступлений" Click="MenuWindowShow_Click"/>

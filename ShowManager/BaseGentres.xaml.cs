@@ -18,9 +18,9 @@ using ShowManager.Models;
 namespace ShowManager
 {
 	/// <summary>
-	/// Логика взаимодействия для Gentres.xaml
+	/// Логика взаимодействия для BaseGentres.xaml
 	/// </summary>
-	public partial class Gentres : Window, ICommandCatcher
+	public partial class BaseGentres : Window, ICommandCatcher
 	{
 		private SMGentresBase gentreBase;
 		private List<SMListViewItem> helpList1 = new List<SMListViewItem>();
@@ -31,7 +31,7 @@ namespace ShowManager
 
 		private List<string> genClasses;
 
-		public Gentres(DragDropWindow wndDD, SMGentresBase gb)
+		public BaseGentres(DragDropWindow wndDD, SMGentresBase gb)
 		{
 			InitializeComponent();
 
