@@ -85,6 +85,8 @@ namespace ShowManager.Tools
 
     private long applyShowIDAll, applyShowIDNone, applyShowIDMix;
 
+    private int idxGentre, idxAge, idxContent, idxCategory, idxShow;
+
 		// Инициализация SortingTypes
 		private void InitializeSortTypes()
 		{
@@ -164,6 +166,12 @@ namespace ShowManager.Tools
 			filterShow.AddChildren(applyShowIDMix, "Частично");
 			filterShow.AddChildren(applyShowIDNone, "Отсутствует");
 			FilterItems.Add(filterShow);
+
+      idxGentre = FilterItems.IndexOf(filterGentre);
+      idxContent = FilterItems.IndexOf(filterContent);
+      idxAge = FilterItems.IndexOf(filterAge);
+      idxCategory = FilterItems.IndexOf(filterCategory);
+      idxShow = FilterItems.IndexOf(filterShow);
 		}
 
     // Возврат true если артист попадает по фильтрацию
@@ -182,27 +190,27 @@ namespace ShowManager.Tools
       if (clear) return true;
 
       // Проверка на жанр
-      foreach(FilterItem child in FilterItems[0].Children)
+      foreach(FilterItem child in FilterItems[idxGentre].Children)
       {
         if (child.IsExist(artist.GentreGroup)) return true;
       }
       // Проверка на состав
-      foreach (FilterItem child in FilterItems[1].Children)
+      foreach (FilterItem child in FilterItems[idxContent].Children)
       {
         if (child.IsExist(artist.GentreContent)) return true;
       }
       // Проверка на возраст
-      foreach (FilterItem child in FilterItems[2].Children)
+      foreach (FilterItem child in FilterItems[idxAge].Children)
       {
         if (child.IsExist(artist.GentreAge)) return true;
       }
       // Проверка на категорию
-      foreach (FilterItem child in FilterItems[3].Children)
+      foreach (FilterItem child in FilterItems[idxCategory].Children)
       {
         if (child.IsExist(artist.GentreCategory)) return true;
       }
       // Проверка на наличие в выступлении
-      foreach (FilterItem child in FilterItems[4].Children)
+      foreach (FilterItem child in FilterItems[idxShow].Children)
       {
         bool applyAll = artist.IsAppliedAll;
         bool applyNone = artist.IsAppliedNull;

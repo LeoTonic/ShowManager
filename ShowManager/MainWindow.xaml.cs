@@ -82,7 +82,7 @@ namespace ShowManager
 
       Closed += MainWindow_Closed;
 
-      //MenuWindowArrange_Click(null, null);
+      MenuWindowArrange_Click(null, null);
     }
 
     // Отображение окна выступлений
@@ -160,11 +160,16 @@ namespace ShowManager
         wndFilterSelector.Close();
     }
 
+    // Подтверждение сохрания текущего проекта
+    private MessageBoxResult ConfirmClose() { return MessageBox.Show("Текущий проект не сохранен! Закрыть его без сохранения?", "Проект не сохранен", MessageBoxButton.YesNo, MessageBoxImage.Exclamation, MessageBoxResult.No); }
+
     #region Menu Calls
 
     // Открытие проекта
     private void Menu_File_Open(object sender, RoutedEventArgs e)
     {
+      if (currentProject.IsDirty && ConfirmClose() != MessageBoxResult.Yes) { return; }
+
       var ofd = new OpenFileDialog()
       {
         Filter = "Файлы фестивалей (*.smp)|*.smp",
@@ -188,6 +193,7 @@ namespace ShowManager
             wndOrdersPrep.ShowOrderPanel.SetGroupTabs(currentProject.GroupsPrepare, false);
             wndOrdersPrep.ShowOrderPanel.SelectFirstGroup();
             Title = currentProject.Name;
+            currentProject.FilePath = filePath;
           }
         }
         else
@@ -197,8 +203,33 @@ namespace ShowManager
       }
     }
 
+    // Сохранение проекта - процесс
+    private void SaveProject()
+    {
+      var dio = new Tools.DataIO();
+      if (dio.OpenWrite(currentProject.FilePath))
+      {
+        currentProject.IOSave(dio);
+        dio.CloseWrite();
+      }
+      currentProject.SetDirty(false);
+    }
+
     // Сохранение проекта
     private void Menu_File_Save(object sender, RoutedEventArgs e)
+    {
+      if (String.IsNullOrWhiteSpace(currentProject.FilePath))
+      {
+        // Отправка в SaveAs
+        Menu_File_SaveAs(sender, e);
+      }
+      else
+      {
+        SaveProject();
+      }
+    }
+
+    private void Menu_File_SaveAs(object sender, RoutedEventArgs e)
     {
       var sfd = new SaveFileDialog()
       {
@@ -208,13 +239,8 @@ namespace ShowManager
       };
       if (sfd.ShowDialog() == true)
       {
-        var filePath = sfd.FileName;
-        var dio = new Tools.DataIO();
-        if (dio.OpenWrite(filePath))
-        {
-          currentProject.IOSave(dio);
-          dio.CloseWrite();
-        }
+        currentProject.FilePath = sfd.FileName;
+        SaveProject();
       }
     }
 
@@ -389,6 +415,8 @@ namespace ShowManager
       if (MessageBox.Show("Удаляем выбранного исполнителя?", "Внимание!", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
       {
         currentProject.Artists.Remove(getArtist);
+        currentProject.SetDirty();
+
         SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, selectedPanelName);
         if (getGroup != null)
         {
@@ -423,6 +451,8 @@ namespace ShowManager
           // Добавляем в массив
           var newArtist = new SMArtist(currentProject, gentres, artistWindow.ArtistObj);
           currentProject.Artists.Add(newArtist);
+          currentProject.SetDirty();
+
           // И в группу
           SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, selectedPanelName);
           if (getGroup != null)
@@ -435,6 +465,7 @@ namespace ShowManager
         {
           // Редактируем элемент
           artist.Assign(artistWindow.ArtistObj);
+          currentProject.SetDirty();
           ArtistView.Edit(artist.ID, artist, gentres);
           ItemSelectionChange(ArtistView);
         }
@@ -450,6 +481,7 @@ namespace ShowManager
     public void PanelGroupAdd(string panelName)
     {
       currentProject.GroupsArtist.Add(new SMGroup(panelName));
+      currentProject.SetDirty();
     }
 
     public void PanelGroupRename(string oldName, string newName)
@@ -459,6 +491,7 @@ namespace ShowManager
       if (getGroup != null)
       {
         getGroup.Name = newName;
+        currentProject.SetDirty();
 
         // Если текущая панель была выделена
         if (selectedPanelName == oldName)
@@ -482,6 +515,8 @@ namespace ShowManager
           currentProject.RemoveArtist(artistID);
         }
         currentProject.GroupsArtist.Remove(getGroup);
+        currentProject.SetDirty();
+
         wndOrdersShow.RefreshView();
         wndOrdersPrep.RefreshView();
       }
@@ -506,12 +541,16 @@ namespace ShowManager
             long artistID = lvi.ItemID;
             SMArtist getArtist = currentProject.GetArtistByID(artistID);
             if (getArtist != null)
+            {
               currentProject.Artists.Remove(getArtist);
+              currentProject.SetDirty();
+            }
 
             SMGroup getGroup = currentProject.GetGroup(SMProject.GroupType.Artist, selectedPanelName);
             if (getGroup != null)
             {
               getGroup.Remove(artistID);
+              currentProject.SetDirty();
               TrackView.Clear();
             }
           }
@@ -523,6 +562,7 @@ namespace ShowManager
             if (getTrack != null)
             {
               currentProject.RemoveTrack(trackID);
+              currentProject.SetDirty();
 
               // Удаляем трек у артиста
               SMArtist getArtist = getTrack.ParentArtist;
@@ -541,6 +581,7 @@ namespace ShowManager
             {
               var trackID = lvi.ItemID;
               getGroup.Remove(trackID);
+              currentProject.SetDirty();
               // Проверяем на наличие во всех группах
               if (!currentProject.IsTrackAppliedInShow(trackID))
               {
@@ -562,6 +603,7 @@ namespace ShowManager
             {
               var artistID = lvi.ItemID;
               getGroup.Remove(artistID);
+              currentProject.SetDirty();
             }
           }
           items.Remove(lvi);
@@ -598,6 +640,7 @@ namespace ShowManager
             if (getGroup != null)
             {
               getGroup.Move(lvi.ItemID, insertIndex);
+              currentProject.SetDirty();
             }
           }
 
@@ -628,10 +671,12 @@ namespace ShowManager
           if (getGroup != null)
           {
             getGroup.Remove(lvi.ItemID);
+            currentProject.SetDirty();
           }
           if (newGroup != null)
           {
             newGroup.Add(lvi.ItemID, -1);
+            currentProject.SetDirty();
           }
           items.Remove(lvi);
 
