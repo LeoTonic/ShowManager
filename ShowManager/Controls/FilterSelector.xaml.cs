@@ -103,7 +103,7 @@ namespace ShowManager.Controls
 					ClearFilterNode(fi);
 				}
 			}
-			node.Checked = false;
+			node.Checked = true;
 		}
 
 		// Обновление чекбокса родительского узла

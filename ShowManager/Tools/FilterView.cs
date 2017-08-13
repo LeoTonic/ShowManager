@@ -49,17 +49,17 @@ namespace ShowManager.Tools
 				Children.Add(fi);
 			} // Добавляем элемент в детей
 
-      public bool IsExist(long id)
+      public bool? IsExist(long id)
       {
         foreach(long lid in ID)
         {
-          if (lid == id && Checked == true) return true;
+          if (lid == id) return Checked;
         }
-        return false;
+        return null;
       } // Проверка на наличие ИД в массиве и установку фильтра
 
 			public FilterItem(long id, string name, FilterItem parent) {
-				Checked = false;
+				Checked = true;
 				Name = name;
         ID = new List<long>() { id };
 				Parent = parent;
@@ -190,35 +190,42 @@ namespace ShowManager.Tools
       if (clear) return true;
 
       // Проверка на жанр
-      foreach(FilterItem child in FilterItems[idxGentre].Children)
+      bool isGentre = true;
+      foreach (FilterItem child in FilterItems[idxGentre].Children)
       {
-        if (child.IsExist(artist.GentreGroup)) return true;
+        if (child.IsExist(artist.GentreGroup) == false) isGentre = false;
       }
       // Проверка на состав
+      bool isContent = true;
       foreach (FilterItem child in FilterItems[idxContent].Children)
       {
-        if (child.IsExist(artist.GentreContent)) return true;
+        if (child.IsExist(artist.GentreContent) == false) isContent = false;
       }
       // Проверка на возраст
+      bool isAge = true;
       foreach (FilterItem child in FilterItems[idxAge].Children)
       {
-        if (child.IsExist(artist.GentreAge)) return true;
+        if (child.IsExist(artist.GentreAge) == false) isAge = false;
       }
       // Проверка на категорию
+      bool isCategory = true;
       foreach (FilterItem child in FilterItems[idxCategory].Children)
       {
-        if (child.IsExist(artist.GentreCategory)) return true;
+        if (child.IsExist(artist.GentreCategory) == false) isCategory = false;
       }
+
       // Проверка на наличие в выступлении
+      bool isShow = true;
+      bool applyAll = artist.IsAppliedAll;
+      bool applyNone = artist.IsAppliedNull;
+
       foreach (FilterItem child in FilterItems[idxShow].Children)
       {
-        bool applyAll = artist.IsAppliedAll;
-        bool applyNone = artist.IsAppliedNull;
-        if (child.IsExist(applyShowIDAll) && applyAll) return true;
-        else if (child.IsExist(applyShowIDNone) && applyNone) return true;
-        else if (child.IsExist(applyShowIDMix) && !applyAll && !applyNone) return true;
+        if (child.ID[0] == applyShowIDAll && child.Checked == false && applyAll) isShow = false;
+        else if (child.ID[0] == applyShowIDNone && child.Checked == false && applyNone) isShow = false;
+        else if (child.ID[0] == applyShowIDMix && child.Checked == false && (!applyAll && !applyNone)) isShow = false;
       }
-      return false;
+      return (isGentre && isContent && isAge && isCategory && isShow);
     }
 	}
 }
